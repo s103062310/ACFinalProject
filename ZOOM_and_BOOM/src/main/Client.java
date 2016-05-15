@@ -1,13 +1,30 @@
 package main;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
+
 import javax.swing.JFrame;
+
+import jdk.management.resource.internal.inst.SocketDispatcherRMHooks;
 
 public class Client implements Runnable{
 	
 	private MainApplet applet;
+	private String IPAddress;
+	private int portNum;
+	private Socket socket;
+	private PrintWriter writer;
+	private BufferedReader reader;
 	
 	// Constructor
 	public Client(String IPAddress, int portNum){
+		// set IP & port
+		this.IPAddress = IPAddress;
+		this.portNum = portNum;
 		
 		// create applet
 		applet = new MainApplet();
@@ -19,11 +36,53 @@ public class Client implements Runnable{
 	// the program process of client
 	public void run(){
 		
+		/*while (true) {
+			String line = "";
+			
+			try {
+				line = reader.readLine();
+				System.out.println(line);
+				switch (line) {
+				case value:
+					
+					break;
+
+				default:
+					break;
+				}
+			} catch (IOException e) {
+				 //TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}*/
 	}
 	
 	// connect to server
 	public void connect(){
+		try {
+			socket = new Socket(IPAddress, portNum);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
+		try {
+			reader = new BufferedReader(
+					new InputStreamReader(socket.getInputStream()));
+			writer = new PrintWriter(
+				new OutputStreamWriter(socket.getOutputStream()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	//send message to server
+	private void sendMessage(String message) {//­t³d¶Ç°e°T®§µ¹server
+		StringBuilder sBuilder = new StringBuilder();
+		sBuilder.append(message);
+		this.writer.println(sBuilder.toString());
+		this.writer.flush();
 	}
 	
 	// main
