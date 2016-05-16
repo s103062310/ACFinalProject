@@ -3,6 +3,8 @@ package main;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -63,7 +65,7 @@ public class Server extends JFrame{
 			ConnectionThread connThread = new ConnectionThread(connectionToClient);
 			connThread.start();
 			connections.add(connThread);
-			if (connections.size()%2 == 0){//每當連接到兩個2個client就開始遊戲
+			if (connections.size()%2 == 0){
 				//GameMaster GM = new GameMaster(connections.get(connections.size()-2), connections.get(connections.size()-1));
 				//GM.start();
 			}
@@ -74,8 +76,10 @@ public class Server extends JFrame{
 	class ConnectionThread extends Thread{
 		Socket socket;
 		Thread thread = new Thread();
-		PrintWriter writer;
-		BufferedReader reader;
+		PrintWriter stringWriter;
+		BufferedReader stringReader;
+		ObjectInputStream objIn;
+		ObjectOutputStream objOut;
 		String Answer,line;
 		boolean QuestionReady = false;
 		
@@ -84,8 +88,10 @@ public class Server extends JFrame{
 			// TODO Auto-generated constructor stub
 			this.socket = socket;
 			try {
-				writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-				reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				stringWriter = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+				stringReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				objIn = new ObjectInputStream(socket.getInputStream());
+				objOut = new ObjectOutputStream(socket.getOutputStream());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
@@ -98,7 +104,7 @@ public class Server extends JFrame{
 			
 			while (true) {
 				try {
-					line = this.reader.readLine();
+					line = this.stringReader.readLine();
 					//System.out.println(line);
 					switch (line) {
 					case ""://
@@ -115,8 +121,8 @@ public class Server extends JFrame{
 		}
 		
 		void sendMessage(String message){
-			writer.println(message);
-			writer.flush();
+			stringWriter.println(message);
+			stringWriter.flush();
 		}
 		
 	}

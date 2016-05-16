@@ -3,13 +3,13 @@ package main;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 
 import javax.swing.JFrame;
-
-import jdk.management.resource.internal.inst.SocketDispatcherRMHooks;
 
 public class Client implements Runnable{
 	
@@ -19,6 +19,8 @@ public class Client implements Runnable{
 	private Socket socket;
 	private PrintWriter writer;
 	private BufferedReader reader;
+	ObjectInputStream objIn;
+	ObjectOutputStream objOut;
 	
 	// Constructor
 	public Client(String IPAddress, int portNum){
@@ -71,6 +73,8 @@ public class Client implements Runnable{
 					new InputStreamReader(socket.getInputStream()));
 			writer = new PrintWriter(
 				new OutputStreamWriter(socket.getOutputStream()));
+			objIn = new ObjectInputStream(socket.getInputStream());
+			objOut = new ObjectOutputStream(socket.getOutputStream());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
