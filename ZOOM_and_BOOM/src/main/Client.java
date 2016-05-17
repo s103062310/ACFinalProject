@@ -73,7 +73,7 @@ public class Client implements Runnable{
 					new InputStreamReader(socket.getInputStream()));
 			writer = new PrintWriter(
 				new OutputStreamWriter(socket.getOutputStream()));
-			objIn = new ObjectInputStream(socket.getInputStream());
+			//objIn = new ObjectInputStream(socket.getInputStream());
 			objOut = new ObjectOutputStream(socket.getOutputStream());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
