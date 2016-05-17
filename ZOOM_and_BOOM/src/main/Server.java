@@ -12,6 +12,7 @@ import java.net.Socket;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class Server extends JFrame{
 	private ServerSocket serverSocket;
 	private JTextArea textArea;
 	private List<ConnectionThread> connections = new ArrayList<ConnectionThread>();
+	private ArrayList<Player> playerlist = new ArrayList<Player>();
 	
 	// Constructor
 	public  Server(int portNum){
@@ -61,14 +63,15 @@ public class Server extends JFrame{
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
 			}
-			
+			//System.out.println("Start");
 			ConnectionThread connThread = new ConnectionThread(connectionToClient);
 			connThread.start();
 			connections.add(connThread);
+			/*
 			if (connections.size()%2 == 0){
 				//GameMaster GM = new GameMaster(connections.get(connections.size()-2), connections.get(connections.size()-1));
 				//GM.start();
-			}
+			}*/
 		
 		}
 	}
@@ -76,8 +79,8 @@ public class Server extends JFrame{
 	class ConnectionThread extends Thread{
 		Socket socket;
 		Thread thread = new Thread();
-		PrintWriter stringWriter;
-		BufferedReader stringReader;
+		//PrintWriter stringWriter;
+		//BufferedReader stringReader;
 		ObjectInputStream objIn;
 		ObjectOutputStream objOut;
 		String Answer,line;
@@ -88,9 +91,10 @@ public class Server extends JFrame{
 			// TODO Auto-generated constructor stub
 			this.socket = socket;
 			try {
-				stringWriter = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-				stringReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				objIn = new ObjectInputStream(socket.getInputStream());
+				//stringWriter = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+				//stringReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));			
+				//System.out.println("s");
+				objIn = new ObjectInputStream(socket.getInputStream());		
 				objOut = new ObjectOutputStream(socket.getOutputStream());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -104,27 +108,38 @@ public class Server extends JFrame{
 			
 			while (true) {
 				try {
-					line = this.stringReader.readLine();
-					//System.out.println(line);
-					switch (line) {
-					case ""://
-						break;
-					default:
-						break;
-					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
+					Object message = objIn.readObject();
+					if (message instanceof Player) {
+						Player pl = (Player)message;			
+						playerlist.add(pl);
+						for (ConnectionThread connection : connections) {			
+							objOut.writeObject(new PlayerList(playerlist));
+							objOut.flush();						
+						}
+		            }
+					
+					
+				} catch (IOException e) {				
 					e.printStackTrace();
+				}catch(Exception e){
+					
 				}
 			}
 			
 		}
-		
-		void sendMessage(String message){
-			stringWriter.println(message);
-			stringWriter.flush();
+		/*
+		void sendMessage(Object message){
+			try {
+				Player pl = new Player(5,100,"HA");
+				objOut.writeObject(pl);
+				objOut.flush();
+			} catch (Exception e) {
+				System.out.println("EXCEPTION");
+			}
+			//stringWriter.println(message);
+			//stringWriter.flush();
 		}
-		
+		*/
 	}
 	
 	// main
