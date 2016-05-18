@@ -1,12 +1,16 @@
 package main;
 
-import processing.core.PFont;
+import java.io.File;
+import java.util.Random;
+import processing.core.PImage;
 
 public class Game {
 	
 	private MainApplet parent;
-	private PFont font;
-	
+	private PImage img;
+	private String path = new String("src/resource/pic_rsc");
+	private String[] list;
+	private Random r = new Random();
 	private boolean isFrame;
 	private int height=450, width=800;
 	private float startX, startY, frameX, frameY, lineW;
@@ -18,12 +22,15 @@ public class Game {
 		parent = p;
 		isFrame = false;
 		lineW = (float)2.5;
-		font = parent.createFont("mvboli.ttc", 100, true);
-		
+		File folder = new File(path);
+		list = folder.list();
+		img = parent.loadImage(path + "/" + list[0]);
 	}
 	
 	// update screen content
 	public void display(){
+		// draw image
+		parent.image(img, 0, 0, width, height);
 		
 		// draw green frame
 		if(isFrame){
@@ -37,12 +44,16 @@ public class Game {
 		
 		// draw timer
 		if(parent.millis()-lastTime>1000){
+			// change image
+			if(remainTime==0)	img = parent.loadImage(path + "/" + list[r.nextInt(3)]);
 			remainTime = (remainTime+5)%6;
 			lastTime = parent.millis();
 		}
+		parent.fill(255, 255, 255);
+		parent.ellipse(65, 50, 50, 50);
 		parent.fill(255, 0, 0);
-		parent.textFont(font);
-		parent.text(remainTime, 100, 100);
+		parent.textSize(50);
+		parent.text(remainTime, 50, 70);
 	}
 	
 	// start to frame object => draw green frame
