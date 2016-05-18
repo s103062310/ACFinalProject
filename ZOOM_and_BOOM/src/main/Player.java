@@ -1,6 +1,7 @@
 package main;
+import java.io.Serializable;
 
-public class Player {
+public class Player implements Serializable{
 	private int color;		// a int of random from 0~5	// will be mapped to real color in other class
 	private int score;
 	private String name;

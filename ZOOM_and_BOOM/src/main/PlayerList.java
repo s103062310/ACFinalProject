@@ -6,8 +6,8 @@ import java.util.ArrayList;
 public class PlayerList implements java.io.Serializable{
 	private ArrayList<Player> players = new ArrayList<Player>();
 	
-	public PlayerList(){
-		
+	public PlayerList(ArrayList<Player> players){
+		this.players = players;
 	}
 	
 	public void setPlayers(ArrayList<Player> players){

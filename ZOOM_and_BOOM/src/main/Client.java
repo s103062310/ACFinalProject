@@ -8,96 +8,92 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
-public class Client implements Runnable{
-	
+public class Client {
+
 	private MainApplet applet;
 	private String IPAddress;
 	private int portNum;
 	private Socket socket;
-	private PrintWriter writer;
-	private BufferedReader reader;
+	private boolean add ;
+	private ArrayList<Player> allPlayer = new ArrayList<Player>();
 	ObjectInputStream objIn;
 	ObjectOutputStream objOut;
-	
+
 	// Constructor
-	public Client(String IPAddress, int portNum){
+	public Client(String IPAddress, int portNum) {
 		// set IP & port
 		this.IPAddress = IPAddress;
 		this.portNum = portNum;
-		
+		this.add = false;
 		// create applet
 		applet = new MainApplet();
 		applet.init();
 		applet.start();
 		applet.setFocusable(true);
 	}
-	
-	// the program process of client
-	public void run(){
-		
-		/*while (true) {
-			String line = "";
-			
-			try {
-				line = reader.readLine();
-				System.out.println(line);
-				switch (line) {
-				case value:
-					
-					break;
 
-				default:
-					break;
+	class ClientThread extends Thread {
+
+		// the program process of client
+		public void run() {
+
+			while (true) {
+				try {
+					Object message = objIn.readObject();
+					if (message instanceof PlayerList) {
+						allPlayer=((PlayerList)message).getPlayers();
+						System.out.println(allPlayer.size()+"##");
+					}
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (Exception e) {
+
 				}
-			} catch (IOException e) {
-				 //TODO Auto-generated catch block
-				e.printStackTrace();
 			}
-		}*/
+		}
 	}
-	
+
 	// connect to server
-	public void connect(){
+	public void connect() {
 		try {
 			socket = new Socket(IPAddress, portNum);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		try {
-			reader = new BufferedReader(
-					new InputStreamReader(socket.getInputStream()));
-			writer = new PrintWriter(
-				new OutputStreamWriter(socket.getOutputStream()));
-			//objIn = new ObjectInputStream(socket.getInputStream());
+			
 			objOut = new ObjectOutputStream(socket.getOutputStream());
+			objIn = new ObjectInputStream(socket.getInputStream());
+			//System.out.println("c");
+			ClientThread connection = new ClientThread();
+			connection.start();
+			//System.out.println("add members");
+			Player sp = new Player(5,100,"HA");
+			//PlayerList pl = new PlayerList(new ArrayList<Player>());
+			objOut.writeObject(sp);
+			objOut.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
-	//send message to server
-	private void sendMessage(String message) {//­t³d¶Ç°e°T®§µ¹server
-		StringBuilder sBuilder = new StringBuilder();
-		sBuilder.append(message);
-		this.writer.println(sBuilder.toString());
-		this.writer.flush();
-	}
-	
+
 	// main
-	public static void main(String[] args){
-		
+	public static void main(String[] args) {
+
 		// create client
 		Client client = new Client("127.0.0.1", 8000);
-		Thread thread = new Thread(client);
-		thread.start();
+		// Thread thread = new Thread(client);
+		// thread.start();
 		client.connect();
-		
+
 		// create frame
 		JFrame window = new JFrame("ZOOM and BOOM");
 		window.setContentPane(client.applet);
@@ -105,5 +101,5 @@ public class Client implements Runnable{
 		window.setSize(1117, 690);
 		window.setVisible(true);
 	}
-	
+
 }
