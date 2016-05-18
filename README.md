@@ -20,6 +20,13 @@
 + multi language system
 + 多語言系統OvO~ ((Eva來個西班牙文XDD
 
+## Collect image explanation
+step1 download image and save it at src/resource/pic_ori
+step2 open CreateImage.jave and run it(in tool package)
+step3 check if there are strange images in src/resource/pic_rsc and delete original image in pic_ori
+image's size must bigger than 800*450(better) or smaller(don't suggest)
+it means width>800&&height>450 or width<800&&height<450
+
 ## Work method -- important
 + In order to let everybody work at the same time, using the method below
 + 為了讓大家都可以隨心所欲地打扣，請用以下有點爛的方法~
