@@ -30,27 +30,31 @@ public class MainApplet extends PApplet{
 	
 	// control mouse pressed
 	public void mousePressed(){
-		if(game.inGame()) game.frameStart();
+		if(game.inGame()&&game.isPlay()) game.frameStart();
 	}
 	
 	// control mouse released
 	public void mouseReleased(){
-		if(game.isFrame()) game.frameEnd();
+		if(game.isFrame()&&game.isPlay()) game.frameEnd();
 	}
 	
 	// control mouse clicked
 	public void mouseClicked(){
-		
+		if(game.getGameControlButton().inBtn()){
+			if(game.isPlay()) game.gameEnd();
+			else game.gameStart();
+		}
 	}
 	
 	// control mouse moved
 	public void mouseMoved(){
-		
+		if(game.getGameControlButton().inBtn()) game.getGameControlButton().setOver(true);
+		else game.getGameControlButton().setOver(false);
 	}
 	
 	// control mouse dragged
 	public void mouseDragged(){
-		if(game.isFrame()) game.frame();
+		if(game.isFrame()&&game.isPlay()) game.frame();
 	}
 	
 	// control key pressed (take a screenshot of main game frame)

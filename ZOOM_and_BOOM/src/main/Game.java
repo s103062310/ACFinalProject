@@ -2,6 +2,7 @@ package main;
 
 import java.io.File;
 import java.util.Random;
+import java.awt.Color;
 import processing.core.PImage;
 
 public class Game {
@@ -11,49 +12,57 @@ public class Game {
 	private String path = new String("src/resource/pic_rsc");
 	private String[] list;
 	private Random r = new Random();
-	private boolean isFrame;
-	private int height=450, width=800;
-	private float startX, startY, frameX, frameY, lineW;
-	private int lastTime=0, remainTime=5;
+	private Button ctrlBtn;
+	private Timer timer;
+	private boolean isFrame=false, isPlay=false;
+	private int height=450, width=800, lastTime=0;
+	private float startX, startY, frameX, frameY, lineW=(float)2.5;
 	
 	
 	// Constructor
 	public Game(MainApplet p){
 		parent = p;
-		isFrame = false;
-		lineW = (float)2.5;
 		File folder = new File(path);
 		list = folder.list();
-		img = parent.loadImage(path + "/" + list[0]);
+		img = parent.loadImage(path + "/" + list[r.nextInt(list.length)]);
+		Color c = new Color(130, 180, 150);
+		ctrlBtn = new Button(parent, 760, 40, 50, c);
+		timer = new Timer(p, 690, 40, 50, 5);
 	}
 	
 	// update screen content
 	public void display(){
-		// draw image
-		parent.image(img, 0, 0, width, height);
-		
-		// draw green frame
-		if(isFrame){
-			parent.stroke(130, 210, 75);
-			parent.strokeWeight(lineW*2);
-			parent.fill(130, 210, 75, 100);
-			parent.rect(startX, startY, frameX, frameY);
+		if(isPlay){
+			// draw image
+			parent.image(img, 0, 0, width, height);
+			
+			// draw green frame
+			if(isFrame){
+				parent.stroke(130, 210, 75);
+				parent.strokeWeight(lineW*2);
+				parent.fill(130, 210, 75, 100);
+				parent.rect(startX, startY, frameX, frameY);
+			}
+			parent.noStroke();
+			
+			// timer work and change image
+			if(parent.millis()-lastTime>1000){
+				if(timer.getValue()==0){
+					frameEnd();
+				} else {
+					timer.work();
+					lastTime = parent.millis();
+				}
+			}
+		} else {
+			parent.background(200, 200, 0);
 		}
-		parent.stroke(0);
-		parent.strokeWeight(1);
 		
-		// draw timer
-		if(parent.millis()-lastTime>1000){
-			// change image
-			if(remainTime==0)	img = parent.loadImage(path + "/" + list[r.nextInt(3)]);
-			remainTime = (remainTime+5)%6;
-			lastTime = parent.millis();
-		}
-		parent.fill(255, 255, 255);
-		parent.ellipse(65, 50, 50, 50);
-		parent.fill(255, 0, 0);
-		parent.textSize(50);
-		parent.text(remainTime, 50, 70);
+		// draw tool bar
+		parent.fill(125, 125, 125, 150);
+		parent.rect(650, 0, 150, 80);
+		timer.display();
+		ctrlBtn.display();
 	}
 	
 	// start to frame object => draw green frame
@@ -68,6 +77,9 @@ public class Game {
 		isFrame = false;
 		frameX = 0;
 		frameY = 0;
+		img = parent.loadImage(path + "/" + list[r.nextInt(list.length)]);
+		timer.reset();
+		lastTime = parent.millis();
 	}
 	
 	// framing object
@@ -91,4 +103,27 @@ public class Game {
 			return true;
 		else return false;
 	}
+	
+	// start to play game
+	public void gameStart(){
+		isPlay = true;
+		lastTime = parent.millis();
+	}
+	
+	// close the game process
+	public void gameEnd(){
+		isPlay = false;
+	}
+	
+	// to see whether game is in play stage
+	public boolean isPlay(){
+		return isPlay;
+	}
+	
+	// pass play/pause button to Papplet
+	public Button getGameControlButton(){
+		return ctrlBtn;
+	}
+
+
 }
