@@ -6,7 +6,6 @@ import processing.core.PImage;
 public class MainApplet extends PApplet{
 	
 	private static final long serialVersionUID = 1L;
-	private final static int width = 1100, height = 700;
 	private Game game;
 	private Market market;
 	private Scoreboard scoreboard;
@@ -14,6 +13,7 @@ public class MainApplet extends PApplet{
 	
 	// initialize
 	public void setup(){
+		setSize(800, 1100);
 		game = new Game(this);
 		market = new Market(this);
 		scoreboard = new Scoreboard(this);
@@ -30,35 +30,43 @@ public class MainApplet extends PApplet{
 	
 	// control mouse pressed
 	public void mousePressed(){
-		if(game.inGame()) game.frameStart();
+		if(game.inGame()&&game.isPlay()) game.frameStart();
 	}
 	
 	// control mouse released
 	public void mouseReleased(){
-		if(game.isFrame()) game.frameEnd();
+		if(game.isFrame()&&game.isPlay()) game.frameEnd();
 	}
 	
 	// control mouse clicked
 	public void mouseClicked(){
-		
+		if(game.getGameControlButton().inBtn()){
+			if(game.isPlay()) game.gameEnd();
+			else game.gameStart();
+		}
 	}
 	
 	// control mouse moved
 	public void mouseMoved(){
-		
+		if(game.getGameControlButton().inBtn()) game.getGameControlButton().setOver(true);
+		else game.getGameControlButton().setOver(false);
 	}
 	
 	// control mouse dragged
 	public void mouseDragged(){
-		if(game.isFrame()) game.frame();
+		if(game.isFrame()&&game.isPlay()) game.frame();
 	}
 	
 	// control key pressed (take a screenshot of main game frame)
 	public void keyPressed(){
-		for(int i = 0; i<screenshot.pixels.length; i++) {
-			int c = this.get(i%800, i/800);
-			screenshot.pixels[i] = c;
+		if(keyCode==32){
+			game.addSplash();
+		} else {
+			for(int i = 0; i<screenshot.pixels.length; i++) {
+				int c = this.get(i%800, i/800);
+				screenshot.pixels[i] = c;
+			}
+			screenshot.save("src/resource/screenshot.png");
 		}
-		screenshot.save("src/resource/screenshot.png");
 	}
 }

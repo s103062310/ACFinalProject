@@ -1,48 +1,90 @@
 package main;
 
-import processing.core.PFont;
+import java.io.File;
+import java.util.Random;
+import java.util.ArrayList;
+import java.awt.Color;
+import processing.core.PImage;
 
 public class Game {
 	
 	private MainApplet parent;
-	private PFont font;
-	
-	private boolean isFrame;
-	private int height=450, width=800;
-	private float startX, startY, frameX, frameY, lineW;
-	private int lastTime=0, remainTime=5;
+	private PImage img;
+	private String path = new String("src/resource/pic_rsc");
+	private String[] list;
+	private Random r = new Random();
+	private Button ctrlBtn;
+	private Timer timer;
+	private ArrayList<Splash> splash, remove;
+	private boolean isFrame=false, isPlay=false;
+	private int height=450, width=800, lastTime=0;
+	private float startX, startY, frameX, frameY, lineW=(float)2.5;
 	
 	
 	// Constructor
 	public Game(MainApplet p){
 		parent = p;
-		isFrame = false;
-		lineW = (float)2.5;
-		font = parent.createFont("mvboli.ttc", 100, true);
 		
+		// open file and load all file name
+		File folder = new File(path);
+		list = folder.list();
+		
+		// load image
+		img = parent.loadImage(path + "/" + list[r.nextInt(list.length)]);
+		
+		// set tool bar
+		Color c = new Color(130, 180, 150);
+		ctrlBtn = new Button(parent, 760, 40, 50, c);
+		timer = new Timer(p, 690, 40, 50, 5);
+		
+		// set splash list
+		splash = new ArrayList<Splash>();
+		remove = new ArrayList<Splash>();
 	}
 	
 	// update screen content
 	public void display(){
-		
-		// draw green frame
-		if(isFrame){
-			parent.stroke(130, 210, 75);
-			parent.strokeWeight(lineW*2);
-			parent.fill(130, 210, 75, 100);
-			parent.rect(startX, startY, frameX, frameY);
+		if(isPlay){
+			// draw image
+			parent.image(img, 0, 0, width, height);
+			
+			// draw splash
+			for(Splash s : splash){
+				s.display();
+				if(s.getTrans()==0) remove.add(s);
+			}
+			for(Splash s: remove){
+				splash.remove(s);
+			}
+			remove.clear();
+			
+			// draw green frame
+			if(isFrame){
+				parent.stroke(130, 210, 75);
+				parent.strokeWeight(lineW*2);
+				parent.fill(130, 210, 75, 100);
+				parent.rect(startX, startY, frameX, frameY);
+			}
+			parent.noStroke();
+			
+			// time related: timer, change image
+			if(parent.millis()-lastTime>1000){
+				if(timer.getValue()==0){
+					frameEnd();
+				} else {
+					timer.work();
+					lastTime = parent.millis();
+				}
+			}
+		} else {
+			parent.background(200, 200, 0);
 		}
-		parent.stroke(0);
-		parent.strokeWeight(1);
 		
-		// draw timer
-		if(parent.millis()-lastTime>1000){
-			remainTime = (remainTime+5)%6;
-			lastTime = parent.millis();
-		}
-		parent.fill(255, 0, 0);
-		parent.textFont(font);
-		parent.text(remainTime, 100, 100);
+		// draw tool bar
+		parent.fill(125, 125, 125, 150);
+		parent.rect(650, 0, 150, 80);
+		timer.display();
+		ctrlBtn.display();
 	}
 	
 	// start to frame object => draw green frame
@@ -57,6 +99,9 @@ public class Game {
 		isFrame = false;
 		frameX = 0;
 		frameY = 0;
+		img = parent.loadImage(path + "/" + list[r.nextInt(list.length)]);
+		timer.reset();
+		lastTime = parent.millis();
 	}
 	
 	// framing object
@@ -80,4 +125,32 @@ public class Game {
 			return true;
 		else return false;
 	}
+	
+	// start to play game
+	public void gameStart(){
+		isPlay = true;
+		timer.reset();
+		lastTime = parent.millis();
+	}
+	
+	// close the game process
+	public void gameEnd(){
+		isPlay = false;
+	}
+	
+	// to see whether game is in play stage
+	public boolean isPlay(){
+		return isPlay;
+	}
+	
+	// pass play/pause button to Papplet
+	public Button getGameControlButton(){
+		return ctrlBtn;
+	}
+	
+	// add new splash
+	public void addSplash(){
+		splash.add(new Splash(parent, r.nextInt(695), r.nextInt(365), 10, new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255))));
+	}
+
 }
