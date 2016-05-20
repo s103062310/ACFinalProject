@@ -2,6 +2,7 @@ package main;
 
 import java.io.File;
 import java.util.Random;
+import java.util.ArrayList;
 import java.awt.Color;
 import processing.core.PImage;
 
@@ -14,6 +15,7 @@ public class Game {
 	private Random r = new Random();
 	private Button ctrlBtn;
 	private Timer timer;
+	private ArrayList<Splash> splash, remove;
 	private boolean isFrame=false, isPlay=false;
 	private int height=450, width=800, lastTime=0;
 	private float startX, startY, frameX, frameY, lineW=(float)2.5;
@@ -22,12 +24,22 @@ public class Game {
 	// Constructor
 	public Game(MainApplet p){
 		parent = p;
+		
+		// open file and load all file name
 		File folder = new File(path);
 		list = folder.list();
+		
+		// load image
 		img = parent.loadImage(path + "/" + list[r.nextInt(list.length)]);
+		
+		// set tool bar
 		Color c = new Color(130, 180, 150);
 		ctrlBtn = new Button(parent, 760, 40, 50, c);
 		timer = new Timer(p, 690, 40, 50, 5);
+		
+		// set splash list
+		splash = new ArrayList<Splash>();
+		remove = new ArrayList<Splash>();
 	}
 	
 	// update screen content
@@ -35,6 +47,16 @@ public class Game {
 		if(isPlay){
 			// draw image
 			parent.image(img, 0, 0, width, height);
+			
+			// draw splash
+			for(Splash s : splash){
+				s.display();
+				if(s.getTrans()==0) remove.add(s);
+			}
+			for(Splash s: remove){
+				splash.remove(s);
+			}
+			remove.clear();
 			
 			// draw green frame
 			if(isFrame){
@@ -45,7 +67,7 @@ public class Game {
 			}
 			parent.noStroke();
 			
-			// timer work and change image
+			// time related: timer, change image
 			if(parent.millis()-lastTime>1000){
 				if(timer.getValue()==0){
 					frameEnd();
@@ -107,6 +129,7 @@ public class Game {
 	// start to play game
 	public void gameStart(){
 		isPlay = true;
+		timer.reset();
 		lastTime = parent.millis();
 	}
 	
@@ -124,6 +147,10 @@ public class Game {
 	public Button getGameControlButton(){
 		return ctrlBtn;
 	}
-
+	
+	// add new splash
+	public void addSplash(){
+		splash.add(new Splash(parent, r.nextInt(695), r.nextInt(365), 10, new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255))));
+	}
 
 }
