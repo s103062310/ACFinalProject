@@ -2,62 +2,68 @@ package main;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import processing.core.*;
 
+public class Scoreboard {
 
-public class Scoreboard{
-	
 	private MainApplet parent;
-	private ArrayList<Player> playerList = new ArrayList<Player>();
+	private ArrayList<Player> playerList;
+	public float scroll;
+	private int id;
 	
-	// Constructor 
-	public Scoreboard(MainApplet p){
+	
+
+	public Scoreboard(MainApplet p) {
 		this.parent = p;
-		/**temp player list*
-		for (int i= 0; i < 5; i++){
-			player player = new player();
-			player.color = Color.YELLOW.getRGB();
-			player.name = "Ping~";
-			player.score = 100;
-			playerList.add(player);
-		}
-		*/
-		
+		scroll = 0;
+		playerList = new ArrayList<Player>();
+	}
+	public void setMyself(int id){
+		this.id=id;
+	}
+	public void setPlayerList(ArrayList<Player> list) {
+		this.playerList = list;
 	}
 	
+	public void setScroll(float sc){
+		this.scroll = sc;
+	}
 	// update screen content
-	public void display(){
-		/*
-		this.parent.fill(40, 50, 60, 200);
+	public void display() {
+		
+		this.parent.fill(0 ,0 ,0);
+		//this.parent.fill(110 ,123 ,139, 200);
 		this.parent.rect(800, 0, 300, 650);
+
+		parent.textSize(42);
+		this.parent.fill(0,0,205);
+		parent.text("Score Board", 820, 45-scroll);
+		this.parent.fill(0,191,255);
+		parent.text("Score Board", 822, 47-scroll);
 		
-		parent.textSize(40);
-		parent.text("Score Board", 830, 45);
-		
-		//other player's score
 		parent.noStroke();
 		parent.textSize(20);
-		for (int i = 0; i < playerList.size(); i++){
-			parent.fill(playerList.get(i).color);
-			parent.ellipse(820, 70+i*50, 30, 30);
-			parent.text(playerList.get(i).name, 850, 75+i*50);
-			parent.text(playerList.get(i).score, 1000, 75+i*50);
-		}
 		
-		//my score
-		parent.fill(Color.PINK.getRGB());
+		int num = playerList.size();
+		int radius = Math.max(50-6*num/3,32);
+		for (int i = 0; i < num; i++) {
+			Player pl = playerList.get(i);
+			parent.fill(pl.getColor());
+			parent.ellipse(830, 90-scroll+i*(radius+15), radius, radius);
+			parent.text(pl.getName(), 860, 95-scroll + i*(radius+15));
+			parent.text("#"+pl.getScore(), 1000, 95-scroll + i*(radius+15));
+			// self
+			if (this.id == pl.getID()) {
+				parent.fill(Color.PINK.getRGB());
+				parent.ellipse(830, 90-scroll+i*(radius+15), 20, 20);
+			}
+		}
+		/*
+		// my score	
+		parent.fill(player.getColor()); 
 		parent.ellipse(830, 510, 50, 50);
-		parent.textSize(30);
-		parent.text("Ping~~~", 860, 520);
-		*/
+		parent.textSize(30); 
+		parent.text(player.getName(), 860, 520);*/
 	}
-	/*
-	public void setPlayerList(ArrayList<player> playerList){
-		this.playerList = playerList;
-	}
-	
-	class player{
-		int color;
-		int score;
-		String name;
-	}*/
+
 }
