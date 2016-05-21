@@ -1,9 +1,8 @@
 package main;
 
 import processing.core.PApplet;
+import ddf.minim.signals.*;
 import java.awt.Color;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
 * Creates Textboxes with default text, wraps text, adds cursor
@@ -16,6 +15,7 @@ public class Textbox {
 	protected final int defaultWidth;
 	protected String defaultText;
 	protected int textSize;
+	protected Timer cursorTimer;
 	//Public
 	public Color color;
 	public String text;
@@ -57,7 +57,7 @@ public class Textbox {
 	
 	//draw blinking cursor
 	public void drawCursor(){
-		if(state ==1){
+		if(parent.millis() % 1000 < 500 && state == 1){
 			if (parent.textWidth(text) < defaultWidth)
 				parent.rect(x + parent.textWidth(text),y-30,5,30);
 			else
@@ -78,5 +78,6 @@ public class Textbox {
 		}
 		else return false;
 	}
+	
 	
 }
