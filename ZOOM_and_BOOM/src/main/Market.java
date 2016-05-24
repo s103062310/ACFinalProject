@@ -34,30 +34,61 @@ public class Market{
 		this.parent.fill(50, 7, 250, 200);
 		this.parent.rect(0, 450, 800, 200);
 		parent.noStroke();
+		parent.fill(Color.BLACK.getRGB());
+		parent.ellipse(70, 510, 70, 70);
 		parent.fill(Color.YELLOW.getRGB());
-		parent.rect(140, 570, 100,40);
 		parent.ellipse(190, 510, 70, 70);
+		parent.rect(140, 570, 100,40);
 		parent.fill(Color.GREEN.getRGB());
-		parent.rect(260, 570, 100,40);
 		parent.ellipse(310, 510, 70, 70);
+		parent.rect(260, 570, 100,40);
 		parent.fill(Color.BLUE.getRGB());
-		parent.rect(380, 570, 100,40);
 		parent.ellipse(430, 510, 70, 70);
+		parent.rect(380, 570, 100,40);
 		parent.fill(Color.RED.getRGB());
-		parent.rect(500, 570, 100,40);
 		parent.ellipse(550, 510, 70, 70);
+		parent.rect(500, 570, 100,40);
 		parent.fill(Color.GRAY.getRGB());
-		parent.rect(620, 570, 100,40);
 		parent.ellipse(670, 510, 70, 70);
+		parent.rect(620, 570, 100,40);
 		parent.fill(0);
 		parent.textSize(20);
+		parent.text("Own_color", 20, 600);
+		if(Yellow()){
+			parent.fill(200);
+			parent.textSize(25);
+		}
 		parent.text("Yellow", 155, 600);
+		parent.fill(0);
+		parent.textSize(20);
+		if(Green()){
+			parent.fill(200);
+			parent.textSize(25);
+		}
 		parent.text("Green", 280, 600);
-		parent.fill(255);
+		parent.fill(0);
+		parent.textSize(20);
+		if(Blue()){
+			parent.fill(200);
+			parent.textSize(25);
+		}
 		parent.text("Blue", 410, 600);
 		parent.fill(0);
+		parent.textSize(20);
+		if(Red()){
+			parent.fill(200);
+			parent.textSize(25);
+		}
 		parent.text("Red", 530, 600);
+		parent.fill(0);
+		parent.textSize(20);
+		if(Random()){
+			parent.fill(200);
+			parent.textSize(25);
+		}
 		parent.text("Random", 625, 600);
+		parent.fill(0);
+		parent.textSize(20);
 		parent.text("Money: "+money, 550, 635);
 	}
 	
