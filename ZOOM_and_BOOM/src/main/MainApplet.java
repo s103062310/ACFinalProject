@@ -2,7 +2,11 @@ package main;
 
 import processing.core.PApplet;
 import processing.core.PImage;
+
+import java.awt.Color;
 import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
 
 public class MainApplet extends PApplet{
 	
@@ -66,6 +70,47 @@ public class MainApplet extends PApplet{
 		if(game.getGameControlButton().inBtn()){
 			if(game.isPlay()) game.gameEnd();
 			else game.gameStart();
+		}
+		if (market.Yellow()) {
+			market.click_yellow++;
+			market.money = market.money-10;
+			int dialogButton = 0;
+		    dialogButton = JOptionPane.showConfirmDialog (null, "Throw?","Confirm", dialogButton);
+		    if(dialogButton == JOptionPane.YES_OPTION){
+		    	
+		    }
+		} else if(market.Green()){
+			market.click_green++;
+			market.money = market.money-15;
+			int dialogButton = 0;
+		    dialogButton = JOptionPane.showConfirmDialog (null, "Throw?","Confirm", dialogButton);
+		    if(dialogButton == JOptionPane.YES_OPTION){
+		    	
+		    }
+		} else if(market.Blue()){
+			market.click_blue++;
+			market.money = market.money-10;
+			int dialogButton = 0;
+		    dialogButton = JOptionPane.showConfirmDialog (null, "Throw?","Confirm", dialogButton);
+		    if(dialogButton == JOptionPane.YES_OPTION){
+		    	
+		    }
+		} else if(market.Red()){
+			market.click_red++;
+			market.money = market.money-20;
+			int dialogButton = 0;
+		    dialogButton = JOptionPane.showConfirmDialog (null, "Throw?","Confirm", dialogButton);
+		    if(dialogButton == JOptionPane.YES_OPTION){
+		    	
+		    }
+		} else if(market.Random()){
+			market.click_random++;
+			market.money = market.money-30;
+			int dialogButton = 0;
+		    dialogButton = JOptionPane.showConfirmDialog (null, "Throw?","Confirm", dialogButton);
+		    if(dialogButton == JOptionPane.YES_OPTION){
+		    	
+		    }
 		}
 	}
 	
