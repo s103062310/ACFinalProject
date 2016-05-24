@@ -31,7 +31,7 @@ public class Splash {
 		
 		// draw
 		parent.tint(255, trans);
-		parent.image(img, x, y, 105, 85);
+		parent.image(img, x, y, 420, 340);
 		parent.tint(255, 255);
 	}
 	

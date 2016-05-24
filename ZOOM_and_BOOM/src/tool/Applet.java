@@ -25,6 +25,8 @@ public class Applet extends PApplet {
 		// main
 		while(num<list.length){
 			// load image
+			String[] file = list[num].split("\\.");
+			if(!file[1].equals("png")&&!file[1].equals("jpg")) continue;
 			image = loadImage(path + "pic_ori/" + list[num]);
 			System.out.println(list[num] + " " + image.width + " " + image.height);
 			

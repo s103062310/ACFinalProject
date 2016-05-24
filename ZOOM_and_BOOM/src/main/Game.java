@@ -97,6 +97,7 @@ public class Game {
 	// end to frame object => frame disappear and transmit answer
 	public void frameEnd(){
 		isFrame = false;
+		if(startX==parent.mouseX&&startY==parent.mouseY) return;
 		frameX = 0;
 		frameY = 0;
 		img = parent.loadImage(path + "/" + list[r.nextInt(list.length)]);
@@ -150,7 +151,7 @@ public class Game {
 	
 	// add new splash
 	public void addSplash(){
-		splash.add(new Splash(parent, r.nextInt(695), r.nextInt(365), 10, new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255))));
+		splash.add(new Splash(parent, r.nextInt(800)-210, r.nextInt(450)-170, 10, new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255))));
 	}
 
 }
