@@ -79,6 +79,7 @@ public class Server extends JFrame {
 		ObjectInputStream objIn;
 		ObjectOutputStream objOut;
 		String Answer, line;
+		int ID;
 		boolean QuestionReady = false;
 
 		public ConnectionThread(Socket socket) {// ³s±µsocket»Preader,writer
@@ -101,6 +102,8 @@ public class Server extends JFrame {
 					if (message instanceof Player) {
 						Player pl = (Player) message;
 						pl.setID(people);
+						ID = people;
+						System.out.println(ID);
 						playerlist.add(pl);
 						// send to the recent connected client only
 						objOut.writeObject(people);
@@ -121,16 +124,70 @@ public class Server extends JFrame {
 							connection.objOut.writeObject("COMPLETE");
 							connection.objOut.flush();
 						}
+					}else if (message instanceof String) {
+						
+						switch ((String)message) {
+						case "frameEnd":
+							Object temp = objIn.readObject();
+							int imageNumber = (int)temp;
+							temp = objIn.readObject();
+							float startX = (float)temp;
+							temp = objIn.readObject();
+							float startY = (float)temp;
+							temp = objIn.readObject();
+							float endX = (float)temp;
+							temp = objIn.readObject();
+							float endY = (float)temp;							
+
+							checkAnswer(imageNumber, startX, startY, endX, endY);
+							break;
+
+						default:
+							break;
+						}
 					}
 
 				} catch (IOException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
+					connections.remove(ID-1);/*
+					// sort
+					Collections.sort(playerlist,new CompareScore());
+					// broadcast the whole playerlist
+					PlayerList PL = new PlayerList(playerlist);				
+					for (ConnectionThread connection : connections) {
+						//connection.objOut.writeObject(PL);
+						//connection.objOut.flush();
+						send("CLEAR");
+						for(Player each : playerlist){
+							send(each);
+						}
+						send("COMPLETE");
+					}*/
+					stop();
 				} catch (Exception e) {
 
 				}
 			}
 		}
+		
+		public void send(Object o){
+			try {
+				objOut.writeObject(o);
+				//System.out.println(o);
+				objOut.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		//deal with answer correct or not
+		public void checkAnswer(int imageNumber, float startX, float startY, float endX, float endY){
+			/*if answer is correct use connection.objOut.writeObject("Correct");
+			 *if answer isn't correct use connection.objOut.writeObject("Wrong"); or send nothing*/
+		}
 	}
+	
 	// sort the player list
 	class CompareScore implements Comparator{
 	    public int compare(Object obj1, Object obj2){

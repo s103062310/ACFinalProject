@@ -65,14 +65,30 @@ public class Client extends JFrame{
 				try {	
 					Object message = objIn.readObject();
 					if (message instanceof String) {
+						switch ((String) message) {
 						// start to receive the sorted player list
+						case "CLEAR":
+							allPlayer = new ArrayList<Player>();
+							break;
+						// all received
+						case "COMPLETE":
+							applet.resetReference(allPlayer);
+							break;
+						case "Correct":
+							break;
+						case "Wrong":
+							break;
+						default:
+							break;
+						}
+						/*replace with switch case
 						if(((String) message).equals("CLEAR")){
 							allPlayer = new ArrayList<Player>();
 						}
 						// all received
 						else if(((String) message).equals("COMPLETE")){
 							applet.resetReference(allPlayer);
-						}
+						}*/
 					}
 					else if (message instanceof Player) {
 						player = (Player) message;
@@ -99,6 +115,17 @@ public class Client extends JFrame{
 				}
 			}
 		}
+		
+		public void send(Object o){
+			try {
+				objOut.writeObject(o);
+				//System.out.println(o);
+				objOut.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	// connect to server
@@ -113,6 +140,7 @@ public class Client extends JFrame{
 			objIn = new ObjectInputStream(socket.getInputStream());
 			ClientThread connection = new ClientThread();
 			connection.start();
+			applet.setClientThread(connection);
 		
 			int color = rand.nextInt(5);
 			// int color , int score , String name // tmppppppppppppppppppppppppppp

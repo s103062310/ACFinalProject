@@ -12,6 +12,7 @@ public class Game {
 	private PImage img;
 	private String path = new String("src/resource/pic_rsc");
 	private String[] list;
+	private int imageNumber;
 	private Random r = new Random();
 	private Button ctrlBtn;
 	private Timer timer;
@@ -30,7 +31,8 @@ public class Game {
 		list = folder.list();
 		
 		// load image
-		img = parent.loadImage(path + "/" + list[r.nextInt(list.length)]);
+		imageNumber = r.nextInt(list.length);
+		img = parent.loadImage(path + "/" + list[imageNumber]);
 		
 		// set tool bar
 		Color c = new Color(130, 180, 150);
@@ -98,11 +100,22 @@ public class Game {
 	public void frameEnd(){
 		isFrame = false;
 		if(startX==parent.mouseX&&startY==parent.mouseY) return;
+		sendFrame();
 		frameX = 0;
 		frameY = 0;
-		img = parent.loadImage(path + "/" + list[r.nextInt(list.length)]);
+		imageNumber = r.nextInt(list.length);
+		img = parent.loadImage(path + "/" + list[imageNumber]);
 		timer.reset();
 		lastTime = parent.millis();
+	}
+	
+	private void sendFrame(){
+		parent.thread.send("frameEnd");
+		parent.thread.send(imageNumber);
+		parent.thread.send(startX);
+		parent.thread.send(startY);
+		parent.thread.send(frameX);
+		parent.thread.send(frameY);
 	}
 	
 	// framing object

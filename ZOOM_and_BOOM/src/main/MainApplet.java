@@ -8,6 +8,8 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
+import main.Client.ClientThread;
+
 public class MainApplet extends PApplet{
 	
 	private static final long serialVersionUID = 1L;
@@ -19,6 +21,7 @@ public class MainApplet extends PApplet{
 	private  ArrayList<Player> List;
 	private int id;
 	private VScrollbar vs;
+	public ClientThread thread;
 	
 	// initialize
 	public void setup(){
@@ -52,6 +55,10 @@ public class MainApplet extends PApplet{
 		vs.update();
 		vs.display();
 
+	}
+	
+	public void setClientThread(ClientThread thread){
+		this.thread = thread; 
 	}
 	
 	// control mouse pressed
