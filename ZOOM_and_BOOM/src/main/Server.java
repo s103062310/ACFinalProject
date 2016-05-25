@@ -80,6 +80,7 @@ public class Server extends JFrame {
 		ObjectOutputStream objOut;
 		String Answer, line;
 		int ID;
+		Player pl;
 		boolean QuestionReady = false;
 
 		public ConnectionThread(Socket socket) {// 連接socket與reader,writer
@@ -100,14 +101,16 @@ public class Server extends JFrame {
 					Object message = objIn.readObject();
 					// a new Player adds in 
 					if (message instanceof Player) {
-						Player pl = (Player) message;
+						pl = (Player) message;
 						pl.setID(people);
 						ID = people;
-						System.out.println(ID);
 						playerlist.add(pl);
 						// send to the recent connected client only
 						objOut.writeObject(people);
 						objOut.flush();
+						
+						//以下幾行等同於refreshPlayerList(); 修改建議至refreshPlayerList()
+						
 						// sort
 						Collections.sort(playerlist,new CompareScore());
 						// broadcast the whole playerlist
@@ -124,6 +127,8 @@ public class Server extends JFrame {
 							connection.objOut.writeObject("COMPLETE");
 							connection.objOut.flush();
 						}
+						
+						//以上幾行等同於refreshPlayerList(); 修改建議至refreshPlayerList()
 					}else if (message instanceof String) {
 						
 						switch ((String)message) {
@@ -149,24 +154,29 @@ public class Server extends JFrame {
 
 				} catch (IOException e) {
 					//e.printStackTrace();
-					connections.remove(ID-1);/*
-					// sort
-					Collections.sort(playerlist,new CompareScore());
-					// broadcast the whole playerlist
-					PlayerList PL = new PlayerList(playerlist);				
-					for (ConnectionThread connection : connections) {
-						//connection.objOut.writeObject(PL);
-						//connection.objOut.flush();
-						send("CLEAR");
-						for(Player each : playerlist){
-							send(each);
-						}
-						send("COMPLETE");
-					}*/
+					connections.remove(this);
+					playerlist.remove(pl);
+					refreshPlayerList();
 					stop();
 				} catch (Exception e) {
 
 				}
+			}
+		}
+		
+		public void refreshPlayerList(){
+			// sort
+			Collections.sort(playerlist,new CompareScore());
+			// broadcast the whole playerlist
+			PlayerList PL = new PlayerList(playerlist);				
+			for (ConnectionThread connection : connections) {
+				//connection.objOut.writeObject(PL);
+				//connection.objOut.flush();
+				connection.send("CLEAR");
+				for(Player each : playerlist){
+					connection.send(each);
+				}
+				connection.send("COMPLETE");
 			}
 		}
 		
