@@ -18,7 +18,7 @@ public class MainApplet extends PApplet{
 	private Market market;
 	public Scoreboard scoreboard;
 	private PImage screenshot;
-	private  ArrayList<Player> List;
+	private  ArrayList<Player> List = new ArrayList<Player>();
 	private int id;
 	private VScrollbar vs;
 	public ClientThread thread;
@@ -42,6 +42,10 @@ public class MainApplet extends PApplet{
 	public void setSelf(int id){
 		this.id=id;
 	}
+	
+	public int getID(){return id;}
+	
+	public void beAttacked(int color){game.addSplash();}
 	
 	// update screen content
 	public void draw(){

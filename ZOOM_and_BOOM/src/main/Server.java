@@ -1,25 +1,17 @@
 package main;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-
-
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Random;
 
 @SuppressWarnings("serial")
 public class Server extends JFrame {
@@ -94,6 +86,7 @@ public class Server extends JFrame {
 			}
 		}
 
+		@SuppressWarnings("deprecation")
 		@Override
 		public void run() {
 			while (true) {
@@ -130,23 +123,27 @@ public class Server extends JFrame {
 						
 						//以上幾行等同於refreshPlayerList(); 修改建議至refreshPlayerList()
 					}else if (message instanceof String) {
-						
 						switch ((String)message) {
 						case "frameEnd":
-							Object temp = objIn.readObject();
-							int imageNumber = (int)temp;
-							temp = objIn.readObject();
-							float startX = (float)temp;
-							temp = objIn.readObject();
-							float startY = (float)temp;
-							temp = objIn.readObject();
-							float endX = (float)temp;
-							temp = objIn.readObject();
-							float endY = (float)temp;							
+							int imageNumber = (int)objIn.readObject();
+							float startX = (float)objIn.readObject();
+							float startY = (float)objIn.readObject();
+							float endX = (float)objIn.readObject();
+							float endY = (float)objIn.readObject();						
 
 							checkAnswer(imageNumber, startX, startY, endX, endY);
 							break;
-
+						case "attack":
+							int targetID = (int)objIn.readObject();
+							int color = (int)objIn.readObject();
+							for (ConnectionThread connection : connections){
+								connection.send("askID");
+								if (targetID == (int)objIn.readObject()){
+									connection.send("be attacked");
+									connection.send(color);
+									break;
+								}
+							}
 						default:
 							break;
 						}
@@ -157,6 +154,7 @@ public class Server extends JFrame {
 					connections.remove(this);
 					playerlist.remove(pl);
 					refreshPlayerList();
+					textArea.append("Player ["+pl.getName()+"] disconnect.");
 					stop();
 				} catch (Exception e) {
 

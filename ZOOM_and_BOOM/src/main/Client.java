@@ -1,25 +1,15 @@
 package main;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Random;
-
 import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
-import main.Server.CompareScore;
-
+@SuppressWarnings("serial")
 public class Client extends JFrame{
 
 	private MainApplet applet;
@@ -31,6 +21,7 @@ public class Client extends JFrame{
 	private ObjectInputStream objIn;
 	private ObjectOutputStream objOut;
 	private Random rand;
+	private static JFrame window;
 	// debuggggggggggggggggggggggggggggggggggg
 	//JLabel label = new JLabel("Waiting...");
 	//public int people=0;
@@ -59,6 +50,7 @@ public class Client extends JFrame{
 	class ClientThread extends Thread {
 		
 		// the program process of client
+		@SuppressWarnings("deprecation")
 		public void run() {
 			
 			while (true) {
@@ -78,6 +70,11 @@ public class Client extends JFrame{
 							break;
 						case "Wrong":
 							break;
+						case "askID":
+							send(applet.getID());
+						case "be attacked":
+							int color = (int)objIn.readObject();
+							applet.beAttacked(color);
 						default:
 							break;
 						}
@@ -109,7 +106,11 @@ public class Client extends JFrame{
 						//System.out.println(allPlayer.size() + "##");
 					}*/
 				} catch (IOException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
+					JOptionPane.showMessageDialog(null,"Server did not respond.\nThe window will be closed.");
+					window.dispose();
+					applet.dispose();
+					stop();
 				} catch (Exception e) {
 
 				}
@@ -119,7 +120,6 @@ public class Client extends JFrame{
 		public void send(Object o){
 			try {
 				objOut.writeObject(o);
-				//System.out.println(o);
 				objOut.flush();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -133,7 +133,11 @@ public class Client extends JFrame{
 		try {
 			socket = new Socket(IPAddress, portNum);
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			JOptionPane.showMessageDialog(null,"Server did not exist.\nPlease try again.");
+			window.dispose();
+			applet.dispose();
+			return;
 		}
 		try {
 			objOut = new ObjectOutputStream(socket.getOutputStream());
@@ -156,7 +160,7 @@ public class Client extends JFrame{
 	public static void main(String[] args) {
 		Client client = new Client("127.0.0.1", 8000);
 		// create frame
-		JFrame window = new JFrame("ZOOM and BOOM");
+		window = new JFrame("ZOOM and BOOM");
 		window.setContentPane(client.applet);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setSize(1117, 690);
