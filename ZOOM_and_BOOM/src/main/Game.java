@@ -103,7 +103,8 @@ public class Game {
 		sendFrame();
 		frameX = 0;
 		frameY = 0;
-		imageNumber = r.nextInt(list.length);
+		int temp = imageNumber;
+		while (imageNumber==temp)imageNumber = r.nextInt(list.length);
 		img = parent.loadImage(path + "/" + list[imageNumber]);
 		timer.reset();
 		lastTime = parent.millis();
