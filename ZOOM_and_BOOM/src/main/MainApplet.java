@@ -2,12 +2,10 @@ package main;
 
 import processing.core.PApplet;
 import processing.core.PImage;
-
 import java.awt.Color;
 import java.util.ArrayList;
-
+import java.util.Random;
 import javax.swing.JOptionPane;
-
 import main.Client.ClientThread;
 
 public class MainApplet extends PApplet{
@@ -22,6 +20,7 @@ public class MainApplet extends PApplet{
 	private int id;
 	private VScrollbar vs;
 	public ClientThread thread;
+	private Random r = new Random();
 	
 	// initialize
 	public void setup(){
@@ -35,17 +34,23 @@ public class MainApplet extends PApplet{
 		vs = new VScrollbar(1080, 0, 20, 650, 3*5+1,this);
 
 	}
+	
 	// reset the reference of the arraylist List 
 	public void resetReference(ArrayList<Player> list){
 		this.List=list;
 	}
+	
 	public void setSelf(int id){
 		this.id=id;
 	}
 	
-	public int getID(){return id;}
+	public int getID(){
+		return id;
+	}
 	
-	public void beAttacked(int color){game.addSplash();}
+	public void beAttacked(int color){
+		game.addSplash(new Color(color));
+	}
 	
 	// update screen content
 	public void draw(){
@@ -58,7 +63,6 @@ public class MainApplet extends PApplet{
 		scoreboard.display();
 		vs.update();
 		vs.display();
-
 	}
 	
 	public void setClientThread(ClientThread thread){
@@ -72,7 +76,7 @@ public class MainApplet extends PApplet{
 	
 	// control mouse released
 	public void mouseReleased(){
-		if(game.isFrame()&&game.isPlay()) game.frameEnd();
+		if(game.isFrame()&&game.isPlay()) game.frameEnd(false);
 	}
 	
 	// control mouse clicked
@@ -140,7 +144,7 @@ public class MainApplet extends PApplet{
 	// control key pressed (take a screenshot of main game frame)
 	public void keyPressed(){
 		if(keyCode==32){
-			game.addSplash();
+			game.addSplash(new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255)));
 		} else {
 			for(int i = 0; i<screenshot.pixels.length; i++) {
 				int c = this.get(i%800, i/800);

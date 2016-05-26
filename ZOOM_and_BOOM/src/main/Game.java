@@ -12,13 +12,12 @@ public class Game {
 	private PImage img;
 	private String path = new String("src/resource/pic_rsc");
 	private String[] list;
-	private int imageNumber;
 	private Random r = new Random();
 	private Button ctrlBtn;
 	private Timer timer;
 	private ArrayList<Splash> splash, remove;
 	private boolean isFrame=false, isPlay=false;
-	private int height=450, width=800, lastTime=0;
+	private int height=450, width=800, lastTime=0, imageNumber;
 	private float startX, startY, frameX, frameY, lineW=(float)2.5;
 	
 	
@@ -72,7 +71,7 @@ public class Game {
 			// time related: timer, change image
 			if(parent.millis()-lastTime>1000){
 				if(timer.getValue()==0){
-					frameEnd();
+					frameEnd(true);
 				} else {
 					timer.work();
 					lastTime = parent.millis();
@@ -97,14 +96,13 @@ public class Game {
 	}
 	
 	// end to frame object => frame disappear and transmit answer
-	public void frameEnd(){
+	public void frameEnd(boolean timeout){
 		isFrame = false;
 		if(startX==parent.mouseX&&startY==parent.mouseY) return;
-		sendFrame();
+		if(!timeout) sendFrame();
 		frameX = 0;
 		frameY = 0;
-		int temp = imageNumber;
-		while (imageNumber==temp)imageNumber = r.nextInt(list.length);
+		imageNumber = r.nextInt(list.length);
 		img = parent.loadImage(path + "/" + list[imageNumber]);
 		timer.reset();
 		lastTime = parent.millis();
@@ -112,7 +110,7 @@ public class Game {
 	
 	private void sendFrame(){
 		parent.thread.send("frameEnd");
-		parent.thread.send(imageNumber);
+		parent.thread.send(list[imageNumber]);
 		parent.thread.send(startX);
 		parent.thread.send(startY);
 		parent.thread.send(frameX);
@@ -164,8 +162,8 @@ public class Game {
 	}
 	
 	// add new splash
-	public void addSplash(){
-		splash.add(new Splash(parent, r.nextInt(800)-210, r.nextInt(450)-170, 10, new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255))));
+	public void addSplash(Color color){
+		splash.add(new Splash(parent, r.nextInt(800)-210, r.nextInt(450)-170, 10, color));
 	}
 
 }

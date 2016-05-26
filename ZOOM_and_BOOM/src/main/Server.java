@@ -1,5 +1,6 @@
 package main;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -11,6 +12,7 @@ import javax.swing.JTextArea;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 @SuppressWarnings("serial")
@@ -21,6 +23,9 @@ public class Server extends JFrame {
 	private List<ConnectionThread> connections = new ArrayList<ConnectionThread>();
 	private ArrayList<Player> playerlist = new ArrayList<Player>();
 	private int people;
+	private HashMap<String, Answer> answer = new HashMap<String, Answer>();;
+	private String path = new String("src/resource/pic_rsc");
+	private String[] list;
 
 	// Constructor
 	public Server(int portNum) {
@@ -40,6 +45,13 @@ public class Server extends JFrame {
 			this.textArea.append("Server starts listening on port " + portNum + ".\n");
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+		
+		// open file and load all file name to prepare answer sheet
+		File folder = new File(path);
+		list = folder.list();
+		for(String file : list){
+			answer.put(file, new Answer());
 		}
 	}
 
@@ -66,6 +78,7 @@ public class Server extends JFrame {
 	}
 
 	class ConnectionThread extends Thread {
+		
 		Socket socket;
 		Thread thread = new Thread();
 		ObjectInputStream objIn;
@@ -125,13 +138,15 @@ public class Server extends JFrame {
 					}else if (message instanceof String) {
 						switch ((String)message) {
 						case "frameEnd":
-							int imageNumber = (int)objIn.readObject();
+							String image = (String)objIn.readObject();
 							float startX = (float)objIn.readObject();
 							float startY = (float)objIn.readObject();
-							float endX = (float)objIn.readObject();
-							float endY = (float)objIn.readObject();						
-
-							checkAnswer(imageNumber, startX, startY, endX, endY);
+							float width = (float)objIn.readObject();
+							float height = (float)objIn.readObject();						
+							
+							if(checkAnswer(image, startX, startY, width, height))
+								objOut.writeObject("Correct");
+							else objOut.writeObject("Wrong");
 							break;
 						case "attack":
 							int targetID = (int)objIn.readObject();
@@ -162,22 +177,6 @@ public class Server extends JFrame {
 			}
 		}
 		
-		public void refreshPlayerList(){
-			// sort
-			Collections.sort(playerlist,new CompareScore());
-			// broadcast the whole playerlist
-			PlayerList PL = new PlayerList(playerlist);				
-			for (ConnectionThread connection : connections) {
-				//connection.objOut.writeObject(PL);
-				//connection.objOut.flush();
-				connection.send("CLEAR");
-				for(Player each : playerlist){
-					connection.send(each);
-				}
-				connection.send("COMPLETE");
-			}
-		}
-		
 		public void send(Object o){
 			try {
 				objOut.writeObject(o);
@@ -188,12 +187,30 @@ public class Server extends JFrame {
 				e.printStackTrace();
 			}
 		}
-		
-		//deal with answer correct or not
-		public void checkAnswer(int imageNumber, float startX, float startY, float endX, float endY){
-			/*if answer is correct use connection.objOut.writeObject("Correct");
-			 *if answer isn't correct use connection.objOut.writeObject("Wrong"); or send nothing*/
+	}
+	
+	// update score board
+	public void refreshPlayerList(){
+		// sort
+		Collections.sort(playerlist,new CompareScore());
+		// broadcast the whole playerlist
+		PlayerList PL = new PlayerList(playerlist);				
+		for (ConnectionThread connection : connections) {
+			//connection.objOut.writeObject(PL);
+			//connection.objOut.flush();
+			connection.send("CLEAR");
+			for(Player each : playerlist){
+				connection.send(each);
+			}
+			connection.send("COMPLETE");
 		}
+	}
+	
+	//deal with answer correct or not
+	public boolean checkAnswer(String image, float startX, float startY, float width, float height){
+		float x = startX + width/2;
+		float y = startY + height/2;
+		return answer.get(image).check(x, y, width, height);
 	}
 	
 	// sort the player list
@@ -211,6 +228,7 @@ public class Server extends JFrame {
 	        return 0;
 	    }
 	}
+	
 	// main
 	public static void main(String[] args) {
 		// create server
