@@ -3,6 +3,7 @@ package main;
 import processing.core.PApplet;
 import ddf.minim.signals.*;
 import java.awt.Color;
+import object.tool.Timer;
 
 /**
 * Creates Textboxes with default text, wraps text, adds cursor

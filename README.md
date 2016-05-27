@@ -27,16 +27,35 @@
 + image's size must bigger than 800*450(better) or smaller(don't suggest)
 + it means width>800&&height>450 or width<800&&height<450
 
-## Work method -- important
-+ In order to let everybody work at the same time, using the method below
-+ 為了讓大家都可以隨心所欲地打扣，請用以下有點爛的方法~
-+ if we modify the same file, git will show conflict error
-+ 原因: git不讓大家改同一個檔案(會conflict)，但很有可能實作某項功能會改到
-+ so, open another java project on your own computer(you will have two same project, one have git and another doesn't)
-+ only modify the one doesn't have git
-+ 在自己的電腦上另開一個project做修改
-+ On FB, we will arrange who can push, if it is your turn, merge your code into the project which has git by yourself, then push
-+ 在FB上先說好push的順序再push
+## 5/27 Integrate
+
+### Server.java:
+1. 結合帳戶系統
+2. 設倒數計時器，定時更新排行榜
+3. 從server傳該帳戶之Player給client (有1之後，現在的模式只是暫時)
+4. 待Player定義完畢要檢查field是否都有set到
+5. 攻擊完transmit screenshot
+
+### Client.java:
+1. 等有login系統後，server 創造一個player給client，每次登入都傳給client
+2. Fail to establish I/O channel with server! => exception confirm
+3. Correct => add money and display message(先用System.out)
+4. Wrong => display message(先用System.out)
+5. transmit screenshot after being attacked
+6. try transmit list directly
+
+### Timer.java: 
+1. clock image!
+2. if server need => develop other type timer
+
+### Button.java:
+1. image! (( 2 type
+
+### Game.java:
+1. answerCorrect()
+2. answerWrong()
+3. gameEnd()
+4. start animate!
 
 ## ScreenShot
 ![alt tag](/UserInterface.png)
