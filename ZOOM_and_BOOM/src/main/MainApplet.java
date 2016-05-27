@@ -99,6 +99,7 @@ public class MainApplet extends PApplet{
 			if(btn.inBtn()){
 				if(market.money >= btn.money){
 					AttackWindow app = new AttackWindow();
+					app.constructPlayer(List, id);  //傳入其他腳色資訊&&自己ID
 					app.init();
 					app.start();
 					app.setFocusable(true);
