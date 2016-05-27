@@ -2,7 +2,7 @@ package main;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import processing.core.*;
+import object.server.Player;
 
 public class Scoreboard {
 
