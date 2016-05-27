@@ -5,6 +5,8 @@ import processing.core.PImage;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
+
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import main.Client.ClientThread;
 import object.server.Player;
@@ -84,11 +86,26 @@ public class MainApplet extends PApplet{
 		}
 		for(int i=0;i<market.button.length;i++){
 			if(market.checkBoundary(i)){
-				market.money = market.money-market.button[i].money;
-				int dialogButton = 0;
-				dialogButton = JOptionPane.showConfirmDialog (null, "Throw?","Confirm", dialogButton);
-				if(dialogButton == JOptionPane.YES_OPTION){
-					
+				if(market.money >= market.button[i].money){
+					AttackWindow app = new AttackWindow();
+					app.init();
+					app.start();
+					app.setFocusable(true);
+					JFrame window = new JFrame("test");
+					window.setContentPane(app);
+					//window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					window.setSize(400, 700);
+					window.setVisible(true);
+					app.setWindow(window);
+					//if(app.isBuy==true){   ///°Ý§U±Ð
+						market.money = market.money-market.button[i].money;
+					//}
+				} else {
+					int dialogButton = 0;
+					dialogButton = JOptionPane.showConfirmDialog (null, "Sorry, your money is not enough!","Confirm", dialogButton);
+					if(dialogButton == JOptionPane.YES_OPTION){
+						
+					}
 				}
 			}
 		}
