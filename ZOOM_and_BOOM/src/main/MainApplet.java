@@ -41,7 +41,7 @@ public class MainApplet extends PApplet{
 		game = new Game(this);
 		market = new Market(this);
 		scoreboard = new Scoreboard(this);
-		vs = new VScrollbar(1080, 0, 20, 650, 3*5+1,this);
+		vs = new VScrollbar(1080, 80, 20, 370, 16,this);
 		
 		
 		//scoreboard.setPlayerList(List);

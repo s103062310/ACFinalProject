@@ -20,10 +20,10 @@ public class VScrollbar {
 		xpos = xp;
 		ypos = yp;
 		//spos = ypos + sheight / 2 - swidth / 2;
-		spos=0;
+		spos=80;
 		newspos = spos;
 		sposMin = ypos;
-		sposMax = ypos + sheight - swidth;
+		sposMax = ypos + sheight - 2*swidth;
 		loose = l;
 		this.parent = p;
 	}
