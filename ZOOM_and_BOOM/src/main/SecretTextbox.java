@@ -14,7 +14,7 @@ public class SecretTextbox extends Textbox{
 
 	public void display(){
 		//if not clicked on yet or empty
-		if(!firstClick || text.isEmpty() && state == 0)
+		if(!firstClick || text.isEmpty() && state == boxState.UNSELECTED)
 			super.display();
 		//else show asterisks
 		else{
