@@ -86,46 +86,15 @@ public class MainApplet extends PApplet{
 			if(game.isPlay()) game.gameEnd();
 			else game.gameStart();
 		}
-		if (market.Yellow()) {
-			market.click_yellow++;
-			market.money = market.money-10;
-			int dialogButton = 0;
-		    dialogButton = JOptionPane.showConfirmDialog (null, "Throw?","Confirm", dialogButton);
-		    if(dialogButton == JOptionPane.YES_OPTION){
-		    	
-		    }
-		} else if(market.Green()){
-			market.click_green++;
-			market.money = market.money-15;
-			int dialogButton = 0;
-		    dialogButton = JOptionPane.showConfirmDialog (null, "Throw?","Confirm", dialogButton);
-		    if(dialogButton == JOptionPane.YES_OPTION){
-		    	
-		    }
-		} else if(market.Blue()){
-			market.click_blue++;
-			market.money = market.money-10;
-			int dialogButton = 0;
-		    dialogButton = JOptionPane.showConfirmDialog (null, "Throw?","Confirm", dialogButton);
-		    if(dialogButton == JOptionPane.YES_OPTION){
-		    	
-		    }
-		} else if(market.Red()){
-			market.click_red++;
-			market.money = market.money-20;
-			int dialogButton = 0;
-		    dialogButton = JOptionPane.showConfirmDialog (null, "Throw?","Confirm", dialogButton);
-		    if(dialogButton == JOptionPane.YES_OPTION){
-		    	
-		    }
-		} else if(market.Random()){
-			market.click_random++;
-			market.money = market.money-30;
-			int dialogButton = 0;
-		    dialogButton = JOptionPane.showConfirmDialog (null, "Throw?","Confirm", dialogButton);
-		    if(dialogButton == JOptionPane.YES_OPTION){
-		    	
-		    }
+		for(int i=0;i<market.button.length;i++){
+			if(market.checkBoundary(i)){
+				market.money = market.money-market.button[i].money;
+				int dialogButton = 0;
+				dialogButton = JOptionPane.showConfirmDialog (null, "Throw?","Confirm", dialogButton);
+				if(dialogButton == JOptionPane.YES_OPTION){
+					
+				}
+			}
 		}
 	}
 	
