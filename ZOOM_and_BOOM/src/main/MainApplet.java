@@ -5,11 +5,11 @@ import processing.core.PImage;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import main.Client.ClientThread;
 import object.server.Player;
+import object.client.ColorButton;
 
 public class MainApplet extends PApplet{
 	
@@ -49,8 +49,10 @@ public class MainApplet extends PApplet{
 
 	}
 	
+	
 	// update screen content
 	public void draw(){
+		
 		scoreboard.setPlayerList(List);	
 		
 		// main game and market
@@ -61,32 +63,41 @@ public class MainApplet extends PApplet{
 		scoreboard.display();
 		vs.update();
 		vs.display();
+		
 	}
+	
 	
 	public void setClientThread(ClientThread thread){
 		this.thread = thread; 
 	}
+	
 	
 	// control mouse pressed
 	public void mousePressed(){
 		if(game.inGame()&&game.isPlay()) game.frameStart();
 	}
 	
+	
 	// control mouse released
 	public void mouseReleased(){
 		if(game.isFrame()&&game.isPlay()) game.frameEnd(false);
 	}
 	
+	
 	// control mouse clicked
 	public void mouseClicked(){
 
+		// game process control
 		if(game.getGameControlButton().inBtn()){
 			if(game.isPlay()) game.gameEnd();
 			else game.gameStart();
 		}
-		for(int i=0;i<market.button.length;i++){
-			if(market.checkBoundary(i)){
-				if(market.money >= market.button[i].money){
+		
+		// buy and use at market
+		ColorButton[] btns = market.getButtons();
+		for(ColorButton btn : btns){
+			if(btn.inBtn()){
+				if(market.money >= btn.money){
 					AttackWindow app = new AttackWindow();
 					app.init();
 					app.start();
@@ -98,7 +109,7 @@ public class MainApplet extends PApplet{
 					window.setVisible(true);
 					app.setWindow(window);
 					//if(app.isBuy==true){   ///°Ý§U±Ð
-						market.money = market.money-market.button[i].money;
+						market.money = market.money-btn.money;
 					//}
 				} else {
 					int dialogButton = 0;
@@ -111,22 +122,34 @@ public class MainApplet extends PApplet{
 		}
 	}
 	
+	
 	// control mouse moved
 	public void mouseMoved(){
 
+		// game process control
 		if(game.getGameControlButton().inBtn()) game.getGameControlButton().setOver(true);
 		else game.getGameControlButton().setOver(false);
+		
+		// buy and use at market
+		ColorButton[] btns = market.getButtons();
+		for(ColorButton btn : btns){
+			if(btn.inBtn()) btn.setOver(true);
+			else btn.setOver(false);
+		}
+		
 	}
+	
 	
 	// control mouse dragged
 	public void mouseDragged(){
 		if(game.isFrame()&&game.isPlay()) game.frame();
 	}
 	
+	
 	// control key pressed (take a screenshot of main game frame)
 	public void keyPressed(){
 		if(keyCode==32){
-			game.addSplash(new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255)));
+			game.addSplash(new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255)).getRGB());
 		} else {
 			for(int i = 0; i<screenshot.pixels.length; i++) {
 				int c = this.get(i%800, i/800);
@@ -137,20 +160,23 @@ public class MainApplet extends PApplet{
 
 	}
 	
+	
 	// reset the reference of the arraylist List 
 	public void resetReference(ArrayList<Player> list){
 		this.List=list;
 	}
 	
+	
 	public void setSelf(int id){
 		this.id=id;
 	}
+	
 	
 	public int getID(){
 		return id;
 	}
 	
 	public void beAttacked(int color){
-		game.addSplash(new Color(color));
+		game.addSplash(color);
 	}
 }

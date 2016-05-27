@@ -2,18 +2,17 @@ package object.client;
 
 import processing.core.PApplet;
 import processing.core.PImage;
-import java.awt.Color;
 
 public class Splash {
 	
 	private PApplet parent;
 	private PImage img;
-	private Color color;
-	private int x, y, lastTime=0, d, trans=255;
+	private int x, y, d, color;
+	private int lastTime=0, trans=255;
 	
 	
 	// Constructor
-	public Splash(PApplet p, int x, int y, int t, Color c){
+	public Splash(PApplet p, int x, int y, int t, int c){
 		
 		parent = p;
 		img = parent.loadImage("src/resource/splash.png");
@@ -45,7 +44,6 @@ public class Splash {
 	// produce new color of splash
 	private void setSplash(){
 		
-		int color = this.color.getRGB();
 		for(int i=0; i<img.pixels.length; i++){
 			if(img.pixels[i]==-16777216) img.pixels[i] = color;
 			else img.pixels[i] = 16777215;

@@ -1,26 +1,25 @@
 package object.tool;
 
 import processing.core.PApplet;
-import java.awt.Color;
 
 //TODO image! (( 2 type
 
 public class Button {
 	
-	private PApplet parent;
-	private int x, y, d, color;
-	private boolean over;
+	protected PApplet parent;
+	protected int x, y, d, color;
+	protected boolean over;
 	
 	
 	// Constructor
-	public Button(PApplet p, int x, int y, int d, Color c){
+	public Button(PApplet p, int x, int y, int d, int c){
 		
 		this.parent = p;
 		this.x = x;
 		this.y = y;
 		this.d = d;
 		this.over = false;
-		this.color = c.getRGB();
+		this.color = c;
 		
 	}
 	
@@ -37,7 +36,7 @@ public class Button {
 	}
 	
 
-	// see if mouse is in the button
+	// detect mouse move into button
 	public boolean inBtn(){
 		if(PApplet.dist(parent.mouseX, parent.mouseY, x, y)<=d)
 			return true;

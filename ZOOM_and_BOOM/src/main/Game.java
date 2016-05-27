@@ -45,8 +45,7 @@ public class Game {
 		img = parent.loadImage(path + "/" + list[imageNumber]);
 		
 		// set tool bar
-		Color c = new Color(130, 180, 150);
-		ctrlBtn = new Button(parent, 760, 40, 50, c);
+		ctrlBtn = new Button(parent, 760, 40, 50, new Color(130, 180, 150).getRGB());
 		timer = new Timer(p, 690, 40, 50, 5);
 		
 		// set splash list
@@ -211,7 +210,7 @@ public class Game {
 
 	
 	// add new splash
-	public void addSplash(Color color){
+	public void addSplash(int color){
 		splash.add(new Splash(parent, r.nextInt(800)-210, r.nextInt(450)-170, 10, color));
 	}
 

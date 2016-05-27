@@ -1,12 +1,14 @@
 package main;
 
 import java.awt.Color;
-
 import javax.swing.JFrame;
-
 import processing.core.PApplet;
+import object.tool.Button;
 
 public class AttackWindow extends PApplet{
+	
+	private static final long serialVersionUID = 1L;
+	
 	public Button[] btn;
 	public Color color;
 	public JFrame window;
@@ -15,11 +17,11 @@ public class AttackWindow extends PApplet{
 	public void setup(){
 		setSize(400, 700);
 		btn = new Button[5];
-		btn[0] = new Button(this, 100, 80, 60, Color.cyan);
-		btn[1] = new Button(this, 100, 180, 60, Color.blue);
-		btn[2] = new Button(this, 100, 280, 60, Color.gray);
-		btn[3] = new Button(this, 100, 380, 60, Color.magenta);
-		btn[4] = new Button(this, 100, 480, 60, Color.orange);
+		btn[0] = new Button(this, 100, 80, 60, Color.cyan.getRGB());
+		btn[1] = new Button(this, 100, 180, 60, Color.blue.getRGB());
+		btn[2] = new Button(this, 100, 280, 60, Color.gray.getRGB());
+		btn[3] = new Button(this, 100, 380, 60, Color.magenta.getRGB());
+		btn[4] = new Button(this, 100, 480, 60, Color.orange.getRGB());
 	}
 	public void draw(){
 		for(int i=0;i<btn.length;i++){
