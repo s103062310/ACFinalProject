@@ -69,6 +69,10 @@
 1. Attacked()
 2. beAttacked()
 
+### Scoreboard.java
+1. 處理同分排名(是否給黃冠)
+2. 調成喜歡的美工~
+
 ## ScreenShot
 ![alt tag](/UserInterface.png)
 

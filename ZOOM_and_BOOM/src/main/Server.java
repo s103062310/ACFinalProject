@@ -48,12 +48,16 @@ public class Server extends JFrame {
 		
 		// create server's socket (set port)
 		try {
+			
 			this.serverSocket = new ServerSocket(portNum);
 			this.textArea.append("Server starts listening on port " + portNum + ".\n");
+		
 		} catch (IOException e) {
+			
 			System.out.println("Fail to create server's socket!");
 			e.printStackTrace();
 			System.exit(0);
+			
 		}
 		
 		// server's content field when working 
@@ -76,7 +80,7 @@ public class Server extends JFrame {
 
 	
 	// the program process of server
-	// TODO 設倒數計時器，定時更新排行榜
+	// TODO 設倒數計時器，定時更新排行榜 => 新加入client即時更新、計時器reset
 	public void runForever() {
 		
 		this.textArea.append("Server starts waiting for client.\n");
@@ -85,6 +89,7 @@ public class Server extends JFrame {
 			
 			// try to accept connect request of client and create connection channel
 			try {
+				
 				Socket connectionToClient = this.serverSocket.accept();
 				this.textArea.append("Server is connet!\n" + "Player" + (connections.size() + 1) + "'s host name is "
 						+ connectionToClient.getInetAddress() + "\n" + "Player" + (connections.size() + 1)
@@ -93,8 +98,11 @@ public class Server extends JFrame {
 				connThread.start();
 				this.connections.add(connThread);
 				people++;
+				
 			} catch (IOException e) {
+				
 				e.printStackTrace();
+				
 			}
 			
 		}
@@ -112,7 +120,6 @@ public class Server extends JFrame {
 		// I/O of client
 		ObjectInputStream objIn;
 		ObjectOutputStream objOut;
-		//String Answer, line;
 		
 		// information of player
 		Player pl;
@@ -125,12 +132,17 @@ public class Server extends JFrame {
 			
 			// TODO Auto-generated constructor stub
 			this.socket = socket;
+			
 			try {
+				
 				objIn = new ObjectInputStream(socket.getInputStream());
 				objOut = new ObjectOutputStream(socket.getOutputStream());
+			
 			} catch (IOException e) {
+				
 				System.out.println("Fail to establish I/O channel between server and client!");
 				e.printStackTrace();
+				
 			}
 			
 		}
@@ -157,7 +169,14 @@ public class Server extends JFrame {
 						pl = (Player)message;
 						pl.setID(people);
 						ID = people;
-						playerlist.add(pl);
+						
+						// update player list
+						ArrayList<Player> list = new ArrayList<Player>();
+						list.add(pl);
+						for(Player p : playerlist){
+							list.add(p);
+						}
+						playerlist = list;
 						
 						// send the number of online people
 						objOut.writeObject(people);
@@ -216,12 +235,21 @@ public class Server extends JFrame {
 					}
 
 				} catch (IOException e) {
-					//e.printStackTrace();
+					
+					// deal with client disconnect
 					connections.remove(this);
-					playerlist.remove(pl);
+					textArea.append("Player ["+pl.getName()+"] disconnect.\n");
+					
+					// update player list
+					ArrayList<Player> list = new ArrayList<Player>();
+					for(Player p : playerlist){
+						if(p!=pl) list.add(p);
+					}
+					playerlist = list;
 					refreshPlayerList();
-					textArea.append("Player ["+pl.getName()+"] disconnect.");
+					
 					stop();
+					
 				} catch (Exception e) {
 
 				}
@@ -235,11 +263,15 @@ public class Server extends JFrame {
 		public void send(Object o){
 			
 			try {
+				
 				objOut.writeObject(o);
 				objOut.flush();
+				
 			} catch (IOException e) {
+				
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				
 			}
 			
 		}
@@ -247,7 +279,6 @@ public class Server extends JFrame {
 	}
 
 	
-	// Inner class: compare users' score
 	// Inner class: sort the player list
 	class CompareScore implements Comparator<Object>{
 	    
@@ -268,29 +299,20 @@ public class Server extends JFrame {
 
 	
 	// update score board
-	// update score board
 	public void refreshPlayerList(){
 		
 		// sort
 		Collections.sort(playerlist, new CompareScore());
 		
 		// broadcast the whole player list
-		//PlayerList PL = new PlayerList(playerlist);				
 		for (ConnectionThread connection : connections) {
-			//connection.objOut.writeObject(PL);
-			//connection.objOut.flush();
-			connection.send("CLEAR");
-			for(Player each : playerlist){
-				connection.send(each);
-			}
-			connection.send("COMPLETE");
+			connection.send(playerlist);
 		}
 		
 	}
 	
 	
 	// compare players' answer with correct answer
-	// deal with answer checking
 	public boolean checkAnswer(String image, float startX, float startY, float width, float height){
 		
 		// calculate center point of answer frame
@@ -303,7 +325,6 @@ public class Server extends JFrame {
 	}
 		
 	
-	// main
 	// main
 	public static void main(String[] args) {
 		

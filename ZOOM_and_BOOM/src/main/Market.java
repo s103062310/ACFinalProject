@@ -5,9 +5,12 @@ import object.client.ColorButton;
 
 public class Market{
 	
-	private MainApplet parent;
+	// content
 	private ColorButton[] button;
 	private int[] price = {0, 10, 20, 10, 15, 30};
+	
+	// resources
+	private MainApplet parent;
 	
 	
 	// Constructor

@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import main.Client.ClientThread;
 import object.server.Player;
 import object.client.ColorButton;
+import object.client.AttackWindow;
 
 public class MainApplet extends PApplet{
 	
@@ -18,18 +19,17 @@ public class MainApplet extends PApplet{
 	// sub window
 	private Game game;
 	private Market market;
-	public Scoreboard scoreboard;
-	private VScrollbar vs;
+	private Scoreboard scoreboard;
 	
 	// resources
 	private ClientThread thread;
 	private Random r = new Random();
 	
 	// player content
+	private Player player;
+	private ArrayList<Player> list;
 	private PImage screenshot = createImage(800, 450, ARGB);
-	private  ArrayList<Player> List = new ArrayList<Player>();
-	private int money=100;
-	private int id;
+	
 	
 	
 	// initialize
@@ -42,10 +42,6 @@ public class MainApplet extends PApplet{
 		game = new Game(this);
 		market = new Market(this);
 		scoreboard = new Scoreboard(this);
-		vs = new VScrollbar(1080, 80, 20, 370, 16,this);
-		
-		//scoreboard.setPlayerList(List);
-		scoreboard.setMyself(id);
 
 	}
 	
@@ -53,22 +49,10 @@ public class MainApplet extends PApplet{
 	// update screen content
 	public void draw(){
 		
-		scoreboard.setPlayerList(List);	
-		
-		// main game and market
 		game.display();
 		market.display();
-
-		scoreboard.setScroll(vs.spos);
 		scoreboard.display();
-		vs.update();
-		vs.display();
 		
-	}
-	
-	
-	public void setClientThread(ClientThread thread){
-		this.thread = thread; 
 	}
 	
 	
@@ -105,7 +89,7 @@ public class MainApplet extends PApplet{
 			
 			if(btn.inBtn()){
 				
-				if(money >= btn.getMoney()){
+				if(player.getScore() >= btn.getMoney()){
 					
 					// create new PApplet
 					AttackWindow app = new AttackWindow();
@@ -220,24 +204,33 @@ public class MainApplet extends PApplet{
 	
 	
 	// modify money
-	public void setMoney(int amount){
-		this.money += amount;
+	public void calMoney(int amount){
+		player.setScore(player.getScore()+amount);
 	}
 	
-	// reset the reference of the arraylist List 
+	
+	/**-----------------------------------------------
+	 * ¡õ seter and geter
+	 ----------------------------------------------**/
+	
+	public void setPlayer(Player p){
+		player = p;
+	}
+	
+	public Player getPlayer(){
+		return player;
+	}
+	
+	public ArrayList<Player> getList(){
+		return list;
+	}
+	 
 	public void resetReference(ArrayList<Player> list){
-		this.List=list;
+		this.list = list;
 	}
 	
-	
-	public void setSelf(int id){
-		this.id=id;
+	public void setClientThread(ClientThread thread){
+		this.thread = thread; 
 	}
-	
-	
-	public int getID(){
-		return id;
-	}
-	
 	
 }

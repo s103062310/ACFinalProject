@@ -24,15 +24,10 @@ public class Client extends JFrame{
 	
 	// content
 	private MainApplet applet;
-	private Player player;
-	private ArrayList<Player> allPlayer;
 	
 	// resources
 	private Random rand = new Random();
 	private static JFrame window;
-	// debuggggggggggggggggggggggggggggggggggg
-	//JLabel label = new JLabel("Waiting...");
-	//public int people=0;
 	
 
 	// Constructor
@@ -42,18 +37,11 @@ public class Client extends JFrame{
 		this.IPAddress = IPAddress;
 		this.portNum = portNum;
 		
-		// create applet
+		// create PApplet
 		applet = new MainApplet();
 		applet.init();
 		applet.start();
 		applet.setFocusable(true);
-		/* debugggggggggggggggggggggggggggggggggggggggggggg
-		label.setBounds(10,10,60, 80);
-		this.add(label);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setLayout(null);
-		this.setSize(200, 100);
-		this.setVisible(true);*/
 		
 	}
 
@@ -63,17 +51,22 @@ public class Client extends JFrame{
 		
 		// create server's socket
 		try {
+			
 			socket = new Socket(IPAddress, portNum);
+			
 		} catch (IOException e) {
+			
 			System.out.println("Fail to connect with server!");
 			JOptionPane.showMessageDialog(null,"Server did not exist.\nPlease try again.");
 			window.dispose();
 			applet.dispose();
 			return;
+			
 		}
 		
 		// bind I/O between server and client
 		try {
+			
 			objOut = new ObjectOutputStream(socket.getOutputStream());
 			objIn = new ObjectInputStream(socket.getInputStream());
 			ClientThread connection = new ClientThread();
@@ -84,21 +77,23 @@ public class Client extends JFrame{
 			// server 創造一個player給client，每次登入都傳
 			int color = rand.nextInt(5);
 			// int color , int score , String name // tmppppppppppppppppppppppppppp
-			player = new Player(color, color*10,"*"+Integer.toString(color)+"*");
+			applet.setPlayer(new Player(color, color*10,"*"+Integer.toString(color)+"*"));
 			
 			// send the new add player's information to server
-			objOut.writeObject(player);
+			objOut.writeObject(applet.getPlayer());
 			objOut.flush();
+			
 		} catch (IOException e) {
+			
 			//TODO showmessagedialog
 			System.out.println("Fail to establish I/O channel with server!");
 			System.exit(0);
+			
 		}
 		
 	}
 		
 	
-	// Inner class: connection with server
 	// Inner class: connection with server
 	class ClientThread extends Thread {
 		
@@ -112,6 +107,7 @@ public class Client extends JFrame{
 					
 					// read
 					Object message = objIn.readObject();
+					System.out.println("receive: "+message);
 					
 					// identify which object is transmit
 					if (message instanceof String) {
@@ -120,18 +116,6 @@ public class Client extends JFrame{
 						
 						// identify which flag is
 						switch ((String) message) {
-						
-						// start to receive the sorted player list
-						case "CLEAR":
-							
-							allPlayer = new ArrayList<Player>();
-							break;
-							
-						// all received
-						case "COMPLETE":
-							
-							applet.resetReference(allPlayer);
-							break;
 						
 						// send answer is correct
 						case "Correct":
@@ -148,7 +132,7 @@ public class Client extends JFrame{
 						// request of transmitting ID
 						case "askID":
 							
-							send(applet.getID());
+							//send(applet.getID());
 							break;
 							
 						// being attacked by other players
@@ -164,35 +148,25 @@ public class Client extends JFrame{
 							
 						}
 						
-					} else if (message instanceof Player) {
-						
-						//TODO try transmit list directly
-						// get score board data
-						
-						player = (Player) message;
-						allPlayer.add(player);
-						
 					} else if(message instanceof Integer){
 						
-						applet.setSelf(((Integer) message).intValue());
+						applet.getPlayer().setID(((Integer) message).intValue());
+						System.out.println("set ID");
 					
+					} else if (message instanceof ArrayList<?>) {
+						
+						applet.resetReference((ArrayList<Player>) message);
+						
 					}
-					/* bug GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
-					else if (message instanceof PlayerList) {
-						//allPlayer = ((PlayerList) message).players;
-						//label.setText("");
-						//System.out.println(allPlayer.size() + "##");
-						//label.setText(Integer.toString(people++));
-						//label.setText(Integer.toString(allPlayer.size()));
-						//applet.scoreboard.setPlayerList(allPlayer);
-						//System.out.println(allPlayer.size() + "##");
-					}*/
+					
 				} catch (IOException e) {
+					
 					System.out.println("Server doesn't exist any more.");
 					JOptionPane.showMessageDialog(null,"Server did not respond.\nThe window will be closed.");
 					window.dispose();
 					applet.dispose();
 					stop();
+					
 				} catch (Exception e) {
 
 				}
@@ -206,11 +180,15 @@ public class Client extends JFrame{
 		public void send(Object o){
 			
 			try {
+				
 				objOut.writeObject(o);
 				objOut.flush();
+				
 			} catch (IOException e) {
+				
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				
 			}
 			
 		}
@@ -222,7 +200,7 @@ public class Client extends JFrame{
 	public static void main(String[] args) {
 		
 		// create client
-		Client client = new Client("140.114.86.229", 8000);
+		Client client = new Client("127.0.0.1", 8000);
 		
 		// create frame and connect to server
 		window = new JFrame("ZOOM and BOOM");

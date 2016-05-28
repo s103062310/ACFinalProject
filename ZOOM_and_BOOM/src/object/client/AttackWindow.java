@@ -1,9 +1,10 @@
-package main;
+package object.client;
 
 import java.util.ArrayList;
 import javax.swing.JFrame;
 import object.server.Player;
 import object.tool.Button;
+import main.MainApplet;
 import processing.core.PApplet;
 
 //TODO ¸Õ°µ scrollbar

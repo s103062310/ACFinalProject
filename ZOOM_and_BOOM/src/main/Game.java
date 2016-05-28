@@ -14,7 +14,6 @@ import object.tool.Button;
 public class Game {
 	
 	// content
-	private MainApplet parent;
 	private PImage img;
 	private Button ctrlBtn;
 	private Timer timer;
@@ -26,6 +25,7 @@ public class Game {
 	private float startX, startY, frameX, frameY, lineW=(float)2.5;
 	
 	// resources
+	private MainApplet parent;
 	private String path = new String("src/resource/pic_rsc");
 	private String[] list;
 	private Random r = new Random();

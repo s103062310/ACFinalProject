@@ -1,93 +1,104 @@
 package main;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import object.server.Player;
+import object.tool.VScrollbar;
+import processing.core.PImage;
 
-
-import processing.core.*;
+//TODO potential bug: 前五名分數相同的話是5個黃冠/只有幸運的前3個是?
 
 public class Scoreboard {
 
+	// content
+	private VScrollbar vs;
+	public float scroll=0;
+	private PImage img;
+	
+	// resources
 	private MainApplet parent;
-	private ArrayList<Player> playerList;
-	public float scroll;
-	private int id;
-	private Player player;
-	PImage img;
+	
 
+	// Constructor
 	public Scoreboard(MainApplet p) {
+		
 		this.parent = p;
-		scroll = 0;
-		playerList = new ArrayList<Player>();
-		img = parent.loadImage("src/resource/crown.png");
-	}
-	public void setMyself(int id){
-		this.id=id;
-	}
-	public void setPlayerList(ArrayList<Player> list) {
-		this.playerList = list;
+		this.vs = new VScrollbar(1080, 80, 20, 370, 16, parent);
+		this.img = parent.loadImage("src/resource/crown.png");
+		
 	}
 	
-	public void setScroll(float sc){
-		this.scroll = sc;
-	}
+	
 	// update screen content
 	public void display() {
-		// Players' area
+		
+		// Players' area (background)
 		parent.stroke(130, 210, 75);
 		parent.strokeWeight(10);
 		parent.fill(0 ,0 ,0);
 		parent.rect(805,0, 290, 460);
 		parent.noStroke();
 		
+		// set
 		parent.textSize(20);
+		vs.update();
+		scroll = vs.getspos();
+		int num = parent.getList().size();
+		int radius = Math.max(50-6*num/3, 32);
 		
-		int num = playerList.size();
-		int radius = Math.max(50-6*num/3,32);
-		
+		// players' information
 		for (int i = 0; i < num; i++) {
-			Player pl = playerList.get(i);
+			
+			Player pl = parent.getList().get(i);
 			parent.fill(pl.getColor());
 			parent.ellipse(840, 190-scroll+i*(radius+15), radius, radius);
 			parent.text(pl.getName(), 870, 195-scroll + i*(radius+15));
 			parent.text("#"+pl.getScore(), 1000, 195-scroll + i*(radius+15));
+			
 			// self
-			if (this.id == pl.getID()) {
+			if (parent.getPlayer().getID() == pl.getID()) {
 				parent.fill(Color.PINK.getRGB());
 				parent.ellipse(840, 190-scroll+i*(radius+15), 20, 20);
-				player=pl;
 			}
+			
 		}
+		
+		// crown
 		if(num>=5){
-			for(int i=0;i<3;i++){
+			for(int i=0; i<3; i++){
 				parent.image(img, 840, 190-scroll+i*(radius+15)-4*radius/5, 20, 20);
 			}
 		}
 		
+		// scroll bar
+		vs.display();
+		
 		// Score Board area
-		this.parent.fill(205,0,0);
-		this.parent.rect(800,0,300,80);
+		this.parent.fill(205, 0, 0);
+		this.parent.rect(800, 0, 300, 80);
+		
 		// text "Score Board"
 		parent.textSize(42);
-		this.parent.fill(0,0,205);
+		this.parent.fill(0, 0, 205);
 		parent.text("Score Board", 820, 50);
-		this.parent.fill(0,191,255);
+		this.parent.fill(0, 191, 255);
 		parent.text("Score Board", 822, 52);
-		// my score	
+		
+		// my score	(background)
 		parent.stroke(130, 210, 75);
 		parent.strokeWeight(10);
-		parent.fill(new Color(0,0,0).getRGB());
+		parent.fill(0, 0, 0);
 		parent.rect(805, 455, 290, 190);
 		parent.noStroke();
-		parent.fill(player.getColor()); 
+		
+		// own information
+		parent.fill(parent.getPlayer().getColor()); 
 		parent.ellipse(860, 510, 60, 60);
 		parent.textSize(28); 
-		parent.text(player.getName(), 950, 520);
+		parent.text(parent.getPlayer().getName(), 950, 520);
 		parent.textSize(20);
-		parent.text("coin : "+player.getScore(), 830, 570);
-		parent.text("completed : 50", 830, 600);
-		parent.text("shield : 3", 830, 630);
+		parent.text("coin : "+parent.getPlayer().getScore(), 830, 570);
+		parent.text("completed : "+parent.getPlayer().getCompleted(), 830, 600);
+		parent.text("shield : "+parent.getPlayer().getShield(), 830, 630);
 		
 	}
 
