@@ -1,25 +1,85 @@
 package main;
 
-import java.awt.Color;
 import java.util.ArrayList;
-
 import javax.swing.JFrame;
-
 import object.server.Player;
 import object.tool.Button;
 import processing.core.PApplet;
 
+//TODO 試做 scrollbar
+//TODO 需要一點美工設計(?
+
 public class AttackWindow extends PApplet{
-	public Button[] btn;
-	public String[] playerName;
-	public Color color;
-	public JFrame window;
-	public Boolean isBuy;
-	private ArrayList<Player> otherPlayers = new ArrayList<Player>();
-	private int selfID;
 	
+	private static final long serialVersionUID = 1L;
+	
+	// resources
+	private JFrame window;
+	private MainApplet parent;
+	
+	// content
+	private Button[] btn;
+	private String[] playerName;
+	private ArrayList<Player> otherPlayers = new ArrayList<Player>();
+	//TODO 新增取消按鈕~
+	
+	
+	// initialize
 	public void setup(){
+		
+		// set window size
 		setSize(400, 700);
+		
+		//TODO 取消按鈕初始
+
+	}
+	
+	
+	// update screen content
+	public void draw(){
+		
+		for(int i=0; i<btn.length; i++){
+			
+			btn[i].display();
+			textSize(20);
+			text(playerName[i], 200, 80+100*i);
+			
+		}
+		
+		//TODO 畫取消按鈕
+		
+	}
+	
+	
+	// control mouse clicked
+	public void mouseClicked(){
+		
+		for(int i=0; i<btn.length; i++){
+			
+			if(btn[i].inBtn()){
+				
+				//TODO call method to modify money in MainApplet
+				//TODO call method to attack in MainApplet
+				window.dispose();
+				
+			}
+			
+		}
+		
+		//TODO 取消按鈕點選 -> 什麼都不做只關閉視窗
+		
+	}
+	
+	
+	// establish list and button of other players
+	public void constructPlayer(ArrayList<Player> List, int id){
+		
+		// create list
+		for(Player player: List){
+			if(player.getID()!= id) otherPlayers.add(player);
+		}
+		
+		// create button through list
 		btn = new Button[otherPlayers.size()];
 		playerName = new String[otherPlayers.size()];
 		int i = 0;
@@ -28,35 +88,20 @@ public class AttackWindow extends PApplet{
 			playerName[i] = player.getName();
 			i++;
 		}
-		/*btn = new Button[5];
-		btn[0] = new Button(this, 100, 80, 60, Color.cyan);
-		btn[1] = new Button(this, 100, 180, 60, Color.blue);
-		btn[2] = new Button(this, 100, 280, 60, Color.gray);
-		btn[3] = new Button(this, 100, 380, 60, Color.magenta);
-		btn[4] = new Button(this, 100, 480, 60, Color.orange);*/
+		
 	}
-	public void draw(){
-		for(int i=0;i<btn.length;i++){
-			btn[i].display();
-			textSize(20);
-			text(playerName[i], 200, 80+100*i);
-		}
-	}
-	public void mouseClicked(){
-		for(int i=0;i<btn.length;i++){
-			if(btn[i].inBtn()){
-				isBuy = true;
-				window.dispose();
-			}
-		}
-	}
+
+
+	/**-----------------------------------------------
+	 * ↓ seter and geter
+	 ----------------------------------------------**/
+	
 	public void setWindow(JFrame w){
 		window = w;
 	}
-	public void constructPlayer(ArrayList<Player> List, int id){
-		this.selfID = id;
-		for(Player player: List){
-			if(player.getID()!= selfID) otherPlayers.add(player);
-		}
+	
+	public void setMainApplet(MainApplet p){
+		//TODO
 	}
+
 }

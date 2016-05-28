@@ -145,12 +145,12 @@ public class Game {
 	// send framing answer to server
 	private void sendFrame(){
 		
-		parent.thread.send("frameEnd");
-		parent.thread.send(list[imageNumber]);
-		parent.thread.send(startX);
-		parent.thread.send(startY);
-		parent.thread.send(frameX);
-		parent.thread.send(frameY);
+		parent.send("frameEnd");
+		parent.send(list[imageNumber]);
+		parent.send(startX);
+		parent.send(startY);
+		parent.send(frameX);
+		parent.send(frameY);
 		
 	}
 

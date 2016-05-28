@@ -22,12 +22,13 @@ public class MainApplet extends PApplet{
 	private VScrollbar vs;
 	
 	// resources
-	public ClientThread thread;
+	private ClientThread thread;
 	private Random r = new Random();
 	
 	// player content
 	private PImage screenshot = createImage(800, 450, ARGB);
 	private  ArrayList<Player> List = new ArrayList<Player>();
+	private int money=100;
 	private int id;
 	
 	
@@ -42,7 +43,6 @@ public class MainApplet extends PApplet{
 		market = new Market(this);
 		scoreboard = new Scoreboard(this);
 		vs = new VScrollbar(1080, 80, 20, 370, 16,this);
-		
 		
 		//scoreboard.setPlayerList(List);
 		scoreboard.setMyself(id);
@@ -74,13 +74,17 @@ public class MainApplet extends PApplet{
 	
 	// control mouse pressed
 	public void mousePressed(){
+		
 		if(game.inGame()&&game.isPlay()) game.frameStart();
+		
 	}
 	
 	
 	// control mouse released
 	public void mouseReleased(){
+		
 		if(game.isFrame()&&game.isPlay()) game.frameEnd(false);
+		
 	}
 	
 	
@@ -89,41 +93,57 @@ public class MainApplet extends PApplet{
 
 		// game process control
 		if(game.getGameControlButton().inBtn()){
+			
 			if(game.isPlay()) game.gameEnd();
 			else game.gameStart();
+			
 		}
 		
 		// buy and use at market
 		ColorButton[] btns = market.getButtons();
 		for(ColorButton btn : btns){
+			
 			if(btn.inBtn()){
-				if(market.money >= btn.money){
+				
+				if(money >= btn.getMoney()){
+					
+					// create new PApplet
 					AttackWindow app = new AttackWindow();
-					app.constructPlayer(List, id);  //傳入其他腳色資訊&&自己ID
 					app.init();
 					app.start();
 					app.setFocusable(true);
-					JFrame window = new JFrame("test");
+					
+					// create new frame
+					JFrame window = new JFrame("Attack!!!");
 					window.setContentPane(app);
-					//window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					window.setSize(400, 700);
 					window.setVisible(true);
+					
+					// set attack window
 					app.setWindow(window);
+					//TODO 把mainapplet傳進去app
+					//TODO 把playerlist傳進去app => construct
+					
 					//if(app.isBuy==true){   ///問助教
-						market.money = market.money-btn.money;
+						//money = money-btn.getMoney();
 					//}
+						
 				} else {
+					
+					// remind that player doesn't have enough money
 					int dialogButton = 0;
 					dialogButton = JOptionPane.showConfirmDialog (null, "Sorry, your money is not enough!","Confirm", dialogButton);
-					if(dialogButton == JOptionPane.YES_OPTION){
-						
-					}
+				
 				}
+				
 			}
+			
 		}
+		
 	}
 	
 	
+	// control mouse moved
 	// control mouse moved
 	public void mouseMoved(){
 
@@ -134,20 +154,25 @@ public class MainApplet extends PApplet{
 		// buy and use at market
 		ColorButton[] btns = market.getButtons();
 		for(ColorButton btn : btns){
+			
 			if(btn.inBtn()) btn.setOver(true);
 			else btn.setOver(false);
+			
 		}
 		
 	}
 	
 	
 	// control mouse dragged
+	// control mouse dragged
 	public void mouseDragged(){
+		
 		if(game.isFrame()&&game.isPlay()) game.frame();
+		
 	}
 	
 	
-	// control key pressed (take a screenshot of main game frame)
+	// control key pressed
 	public void keyPressed(){
 		if(keyCode==32){
 			game.addSplash(new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255)).getRGB());
@@ -161,6 +186,43 @@ public class MainApplet extends PApplet{
 
 	}
 	
+	
+	// attack other players
+	public void attacked(int color){
+		//TODO
+		// 傳送資料給server -> 收截圖(另跳一個視窗) -> confirm後關掉
+	}
+	
+	
+	// be attacked by other players
+	public void beAttacked(int color){
+		game.addSplash(color);
+		//TODO 傳截圖
+	}
+
+	
+	// if answer is correct
+	public void correct(){
+		game.answerCorrect();
+	}
+	
+	
+	// if answer is correct
+	public void wrong(){
+		game.answerWrong();
+	}
+	
+	
+	// send object to server
+	public void send(Object o){
+		thread.send(o);
+	}
+	
+	
+	// modify money
+	public void setMoney(int amount){
+		this.money += amount;
+	}
 	
 	// reset the reference of the arraylist List 
 	public void resetReference(ArrayList<Player> list){
@@ -177,7 +239,5 @@ public class MainApplet extends PApplet{
 		return id;
 	}
 	
-	public void beAttacked(int color){
-		game.addSplash(color);
-	}
+	
 }

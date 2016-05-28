@@ -222,7 +222,7 @@ public class Client extends JFrame{
 	public static void main(String[] args) {
 		
 		// create client
-		Client client = new Client("127.0.0.1", 8000);
+		Client client = new Client("140.114.86.229", 8000);
 		
 		// create frame and connect to server
 		window = new JFrame("ZOOM and BOOM");

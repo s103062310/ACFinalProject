@@ -57,6 +57,18 @@
 3. gameEnd()
 4. start animate!
 
+## 5/28 Integrate
+
+### AttackWindow.java
+1. 新增取消按鈕
+2. 試做 scrollbar
+3. 需要一點美工設計(?
+4. 點選之後的後續連接(包含MainApplet裡)
+
+### MainApplet.java
+1. Attacked()
+2. beAttacked()
+
 ## ScreenShot
 ![alt tag](/UserInterface.png)
 

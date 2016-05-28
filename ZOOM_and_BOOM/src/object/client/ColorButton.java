@@ -5,8 +5,8 @@ import object.tool.Button;
 
 public class ColorButton extends Button{
 	
-	public String colorName;
-	public int money;
+	private String colorName;
+	private int money;
 
 	
 	// Constructor
@@ -22,18 +22,6 @@ public class ColorButton extends Button{
 	// draw good
 	public void display(){
 		
-		/*if(name == "YELLOW"){
-			this.money = 10;
-		} else if(name == "GREEN"){
-			this.money = 20;
-		} else if(name == "BLUE"){
-			this.money = 10;
-		} else if(name == "RED"){
-			this.money = 15;
-		} else if(name == "RANDOM"){
-			this.money = 30;
-		}*/
-		
 		// button
 		super.display();
 		
@@ -43,6 +31,15 @@ public class ColorButton extends Button{
 		parent.text(colorName, x-25, y+80);
 		parent.text("$"+money, x-20, y+100);
 		
+	}
+	
+	
+	/**-----------------------------------------------
+	 * ¡õ seter and geter
+	 ----------------------------------------------**/
+	
+	public int getMoney(){
+		return money;
 	}
 	
 }
