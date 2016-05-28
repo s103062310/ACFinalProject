@@ -4,6 +4,11 @@ import java.awt.Color;
 
 import processing.core.PApplet;
 
+/**
+* Inherits from Textbox Class
+* Displays asterisks in text fields instead of text
+*/
+
 public class SecretTextbox extends Textbox{
 	
 	//Constructor

@@ -1,7 +1,7 @@
 package main;
 
 import java.awt.Color;
-import java.util.ArrayList;
+import java.util.*;
 import java.sql.*;
 
 import processing.core.PApplet;
@@ -20,10 +20,16 @@ import processing.data.JSONObject;
 
 public class Login extends PApplet{
 	
+		//Database data
+		private static final String jdbcDriver = "com.mysql.jdbc.Driver";
+		private static final String sqlDriver = "jdbc:mysql://db4free.net:3306/player_database";
+		private static final String sqlUser = "ssnthuac_final";
+		private static final String sqlPass = "ssnthuac";
+		
 		//GUI		
 		private enum loginState {
-		    LOGINATTEMPT,LOGINSUCCESS,LOGINPASSFAIL,LOGINUSERFAIL,
-		    REGISTER,REGISTERSUCCESS,REGISTERWRONGPASS,REGISTERDUPLICATED
+		    LOGINATTEMPT,LOGINSUCCESS,LOGINPASSFAIL,LOGINUSERFAIL,LOGININFO,
+		    REGISTER,REGISTERSUCCESS,REGISTERWRONGPASS,REGISTERDUPLICATED,REGISTERINFO
 		}
 		private loginState state;
 		private PImage backgroundImg;
@@ -42,9 +48,13 @@ public class Login extends PApplet{
 		private SecretTextbox newPassBox;
 		private SecretTextbox confirmPassBox;
 		
+		//Client
+		private Client client;
+		
 	//TODO -> fix
-	public Login(/*Client client*/){
-		//this.client = client;
+	public Login(Client client){
+		this.client = client;
+		client.applet = new MainApplet();
 	}
 	
 	public void setup() {
@@ -172,6 +182,28 @@ public class Login extends PApplet{
 			else 
 				cursor(aimCursor,16,16);
 		}
+		//Login has blank boxes
+		else if (state == loginState.LOGININFO){
+			//transparent rectangle
+			fill(255, 255, 255, 240);
+			rect(145, 35, 300, 140, 60);
+			fill(126,126,126);
+			//Register success message
+			fill(Color.GREEN.getRed(),Color.GREEN.getGreen(),Color.GREEN.getBlue());
+			textSize(32);
+			text("Login Fail!",215,80);
+			textSize(28);
+			fill(Color.CYAN.getRed(),Color.CYAN.getGreen(),Color.CYAN.getBlue());
+			text("Missing info",210,120);
+			text("or blank boxes",190,150);
+			//Button
+			retryLoginBtn.display();
+			//Cursor
+			if(retryLoginBtn.checkLimits())
+				cursor(HAND);
+			else 
+				cursor(aimCursor,16,16);
+		}
 		//Register window
 		if(state == loginState.REGISTER){
 			//transparent rectangle
@@ -263,6 +295,28 @@ public class Login extends PApplet{
 			else 
 				cursor(aimCursor,16,16);
 		}
+		//Register has blank boxes
+		else if (state == loginState.REGISTERINFO){
+			//transparent rectangle
+			fill(255, 255, 255, 240);
+			rect(145, 35, 300, 140, 60);
+			fill(126,126,126);
+			//Register success message
+			fill(Color.GREEN.getRed(),Color.GREEN.getGreen(),Color.GREEN.getBlue());
+			textSize(32);
+			text("Register Fail!",190,80);
+			textSize(28);
+			fill(Color.CYAN.getRed(),Color.CYAN.getGreen(),Color.CYAN.getBlue());
+			text("Missing info",210,120);
+			text("or blank boxes",190,150);
+			//Button
+			retryLoginBtn.display();
+			//Cursor
+			if(retryLoginBtn.checkLimits())
+				cursor(HAND);
+			else 
+				cursor(aimCursor,16,16);
+		}
 		
 	}
 	public void keyPressed() {
@@ -342,11 +396,20 @@ public class Login extends PApplet{
 				state = loginState.REGISTER;
 			}
 			else if(loginBtn.checkLimits()){
-				checkDatabase();
+				if (!nameBox.getText().isEmpty() && !passBox.getText().isEmpty()){
+					checkDatabase();
+				}
+				else{
+					nameBox.reset();
+					passBox.reset();
+					state = loginState.LOGININFO;
+				}
 			}
 		}
 		//login or register failure
-		else if ( state == loginState.LOGINPASSFAIL || state == loginState.LOGINUSERFAIL || state == loginState.REGISTERWRONGPASS){
+		else if ( state == loginState.LOGINPASSFAIL || state == loginState.LOGINUSERFAIL ||
+				state == loginState.LOGININFO || state == loginState.REGISTERWRONGPASS || 
+				state == loginState.REGISTERDUPLICATED || state == loginState.REGISTERINFO){
 			if (retryLoginBtn.checkLimits()){
 				state = loginState.LOGINATTEMPT;
 			}
@@ -356,8 +419,11 @@ public class Login extends PApplet{
 			if (playBtn.checkLimits()){
 				this.destroy();
 				this.exit();
-				//create player
-				//and send player data to client
+				//TODO -> fix
+				//OPEN GAME
+				client.applet.init();
+				client.applet.start();
+				client.applet.setFocusable(true);
 			}
 		}
 		//register window 
@@ -379,11 +445,14 @@ public class Login extends PApplet{
 			 }
 			else if (confirmBtn.checkLimits()){
 				//check if user existed before
-				//newUser();
-				if( newPassBox.getText().equals( confirmPassBox.getText() ) )
-					state = loginState.REGISTERSUCCESS;
+				if(!newNameBox.getText().isEmpty() && !newPassBox.getText().isEmpty() && !confirmPassBox.getText().isEmpty()){
+					if( newPassBox.getText().equals( confirmPassBox.getText() ) )
+						newUser();
+					else
+						state = loginState.REGISTERWRONGPASS;
+				}
 				else
-					state = loginState.REGISTERWRONGPASS;
+					state = loginState.REGISTERINFO;
 			}
 			else if (backBtn.checkLimits()){
 				newNameBox.reset();
@@ -397,34 +466,34 @@ public class Login extends PApplet{
 	private void checkDatabase(){
 		
 		Connection sqlConn = null;
-		String sqlDriver = "jdbc:mysql://db4free.net:3306/player_database";
-		String sqlUser = "ssnthuac_final";
-		String sqlPass = "ssnthuac";
+		Statement sqlState = null;
+		String selectQuery = null;
+		ResultSet sqlResult = null;
 		
 		try{
-			String resultName, resultPass;
-			int resultMoney, resultColor;
 			
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName(jdbcDriver);
 			
 			sqlConn = DriverManager.getConnection(sqlDriver,sqlUser,sqlPass);
-			Statement sqlState = sqlConn.createStatement();
+			sqlState = sqlConn.createStatement();
+			selectQuery = "SELECT username,password,money,color FROM player_table WHERE username = \"" + nameBox.getText() +"\"";
+			sqlResult = sqlState.executeQuery(selectQuery);
 			
-			
-			String selectQuery = "SELECT username,password,money,color FROM player_table WHERE username = \"" + nameBox.getText() +"\"";
 			//DEBUG
 			//System.out.println("QUERY: " + selectQuery);
-			ResultSet sqlResult = sqlState.executeQuery(selectQuery);
 			
 			//if query returns results
 			if (sqlResult.next()){
+				
+				String resultName, resultPass;
+				int resultMoney, resultColor;
 				
 				resultName = sqlResult.getString("username");
 				resultPass = sqlResult.getString("password");
 				resultMoney = sqlResult.getInt("money");
 				resultColor = sqlResult.getInt("color");
 				
-				if (sqlResult.getString("password").equals(passBox.getText())){
+				if (resultPass.equals(passBox.getText())){
 					state = loginState.LOGINSUCCESS;
 					//TODO -> fix
 					//client.send(new Player(resultColor,resultMoney,resultName);
@@ -443,6 +512,7 @@ public class Login extends PApplet{
 		catch (SQLException ex){
 			System.err.println("SQLException: " + ex.getMessage());
 			System.err.println("VendorError: " + ex.getErrorCode());
+			ex.printStackTrace();
 		}
 		
 		catch (ClassNotFoundException ex){
@@ -452,24 +522,43 @@ public class Login extends PApplet{
 	}
 	
 	private void newUser(){
-		/*
-		JSONObject tempJsonObj = new JSONObject();
-		String colorString;
+		//Money and Color will be set to 0 by default as per database's settings
 		
-		data = loadJSONObject(path+file);
-		userNodes = data.getJSONArray("playerNodes");
+		Connection sqlConn = null;
+		Statement sqlState = null;
+		String newEntry = null;
 		
-		//generate player color
-		colorString = "#FF" + Integer.toString((int)random(255))+ Integer.toString((int)random(255))+ Integer.toString((int)random(255));
+		try{
+			
+			Class.forName(jdbcDriver);
+			
+			sqlConn = DriverManager.getConnection(sqlDriver,sqlUser,sqlPass);
+			sqlState = sqlConn.createStatement();
+			
+			newEntry = "INSERT INTO player_table VALUES ('" + newNameBox.getText() + "', '" + newPassBox.getText() + "', "+ "NULL, NULL)";
+					
+			sqlState.executeUpdate(newEntry);
+			
+			//DEBUG
+			System.out.println("NEWENTRY: " + newEntry);
+			
+			state = loginState.REGISTERSUCCESS;
+			
+		}
 		
-		tempJsonObj.setInt("id", userNodes.size());
-		tempJsonObj.setString("username", nameBox.text);
-		tempJsonObj.setString("password", passBox.text);
-		tempJsonObj.setString("Color", colorString);
-		tempJsonObj.setInt("money", 0);
-		tempJsonObj.setInt("score", 0);
-		userNodes.append(tempJsonObj);
-		saveJSONArray(userNodes, path + file);
-		*/
+		catch (SQLException ex){
+			System.err.println("SQLException: " + ex.getMessage());
+			System.err.println("VendorError: " + ex.getErrorCode());
+			ex.printStackTrace();
+			if(ex.getMessage().contains("Duplicate"))
+				state = loginState.REGISTERDUPLICATED;
+		}
+		
+		catch (ClassNotFoundException ex){
+			System.err.println("Unable to locate Driver");
+			ex.printStackTrace();
+		}
+
+	
 	}
 }
