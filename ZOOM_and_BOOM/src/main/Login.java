@@ -10,6 +10,7 @@ import processing.core.PImage;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
 
+import object.server.Player;
 
 /**
 *	Login Window
@@ -50,11 +51,12 @@ public class Login extends PApplet{
 		
 		//Client
 		private Client client;
+		private boolean loginSucc;
 		
 	//TODO -> fix
 	public Login(Client client){
 		this.client = client;
-		client.applet = new MainApplet();
+		this.loginSucc = false;
 	}
 	
 	public void setup() {
@@ -417,13 +419,12 @@ public class Login extends PApplet{
 		//login success
 		else if ( state == loginState.LOGINSUCCESS ){
 			if (playBtn.checkLimits()){
+				this.loginSucc = true;
 				this.destroy();
 				this.exit();
 				//TODO -> fix
 				//OPEN GAME
-				client.applet.init();
-				client.applet.start();
-				client.applet.setFocusable(true);
+
 			}
 		}
 		//register window 
@@ -463,6 +464,7 @@ public class Login extends PApplet{
 		}
 	}
 	
+	//Check user/pass in database
 	private void checkDatabase(){
 		
 		Connection sqlConn = null;
@@ -486,7 +488,7 @@ public class Login extends PApplet{
 			if (sqlResult.next()){
 				
 				String resultName, resultPass;
-				int resultMoney, resultColor;
+				int resultMoney=0, resultColor=0;
 				
 				resultName = sqlResult.getString("username");
 				resultPass = sqlResult.getString("password");
@@ -495,8 +497,7 @@ public class Login extends PApplet{
 				
 				if (resultPass.equals(passBox.getText())){
 					state = loginState.LOGINSUCCESS;
-					//TODO -> fix
-					//client.send(new Player(resultColor,resultMoney,resultName);
+					client.setPlayer(new Player(resultColor,resultMoney,resultName));
 				}
 				//if password doesn't match database's
 				else{
@@ -519,8 +520,21 @@ public class Login extends PApplet{
 			System.err.println("Unable to locate Driver");
 			ex.printStackTrace();
 		}
+		//close connection
+		finally{
+			try{
+				if(sqlState!=null && sqlConn!=null)
+					sqlConn.close();
+			}
+			catch(SQLException ex){
+				System.err.println("Unable to close SSL connection to database");
+				ex.printStackTrace();
+			}
+		}
 	}
 	
+	
+	//Add newUser to database
 	private void newUser(){
 		//Money and Color will be set to 0 by default as per database's settings
 		
@@ -558,7 +572,24 @@ public class Login extends PApplet{
 			System.err.println("Unable to locate Driver");
 			ex.printStackTrace();
 		}
-
+		//close connection
+		finally{
+			try{
+				if(sqlState!=null && sqlConn!=null)
+					sqlConn.close();
+			}
+			catch(SQLException ex){
+				System.err.println("Unable to close SSL connection to database");
+				ex.printStackTrace();
+			}
+		}
+	}
 	
+	//Returns true if player already logged in
+	public boolean loginSuccess(){
+		if (loginSucc)
+			return true;
+		else 
+			return false;
 	}
 }

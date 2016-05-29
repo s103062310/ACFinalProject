@@ -24,11 +24,15 @@ public class Client extends JFrame{
 	
 	// content
 	private MainApplet applet;
+	private Login loginApplet;
 	
 	// resources
 	private Random rand = new Random();
 	private static JFrame window;
+	private static JFrame loginWindow;
 	
+	//Player
+	private Player player;
 
 	// Constructor
 	public Client(String IPAddress, int portNum) {
@@ -43,6 +47,12 @@ public class Client extends JFrame{
 		applet.start();
 		applet.setFocusable(true);
 		
+		// create Login Applet
+		loginApplet = new Login(this);
+		loginApplet.init();
+		loginApplet.start();
+
+		player = null;
 	}
 
 	
@@ -77,8 +87,10 @@ public class Client extends JFrame{
 			// server 創造一個player給client，每次登入都傳
 			int color = rand.nextInt(5);
 			// int color , int score , String name // tmppppppppppppppppppppppppppp
-			applet.setPlayer(new Player(color, color*10,"*"+Integer.toString(color)+"*"));
-			
+			if(player==null)
+				applet.setPlayer(new Player(color, color*10,"*"+Integer.toString(color)+"*"));
+			else
+				applet.setPlayer(player);
 			// send the new add player's information to server
 			objOut.writeObject(applet.getPlayer());
 			objOut.flush();
@@ -189,10 +201,13 @@ public class Client extends JFrame{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				
-			}
-			
+			}	
 		}
-		
+	}
+	
+	//set player
+	public void setPlayer(Player player){
+		this.player = player;
 	}
 
 		
@@ -201,12 +216,26 @@ public class Client extends JFrame{
 		
 		// create client
 		Client client = new Client("127.0.0.1", 8000);
+		/*
+		loginWindow = new JFrame("ZOOM and BOOM - LOGIN");
+		loginWindow.setContentPane(client.loginApplet);
+		loginWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		loginWindow.setSize(600, 400);
+		loginWindow.setLocation(400,200);
+		loginWindow.setVisible(true);
 		
+		while(!client.loginApplet.loginSuccess());
+		
+		loginWindow.dispose();
+		System.out.println("USER CREATED");
+		*/
 		// create frame and connect to server
 		window = new JFrame("ZOOM and BOOM");
+		System.out.println("CREATED MAIN APPLET WINDOW");
 		window.setContentPane(client.applet);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setSize(1117, 690);
+		window.setFocusable(true);
 		window.setVisible(true);
 		client.connect();
 	
