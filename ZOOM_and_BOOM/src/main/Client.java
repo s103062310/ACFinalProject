@@ -29,7 +29,6 @@ public class Client extends JFrame{
 	// resources
 	private Random rand = new Random();
 	private static JFrame window;
-	private static JFrame loginWindow;
 	
 	//Player
 	private Player player;
@@ -214,31 +213,22 @@ public class Client extends JFrame{
 	// main
 	public static void main(String[] args) {
 		
-		// create client
+		// create client & connect
 		Client client = new Client("127.0.0.1", 8000);
-		/*
-		loginWindow = new JFrame("ZOOM and BOOM - LOGIN");
-		loginWindow.setContentPane(client.loginApplet);
-		loginWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		loginWindow.setSize(600, 400);
-		loginWindow.setLocation(400,200);
-		loginWindow.setVisible(true);
+		client.connect();
 		
-		while(!client.loginApplet.loginSuccess());
+		//Run login app
+		client.loginApplet.runFrame();
 		
-		loginWindow.dispose();
-		System.out.println("USER CREATED");
-		*/
 		// create frame and connect to server
 		window = new JFrame("ZOOM and BOOM");
-		System.out.println("CREATED MAIN APPLET WINDOW");
 		window.setContentPane(client.applet);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setSize(1117, 690);
 		window.setFocusable(true);
 		window.setVisible(true);
-		client.connect();
-	
+		
+
 	}
 	
 }

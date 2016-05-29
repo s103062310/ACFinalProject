@@ -2,6 +2,9 @@ package main;
 
 import java.awt.Color;
 import java.util.*;
+
+import javax.swing.JFrame;
+
 import java.sql.*;
 
 import processing.core.PApplet;
@@ -13,8 +16,10 @@ import processing.data.JSONObject;
 import object.server.Player;
 
 /**
-*	Login Window
-*	Uses user_database.json to compare user input with user records
+*	Login & Register Window
+*	Function runFrame() creates a JFrame and returns control to callor until 
+*	a successful login
+*	Uses MySql online database to make queries
 *	Upon successful login, window changes, press play to send player info to server
 *	Upon failure at login, window changes, button retry goes back to main login window
 */
@@ -420,8 +425,6 @@ public class Login extends PApplet{
 		else if ( state == loginState.LOGINSUCCESS ){
 			if (playBtn.checkLimits()){
 				this.loginSucc = true;
-				this.destroy();
-				this.exit();
 				//TODO -> fix
 				//OPEN GAME
 
@@ -591,5 +594,26 @@ public class Login extends PApplet{
 			return true;
 		else 
 			return false;
+	}
+	
+	//Runs login JFrame, returns control to caller when login is successful
+	public void runFrame(){
+		JFrame loginWindow;
+		
+		loginWindow = new JFrame("ZOOM and BOOM - LOGIN");
+		loginWindow.setContentPane(this);
+		loginWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		loginWindow.setSize(600, 400);
+		loginWindow.setLocation(400,200);
+		loginWindow.setVisible(true);
+		
+		while(!loginSuccess());
+			System.out.println("LoginSuccess :"+loginSuccess());
+			
+		loginWindow.setVisible(false);
+		loginWindow.dispose();
+		System.out.println("disposed of LoginWindow");
+		
+		return;
 	}
 }
