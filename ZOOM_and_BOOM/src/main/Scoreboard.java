@@ -55,7 +55,7 @@ public class Scoreboard {
 			parent.text("#"+pl.getScore(), 1000, 195-scroll + i*(radius+15));
 			
 			// self
-			if (parent.getPlayer().getID() == pl.getID()) {
+			if (parent.getPlayer().getName().equals(pl.getName())) {
 				parent.fill(Color.PINK.getRGB());
 				parent.ellipse(840, 190-scroll+i*(radius+15), 20, 20);
 			}

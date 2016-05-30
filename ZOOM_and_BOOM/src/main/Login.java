@@ -500,7 +500,9 @@ public class Login extends PApplet{
 				
 				if (resultPass.equals(passBox.getText())){
 					state = loginState.LOGINSUCCESS;
-					client.setPlayer(new Player(resultColor,resultMoney,resultName));
+					Player tempPlayer = new Player(resultColor, resultName);
+					tempPlayer.setScore(resultMoney);
+					client.setPlayer(tempPlayer);
 				}
 				//if password doesn't match database's
 				else{

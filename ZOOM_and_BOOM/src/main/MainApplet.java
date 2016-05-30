@@ -2,15 +2,16 @@ package main;
 
 import processing.core.PApplet;
 import processing.core.PImage;
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
+import java.awt.Color;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import main.Client.ClientThread;
 import object.server.Player;
 import object.client.ColorButton;
 import object.client.AttackWindow;
+import object.client.ConfirmWindow;
 
 public class MainApplet extends PApplet{
 	
@@ -28,8 +29,6 @@ public class MainApplet extends PApplet{
 	// player content
 	private Player player;
 	private ArrayList<Player> list;
-	private PImage screenshot = createImage(800, 450, ARGB);
-	
 	
 	
 	// initialize
@@ -92,7 +91,7 @@ public class MainApplet extends PApplet{
 				if(player.getScore() >= btn.getMoney()){
 					
 					// create new PApplet
-					AttackWindow app = new AttackWindow();
+					AttackWindow app = new AttackWindow(this, list);
 					app.init();
 					app.start();
 					app.setFocusable(true);
@@ -102,15 +101,7 @@ public class MainApplet extends PApplet{
 					window.setContentPane(app);
 					window.setSize(400, 700);
 					window.setVisible(true);
-					
-					// set attack window
 					app.setWindow(window);
-					//TODO 把mainapplet傳進去app
-					//TODO 把playerlist傳進去app => construct
-					
-					//if(app.isBuy==true){   ///問助教
-						//money = money-btn.getMoney();
-					//}
 						
 				} else {
 					
@@ -127,7 +118,6 @@ public class MainApplet extends PApplet{
 	}
 	
 	
-	// control mouse moved
 	// control mouse moved
 	public void mouseMoved(){
 
@@ -148,7 +138,6 @@ public class MainApplet extends PApplet{
 	
 	
 	// control mouse dragged
-	// control mouse dragged
 	public void mouseDragged(){
 		
 		if(game.isFrame()&&game.isPlay()) game.frame();
@@ -159,29 +148,42 @@ public class MainApplet extends PApplet{
 	// control key pressed
 	public void keyPressed(){
 		if(keyCode==32){
-			game.addSplash(new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255)).getRGB());
-		} else {
-			for(int i = 0; i<screenshot.pixels.length; i++) {
-				int c = this.get(i%800, i/800);
-				screenshot.pixels[i] = c;
-			}
-			screenshot.save("src/resource/screenshot.png");
+			attacked(list.get(r.nextInt(list.size())).getName(), new Color(0, 0, 0).getRGB());
 		}
-
 	}
 	
 	
 	// attack other players
-	public void attacked(int color){
+	public void attacked(String name, int color){
+		
 		//TODO
-		// 傳送資料給server -> 收截圖(另跳一個視窗) -> confirm後關掉
+		// transmit data to server
+		thread.send("attack");
+		thread.send(player.getName());
+		thread.send(name);
+		thread.send(color);
+		
+		// create new PApplet
+		ConfirmWindow confirm = new ConfirmWindow((PImage)thread.receive());
+		confirm.init();
+		confirm.start();
+		confirm.setFocusable(true);
+		
+		// create new frame
+		JFrame window = new JFrame("*~ Attack Sucessful ~*");
+		window.setContentPane(confirm);
+		window.setSize(800, 450);
+		window.setVisible(true);
+		
 	}
 	
 	
 	// be attacked by other players
 	public void beAttacked(int color){
+		
 		game.addSplash(color);
-		//TODO 傳截圖
+		thread.send(game.screenshot());
+		
 	}
 
 	

@@ -30,19 +30,19 @@
 ## 5/27 Integrate
 
 ### Server.java:
-1. 結合帳戶系統
+1. ~~結合帳戶系統~~ by Eva
 2. 設倒數計時器，定時更新排行榜
 3. 從server傳該帳戶之Player給client (有1之後，現在的模式只是暫時)
 4. 待Player定義完畢要檢查field是否都有set到
-5. 攻擊完transmit screenshot
+5. 攻擊完transmit screenshot(頻)
 
 ### Client.java:
 1. 等有login系統後，server 創造一個player給client，每次登入都傳給client
 2. Fail to establish I/O channel with server! => exception confirm
 3. Correct => add money and display message(先用System.out)
 4. Wrong => display message(先用System.out)
-5. transmit screenshot after being attacked
-6. try transmit list directly
+5. transmit screenshot after being attacked(頻)
+6. ~~try transmit list directly~~ by 頻
 
 ### Timer.java: 
 1. clock image!
@@ -66,8 +66,8 @@
 4. 點選之後的後續連接(包含MainApplet裡)
 
 ### MainApplet.java
-1. Attacked()
-2. beAttacked()
+1. Attacked() (頻)
+2. beAttacked() (頻)
 
 ### Scoreboard.java
 1. 處理同分排名(是否給黃冠)

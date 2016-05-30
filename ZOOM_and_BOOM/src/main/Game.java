@@ -5,7 +5,9 @@ import java.util.Random;
 import java.util.ArrayList;
 import java.awt.Color;
 import processing.core.PImage;
+import processing.core.PApplet;
 import object.client.Splash;
+import object.client.Image;
 import object.tool.Timer;
 import object.tool.Button;
 
@@ -18,6 +20,7 @@ public class Game {
 	private Button ctrlBtn;
 	private Timer timer;
 	private ArrayList<Splash> splash, remove;
+	private int accumulateMoney=0;
 	
 	// variable & constant
 	private boolean isFrame=false, isPlay=false;
@@ -46,7 +49,7 @@ public class Game {
 		
 		// set tool bar
 		ctrlBtn = new Button(parent, 760, 40, 50, new Color(130, 180, 150).getRGB());
-		timer = new Timer(p, 690, 40, 50, 5);
+		timer = new Timer(parent, 690, 40, 50, 5);
 		
 		// set splash list
 		splash = new ArrayList<Splash>();
@@ -192,7 +195,8 @@ public class Game {
 	public void gameEnd(){
 		
 		isPlay = false;
-		//TODO confirm earned money and added
+		//TODO confirm earned money
+		parent.calMoney(accumulateMoney);
 		
 	}
 	
@@ -200,6 +204,8 @@ public class Game {
 	// save money temporarily and show animate
 	public void answerCorrect(){
 		//TODO
+		parent.getPlayer().Completed();
+		accumulateMoney += 10;
 	}
 	
 	
@@ -212,6 +218,25 @@ public class Game {
 	// add new splash
 	public void addSplash(int color){
 		splash.add(new Splash(parent, r.nextInt(800)-210, r.nextInt(450)-170, 10, color));
+	}
+	
+	
+	// take screenshot of main game
+	public Image screenshot(){
+		
+		// create image
+		PImage screenshot  = parent.createImage(800, 450, PApplet.ARGB);
+		
+		// map pixel of sub window to image
+		for(int i = 0; i<screenshot.pixels.length; i++) {
+			int c = parent.get(i%800, i/800);
+			screenshot.pixels[i] = c;
+		}
+		
+		Image img = new Image(screenshot);
+		
+		return img;
+	
 	}
 
 	

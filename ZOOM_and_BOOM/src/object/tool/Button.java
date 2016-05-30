@@ -38,7 +38,7 @@ public class Button {
 
 	// detect mouse move into button
 	public boolean inBtn(){
-		if(PApplet.dist(parent.mouseX, parent.mouseY, x, y)<=d)
+		if(PApplet.dist(parent.mouseX, parent.mouseY, x, y)<=d/2)
 			return true;
 		else return false;
 	}

@@ -2,7 +2,6 @@ package object.server;
 
 import java.io.Serializable;
 import java.awt.Color;
-//import java.util.Random;
 
 public class Player implements Serializable{
 	
@@ -11,8 +10,7 @@ public class Player implements Serializable{
 	// player information
 	private String name;
 	private int color;		// a int of random from 0~5 will be mapped to real color in other class
-	private int score;
-	private int id;
+	private int score=0;
 	private int completed=0;
 	private int shield=0;
 	
@@ -23,12 +21,22 @@ public class Player implements Serializable{
 	//private Random rand = new Random();
 	
 
-	// Constructor
-	public Player(int color ,int score ,String name){
+	// Constructor 1
+	public Player(int color ,String name){
 		
 		this.color = colors[color];
-		this.score = score;
 		this.name = name;
+		
+	}
+	
+	
+	// Constructor 2
+	public Player(int color ,String name, int score, int completed, int shield){
+		
+		this(color, name);
+		this.score = score;
+		this.completed = completed;
+		this.shield = shield;
 		
 	}
 	
@@ -41,17 +49,9 @@ public class Player implements Serializable{
 		return this.name;
 	}
 	
-	/*public void setName(String name){
-		this.name = name;
-	}*/
-	
 	public int getColor(){
 		return this.color;
 	}
-	
-	/*public void setColor(int color){
-		this.color = color;
-	}*/
 	
 	public int getScore(){
 		return this.score;
@@ -59,14 +59,6 @@ public class Player implements Serializable{
 	
 	public void setScore(int score){
 		this.score = score;
-	}
-	
-	public void setID(int id){
-		this.id = id;
-	}
-	
-	public int getID(){
-		return this.id;
 	}
 	
 	public int getCompleted(){

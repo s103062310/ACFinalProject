@@ -24,7 +24,7 @@ public class Client extends JFrame{
 	
 	// content
 	private MainApplet applet;
-	private Login loginApplet;
+	//private Login loginApplet;
 	
 	// resources
 	private Random rand = new Random();
@@ -32,6 +32,7 @@ public class Client extends JFrame{
 	
 	//Player
 	private Player player;
+	
 
 	// Constructor
 	public Client(String IPAddress, int portNum) {
@@ -47,11 +48,12 @@ public class Client extends JFrame{
 		applet.setFocusable(true);
 		
 		// create Login Applet
-		loginApplet = new Login(this);
+		/*loginApplet = new Login(this);
 		loginApplet.init();
-		loginApplet.start();
-
+		loginApplet.start();*/
+		
 		player = null;
+		
 	}
 
 	
@@ -86,10 +88,9 @@ public class Client extends JFrame{
 			// server 創造一個player給client，每次登入都傳
 			int color = rand.nextInt(5);
 			// int color , int score , String name // tmppppppppppppppppppppppppppp
-			if(player==null)
-				applet.setPlayer(new Player(color, color*10,"*"+Integer.toString(color)+"*"));
-			else
-				applet.setPlayer(player);
+			if(player==null) applet.setPlayer(new Player(color, "*"+Integer.toString(color)+"*"));
+			else applet.setPlayer(player);
+			
 			// send the new add player's information to server
 			objOut.writeObject(applet.getPlayer());
 			objOut.flush();
@@ -109,77 +110,50 @@ public class Client extends JFrame{
 	class ClientThread extends Thread {
 		
 		// the program process of client
-		@SuppressWarnings("deprecation")
 		public void run() {
 			
 			while (true) {
 				
-				try {
+				// read
+				Object message = receive();
+				
+				// identify which object is transmit
+				if (message instanceof String) {
 					
-					// read
-					Object message = objIn.readObject();
-					System.out.println("receive: "+message);
+					// when receive String flag
 					
-					// identify which object is transmit
-					if (message instanceof String) {
-						
-						// when receive String flag
-						
-						// identify which flag is
-						switch ((String) message) {
-						
-						// send answer is correct
-						case "Correct":
-							
-							//TODO add money and display message
-							break;
-							
-						// send answer is wrong
-						case "Wrong":
-							
-							//TODO display message
-							break;
-							
-						// request of transmitting ID
-						case "askID":
-							
-							//send(applet.getID());
-							break;
-							
-						// being attacked by other players
-						case "be attacked":
-							
-							int color = (int)objIn.readObject();
-							applet.beAttacked(color);
-							//TODO transmit screenshot
-							break;
-							
-						default:
-							break;
-							
-						}
-						
-					} else if(message instanceof Integer){
-						
-						applet.getPlayer().setID(((Integer) message).intValue());
-						System.out.println("set ID");
+					// identify which flag is
+					switch ((String) message) {
 					
-					} else if (message instanceof ArrayList<?>) {
+					// send answer is correct
+					case "Correct":
 						
-						applet.resetReference((ArrayList<Player>) message);
+						applet.correct();
+						break;
+						
+					// send answer is wrong
+					case "Wrong":
+						
+						applet.wrong();
+						break;
+					
+					// being attacked by other players
+					case "be attacked":
+						
+						int color = (int)receive();
+						applet.beAttacked(color);
+						break;
+						
+					default:
+						break;
 						
 					}
 					
-				} catch (IOException e) {
+				} else if (message instanceof ArrayList<?>) {
 					
-					System.out.println("Server doesn't exist any more.");
-					JOptionPane.showMessageDialog(null,"Server did not respond.\nThe window will be closed.");
-					window.dispose();
-					applet.dispose();
-					stop();
+					applet.resetReference((ArrayList<Player>) message);
+					System.out.println("update score board");
 					
-				} catch (Exception e) {
-
 				}
 				
 			}
@@ -200,9 +174,39 @@ public class Client extends JFrame{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				
-			}	
+			}
+			
 		}
+		
+		
+		// receive object from server
+		@SuppressWarnings("deprecation")
+		public Object receive(){
+			
+			Object message=null;
+			
+			try{
+				
+				message = objIn.readObject();
+				System.out.println("receive: "+message);
+				
+			} catch (IOException e) {
+				
+				System.out.println("Server doesn't exist any more.");
+				JOptionPane.showMessageDialog(null,"Server did not respond.\nThe window will be closed.");
+				window.dispose();
+				applet.dispose();
+				stop();
+				
+			} catch (Exception e) {
+
+			}
+			
+			return message;
+		}
+	
 	}
+	
 	
 	//set player
 	public void setPlayer(Player player){
@@ -213,22 +217,21 @@ public class Client extends JFrame{
 	// main
 	public static void main(String[] args) {
 		
-		// create client & connect
+		// create client
 		Client client = new Client("127.0.0.1", 8000);
 		client.connect();
 		
 		//Run login app
-		client.loginApplet.runFrame();
+		//client.loginApplet.runFrame();
 		
 		// create frame and connect to server
 		window = new JFrame("ZOOM and BOOM");
 		window.setContentPane(client.applet);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setSize(1117, 690);
-		window.setFocusable(true);
 		window.setVisible(true);
 		
-
+	
 	}
 	
 }

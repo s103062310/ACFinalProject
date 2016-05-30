@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import object.server.Answer;
 import object.server.Player;
+import processing.core.PImage;
 
 //TODO 結合帳戶系統
 
@@ -122,9 +123,7 @@ public class Server extends JFrame {
 		ObjectOutputStream objOut;
 		
 		// information of player
-		Player pl;
-		int ID;
-		//boolean QuestionReady = false;
+		String name;
 
 		
 		// Constructor: connect socket and reader/writer
@@ -165,22 +164,18 @@ public class Server extends JFrame {
 						// when a new Player adds in 
 						//TODO check! need to define player more detailed
 						//TODO 參考client => 從server傳該帳戶之Player給client
-						// set player information
-						pl = (Player)message;
-						pl.setID(people);
-						ID = people;
+						
+						// set name
+						Player player =(Player)message;
+						name = player.getName();
 						
 						// update player list
 						ArrayList<Player> list = new ArrayList<Player>();
-						list.add(pl);
+						list.add(player);
 						for(Player p : playerlist){
 							list.add(p);
 						}
 						playerlist = list;
-						
-						// send the number of online people
-						objOut.writeObject(people);
-						objOut.flush();
 						
 						// update score board
 						refreshPlayerList();
@@ -212,20 +207,27 @@ public class Server extends JFrame {
 						case "attack":
 							
 							// receive attack information
-							int targetID = (int)objIn.readObject();
+							String sourceName = (String)objIn.readObject();
+							String targetName = (String)objIn.readObject();
 							int color = (int)objIn.readObject();
 							
 							// attack
 							for (ConnectionThread connection : connections){
-								connection.send("askID");
-								if (targetID == (int)objIn.readObject()){
+								if (targetName.equals(connection.name)){
 									connection.send("be attacked");
 									connection.send(color);
 									break;
 								}
 							}
 							
-							//TODO transmit screenshot
+							// transmit screenshot
+							PImage img = (PImage)objIn.readObject();
+							for (ConnectionThread connection : connections){
+								if (sourceName.equals(connection.name)){
+									connection.send(img);
+									break;
+								}
+							}							
 							
 						default:
 							break;
@@ -238,12 +240,12 @@ public class Server extends JFrame {
 					
 					// deal with client disconnect
 					connections.remove(this);
-					textArea.append("Player ["+pl.getName()+"] disconnect.\n");
+					textArea.append("Player ["+name+"] disconnect.\n");
 					
 					// update player list
 					ArrayList<Player> list = new ArrayList<Player>();
 					for(Player p : playerlist){
-						if(p!=pl) list.add(p);
+						if(!p.getName().equals(name)) list.add(p);
 					}
 					playerlist = list;
 					refreshPlayerList();

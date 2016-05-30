@@ -6,7 +6,7 @@ import object.tool.Button;
 public class ColorButton extends Button{
 	
 	private String colorName;
-	private int money;
+	private int money, color;
 
 	
 	// Constructor
@@ -14,6 +14,7 @@ public class ColorButton extends Button{
 		
 		super(p, x, y, 70, color);
 		this.money = money;
+		this.color = color;
 		this.colorName = colorName;
 		
 	}
@@ -40,6 +41,10 @@ public class ColorButton extends Button{
 	
 	public int getMoney(){
 		return money;
+	}
+	
+	public int getColor(){
+		return color;
 	}
 	
 }
