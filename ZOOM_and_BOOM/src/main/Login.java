@@ -15,6 +15,9 @@ import processing.data.JSONArray;
 import processing.data.JSONObject;
 
 import object.server.Player;
+import object.tool.SplashButton;
+import object.tool.Textbox;
+import object.tool.SecretTextbox;
 
 /**
 *	Login & Register Window
@@ -26,6 +29,8 @@ import object.server.Player;
 */
 
 public class Login extends PApplet{
+	
+	private static final long serialVersionUID = 1L;
 	
 	//Database data
 	private static final String jdbcDriver = "com.mysql.jdbc.Driver";
@@ -66,6 +71,7 @@ public class Login extends PApplet{
 		this.loginSucc = false;
 	}
 	
+	//Processing Setup
 	public void setup() {
 		state = loginState.LOGINATTEMPT;
 		//GUI
@@ -95,6 +101,7 @@ public class Login extends PApplet{
 		}
 	}
 	
+	//Processing Draw
 	public void draw(){
 		background(255);
 		tint(255, 130);
@@ -331,6 +338,8 @@ public class Login extends PApplet{
 		}
 		
 	}
+	
+	//Processing handle input event
 	public void keyPressed() {
 		
 	  Textbox selectedBox = null;
@@ -391,6 +400,7 @@ public class Login extends PApplet{
 	  }
 	}
 		 
+	//processing handle mouse event
 	public void mousePressed(){
 		//main login window
 		if ( state == loginState.LOGINATTEMPT ){
@@ -436,9 +446,6 @@ public class Login extends PApplet{
 		else if ( state == loginState.LOGINSUCCESS ){
 			if (playBtn.checkLimits()){
 				this.loginSucc = true;
-				//TODO -> fix
-				//OPEN GAME
-
 			}
 		}
 		//register window 
@@ -548,7 +555,6 @@ public class Login extends PApplet{
 			}
 		}
 	}
-	
 	
 	//Add newUser to database
 	private void newUser(){

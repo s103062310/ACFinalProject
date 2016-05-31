@@ -1,4 +1,4 @@
-package main;
+package object.tool;
 
 import processing.core.PApplet;
 import ddf.minim.signals.*;

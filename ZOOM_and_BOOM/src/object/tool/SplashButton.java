@@ -1,4 +1,4 @@
-package main;
+package object.tool;
 
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -99,3 +99,4 @@ public class SplashButton {
 		}
 	}
 }
+

@@ -1,4 +1,4 @@
-package main;
+package object.tool;
 
 import java.awt.Color;
 
@@ -40,3 +40,4 @@ public class SecretTextbox extends Textbox{
 	}
 
 }
+

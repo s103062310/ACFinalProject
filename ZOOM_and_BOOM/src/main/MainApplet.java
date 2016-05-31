@@ -27,8 +27,8 @@ public class MainApplet extends PApplet{
 	private Random r = new Random();
 	
 	// player content
-	private Player player;
-	private ArrayList<Player> list;
+	private Player player = new Player();
+	private ArrayList<Player> list = new ArrayList<Player>();
 	
 	
 	// initialize
