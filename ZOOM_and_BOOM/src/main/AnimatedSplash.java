@@ -6,6 +6,9 @@ import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PImage;
 
+/**
+* Class for animated spots in Background in welcome window
+*/
 
 public class AnimatedSplash {
 
@@ -32,8 +35,6 @@ public class AnimatedSplash {
 	
 	public void display(){
 		randPosition();
-		splashImg = parent.loadImage("resource/splash.png");
-		setSplashColor();
 		parent.fill(color.getRed(),color.getGreen(),color.getBlue());
 		parent.tint(255,126);
 		int rand = (int)parent.random(90);

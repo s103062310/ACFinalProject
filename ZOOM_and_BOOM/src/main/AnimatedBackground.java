@@ -13,14 +13,23 @@ public class AnimatedBackground extends PApplet{
 	private AnimatedSplash[] splashArr;
 	private Color[] splashColors;
 	private int splashInTurn;
+	private PImage backgroundImg;
 	
 	public void setup(){
 		size(width,height);
 		background(255);
-		
+		try { 
+			backgroundImg = loadImage("resource/pic_rsc/M" + (int) random (15)+ ".png");
+		}
+		catch(Exception ex){
+			System.err.println("Unable to laod Splash Image");
+			ex.printStackTrace();
+		}
+		backgroundImg.resize(width, height);
+		image(backgroundImg, 0, 0);
 		setColors();
-		splashArr = new AnimatedSplash[40];
-		for( int i=0; i<40 ; i++){
+		splashArr = new AnimatedSplash[50];
+		for( int i=0; i<50 ; i++){
 			splashArr[i] = new AnimatedSplash( this, splashColors[(int)random(11)] );
 		}
 
@@ -28,13 +37,24 @@ public class AnimatedBackground extends PApplet{
 	
 	public void draw(){
 		smooth();
-		if (splashInTurn>=39){
+
+		if (splashInTurn>=49){
 			background(255);
+			try { 
+				backgroundImg = loadImage("resource/pic_rsc/M" + (int) random (15)+ ".png");
+			}
+			catch(Exception ex){
+				System.err.println("Unable to laod Splash Image");
+				ex.printStackTrace();
+			}
+			backgroundImg.resize(width, height);
+			image(backgroundImg, 0, 0);
 			splashInTurn = 0;
 		}
-		else
-			splashInTurn++;
-		splashArr[splashInTurn].display();
+		else{
+			splashInTurn++;	
+			//splashArr[splashInTurn].display();
+		}
 		//delay(500);
 	
 	}
