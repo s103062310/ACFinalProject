@@ -21,6 +21,7 @@ public class AttackWindow extends PApplet{
 	// content
 	private Button[] btn;
 	private String[] playerName;
+	private ArrayList<Player> otherPlayers = new ArrayList<Player>();
 	//TODO 新增取消按鈕~
 	
 	
@@ -32,15 +33,21 @@ public class AttackWindow extends PApplet{
 		// set window size
 		setSize(400, 700);
 		
+		//construct "otherPlayers"
+		int j=0;
+		for(Player player: list){
+			if(list.get(j).getName()!=parent.getPlayer().getName()) otherPlayers.add(player);
+			j++;
+		}
+		
 		// create button through list
-		btn = new Button[list.size()];
-		playerName = new String[list.size()];
-		for(int i=0; i<list.size()-1; i++){
-			if(list.get(i).getName()!=parent.getPlayer().getName()){
-				btn[i] = new Button(this, 100, 80+100*i, 60, parent.getPlayer().getColor());
-				playerName[i] = parent.getPlayer().getName();
-				i++;
-			}
+		btn = new Button[otherPlayers.size()];
+		playerName = new String[otherPlayers.size()];
+		int i=0;
+		for(Player player: otherPlayers){
+			btn[i] = new Button(this, 100, 80+100*i, 60, player.getColor());
+			playerName[i] = player.getName();
+			i++;
 		}
 		
 		//TODO 取消按鈕初始
