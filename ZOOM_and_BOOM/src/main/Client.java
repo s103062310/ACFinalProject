@@ -24,7 +24,7 @@ public class Client extends JFrame{
 	
 	// content
 	private MainApplet applet;
-	//private Login loginApplet;
+	private Login loginApplet;
 	
 	// resources
 	private Random rand = new Random();
@@ -48,9 +48,9 @@ public class Client extends JFrame{
 		applet.setFocusable(true);
 		
 		// create Login Applet
-		/*loginApplet = new Login(this);
+		loginApplet = new Login(this);
 		loginApplet.init();
-		loginApplet.start();*/
+		loginApplet.start();
 		
 		player = null;
 		
@@ -222,12 +222,12 @@ public class Client extends JFrame{
 		client.connect();
 		
 		//Run login app
-		//client.loginApplet.runFrame();
+		client.loginApplet.runFrame();
 		
 		// create frame and connect to server
 		window = new JFrame("ZOOM and BOOM");
 		window.setContentPane(client.applet);
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		window.setSize(1117, 690);
 		window.setVisible(true);
 		

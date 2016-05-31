@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import java.sql.*;
 
 import processing.core.PApplet;
+import processing.core.PFont;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.data.JSONArray;
@@ -26,39 +27,40 @@ import object.server.Player;
 
 public class Login extends PApplet{
 	
-		//Database data
-		private static final String jdbcDriver = "com.mysql.jdbc.Driver";
-		private static final String sqlDriver = "jdbc:mysql://db4free.net:3306/player_database";
-		private static final String sqlUser = "ssnthuac_final";
-		private static final String sqlPass = "ssnthuac";
-		
-		//GUI		
-		private enum loginState {
-		    LOGINATTEMPT,LOGINSUCCESS,LOGINPASSFAIL,LOGINUSERFAIL,LOGININFO,
-		    REGISTER,REGISTERSUCCESS,REGISTERWRONGPASS,REGISTERDUPLICATED,REGISTERINFO
-		}
-		private loginState state;
-		private PImage backgroundImg;
-		private PImage aimCursor;
-		private final int width = 600;
-		private final int height = 350;
-		private SplashButton loginBtn;
-		private SplashButton registerBtn;
-		private SplashButton confirmBtn;
-		private SplashButton backBtn;
-		private SplashButton retryLoginBtn;
-		private SplashButton playBtn;
-		private Textbox nameBox;
-		private SecretTextbox passBox;
-		private Textbox newNameBox;
-		private SecretTextbox newPassBox;
-		private SecretTextbox confirmPassBox;
-		
-		//Client
-		private Client client;
-		private boolean loginSucc;
-		
-	//TODO -> fix
+	//Database data
+	private static final String jdbcDriver = "com.mysql.jdbc.Driver";
+	private static final String sqlDriver = "jdbc:mysql://db4free.net:3306/player_database";
+	private static final String sqlUser = "ssnthuac_final";
+	private static final String sqlPass = "ssnthuac";
+	
+	//GUI		
+	private static enum loginState {
+	    LOGINATTEMPT,LOGINSUCCESS,LOGINPASSFAIL,LOGINUSERFAIL,LOGININFO,
+	    REGISTER,REGISTERSUCCESS,REGISTERWRONGPASS,REGISTERDUPLICATED,REGISTERINFO
+	}
+	private loginState state;
+	private static final int width = 600;
+	private static final int height = 350;
+	private PImage backgroundImg;
+	private PImage aimCursor;
+	private PFont loginFont;
+	private SplashButton loginBtn;
+	private SplashButton registerBtn;
+	private SplashButton confirmBtn;
+	private SplashButton backBtn;
+	private SplashButton retryLoginBtn;
+	private SplashButton playBtn;
+	private Textbox nameBox;
+	private SecretTextbox passBox;
+	private Textbox newNameBox;
+	private SecretTextbox newPassBox;
+	private SecretTextbox confirmPassBox;
+	
+	//Client
+	private Client client;
+	private boolean loginSucc;
+	
+	//Constructor
 	public Login(Client client){
 		this.client = client;
 		this.loginSucc = false;
@@ -99,12 +101,15 @@ public class Login extends PApplet{
 		image(backgroundImg,0,0);
 		tint(255, 255);
 		noStroke();
+		loginFont = loadFont("resource/fonts/Sorry.ttf");
+		textFont(loginFont);
 		//Main login window
 		if(state == loginState.LOGINATTEMPT){
 			//transparent rectangle
 			fill(255, 255, 255, 240);
 			rect(145, 35, 300, 140, 60);
 			fill(126,126,126);
+			
 			//Buttons
 			loginBtn.display();
 			registerBtn.display();
@@ -413,12 +418,18 @@ public class Login extends PApplet{
 				}
 			}
 		}
-		//login or register failure
+		//return to login
 		else if ( state == loginState.LOGINPASSFAIL || state == loginState.LOGINUSERFAIL ||
-				state == loginState.LOGININFO || state == loginState.REGISTERWRONGPASS || 
-				state == loginState.REGISTERDUPLICATED || state == loginState.REGISTERINFO){
+				state == loginState.LOGININFO || state == loginState.REGISTERSUCCESS){
 			if (retryLoginBtn.checkLimits()){
 				state = loginState.LOGINATTEMPT;
+			}
+		}
+		//return to register
+		else if (state == loginState.REGISTERWRONGPASS || 
+				state == loginState.REGISTERDUPLICATED || state == loginState.REGISTERINFO){
+			if (retryLoginBtn.checkLimits()){
+				state = loginState.REGISTER;
 			}
 		}
 		//login success
@@ -481,7 +492,7 @@ public class Login extends PApplet{
 			
 			sqlConn = DriverManager.getConnection(sqlDriver,sqlUser,sqlPass);
 			sqlState = sqlConn.createStatement();
-			selectQuery = "SELECT username,password,money,color FROM player_table WHERE username = \"" + nameBox.getText() +"\"";
+			selectQuery = "SELECT username,password,score,completed,shield,color FROM player_table WHERE username = \"" + nameBox.getText() +"\"";
 			sqlResult = sqlState.executeQuery(selectQuery);
 			
 			//DEBUG
@@ -491,18 +502,18 @@ public class Login extends PApplet{
 			if (sqlResult.next()){
 				
 				String resultName, resultPass;
-				int resultMoney=0, resultColor=0;
+				int resultScore=0, resultColor=0, resultShield =0, resultCompleted=0;
 				
 				resultName = sqlResult.getString("username");
 				resultPass = sqlResult.getString("password");
-				resultMoney = sqlResult.getInt("money");
+				resultScore = sqlResult.getInt("score");
+				resultCompleted = sqlResult.getInt("completed");
+				resultShield = sqlResult.getInt("shield");
 				resultColor = sqlResult.getInt("color");
 				
 				if (resultPass.equals(passBox.getText())){
 					state = loginState.LOGINSUCCESS;
-					Player tempPlayer = new Player(resultColor, resultName);
-					tempPlayer.setScore(resultMoney);
-					client.setPlayer(tempPlayer);
+					client.setPlayer( new Player(resultColor, resultName, resultScore, resultCompleted, resultShield) );
 				}
 				//if password doesn't match database's
 				else{
@@ -554,7 +565,8 @@ public class Login extends PApplet{
 			sqlConn = DriverManager.getConnection(sqlDriver,sqlUser,sqlPass);
 			sqlState = sqlConn.createStatement();
 			
-			newEntry = "INSERT INTO player_table VALUES ('" + newNameBox.getText() + "', '" + newPassBox.getText() + "', "+ "NULL, NULL)";
+			int randomColor = (int) random(1,5);
+			newEntry = "INSERT INTO player_table (username,password,color) VALUES ('" + newNameBox.getText() + "', '" + newPassBox.getText() + "', " + randomColor + " )";
 					
 			sqlState.executeUpdate(newEntry);
 			
@@ -609,12 +621,11 @@ public class Login extends PApplet{
 		loginWindow.setLocation(400,200);
 		loginWindow.setVisible(true);
 		
+		//loop while login unsuccesful
 		while(!loginSuccess());
-			System.out.println("LoginSuccess :"+loginSuccess());
 			
 		loginWindow.setVisible(false);
 		loginWindow.dispose();
-		System.out.println("disposed of LoginWindow");
 		
 		return;
 	}
