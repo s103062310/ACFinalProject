@@ -14,6 +14,9 @@ import processing.data.JSONArray;
 import processing.data.JSONObject;
 
 import object.server.Player;
+import object.tool.SplashButton;
+import object.tool.Textbox;
+import object.tool.SecretTextbox;
 
 /**
 *	Login & Register Window
@@ -25,6 +28,8 @@ import object.server.Player;
 */
 
 public class Login extends PApplet{
+	
+	private static final long serialVersionUID = 1L;
 	
 		//Database data
 		private static final String jdbcDriver = "com.mysql.jdbc.Driver";

@@ -8,6 +8,8 @@ import processing.core.PImage;
 
 public class AnimatedBackground extends PApplet{
 
+	private static final long serialVersionUID = 1L;
+	
 	private final int width = 600;
 	private final int height = 300;
 	private AnimatedSplash[] splashArr;

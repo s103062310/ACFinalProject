@@ -7,7 +7,7 @@ import java.awt.Color;
 import processing.core.PImage;
 import processing.core.PApplet;
 import object.client.Splash;
-import object.client.Image;
+import object.tool.Image;
 import object.tool.Timer;
 import object.tool.Button;
 
@@ -19,7 +19,7 @@ public class Game {
 	private PImage img;
 	private Button ctrlBtn;
 	private Timer timer;
-	private ArrayList<Splash> splash, remove;
+	private ArrayList<Splash> splash;
 	private int accumulateMoney=0;
 	
 	// variable & constant
@@ -53,7 +53,6 @@ public class Game {
 		
 		// set splash list
 		splash = new ArrayList<Splash>();
-		remove = new ArrayList<Splash>();
 		
 	}
 
@@ -67,14 +66,12 @@ public class Game {
 			parent.image(img, 0, 0, width, height);
 			
 			// draw splash
-			for(Splash s : splash){
-				s.display();
-				if(s.getTrans()==0) remove.add(s);
+			for(int i=0; i<splash.size(); i++){
+				if(splash.get(i).getTrans()==0) splash.remove(i);
 			}
-			for(Splash s: remove){
-				splash.remove(s);
+			for(int i=0; i<splash.size(); i++){
+				splash.get(i).display();
 			}
-			remove.clear();
 			
 			// draw green frame
 			if(isFrame){
@@ -222,7 +219,7 @@ public class Game {
 	
 	
 	// take screenshot of main game
-	public Image screenshot(){
+	public PImage screenshot(){
 		
 		// create image
 		PImage screenshot  = parent.createImage(800, 450, PApplet.ARGB);
@@ -233,9 +230,9 @@ public class Game {
 			screenshot.pixels[i] = c;
 		}
 		
-		Image img = new Image(screenshot);
+		//Image img = new Image(screenshot);
 		
-		return img;
+		return screenshot;
 	
 	}
 
