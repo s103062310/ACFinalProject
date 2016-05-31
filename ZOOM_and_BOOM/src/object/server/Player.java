@@ -8,7 +8,7 @@ public class Player implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	// player information
-	private String name;
+	private String name = new String();
 	private int color;		// a int of random from 0~5 will be mapped to real color in other class
 	private int score=0;
 	private int completed=0;
@@ -40,6 +40,8 @@ public class Player implements Serializable{
 		
 	}
 	
+	// Constructor 3
+	public Player(){}
 	
 	/**-----------------------------------------------
 	 * ¡õ seter and geter

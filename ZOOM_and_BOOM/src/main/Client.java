@@ -16,6 +16,7 @@ public class Client extends JFrame{
 	// information of server
 	private String IPAddress;
 	private int portNum;
+	static boolean isConnect = true;
 	
 	// connection between server and client
 	private Socket socket;
@@ -69,8 +70,8 @@ public class Client extends JFrame{
 			
 			System.out.println("Fail to connect with server!");
 			JOptionPane.showMessageDialog(null,"Server did not exist.\nPlease try again.");
-			window.dispose();
 			applet.dispose();
+			isConnect = false;
 			return;
 			
 		}
@@ -224,13 +225,13 @@ public class Client extends JFrame{
 		//Run login app
 		//client.loginApplet.runFrame();
 		
+		if (!isConnect)return;
 		// create frame and connect to server
 		window = new JFrame("ZOOM and BOOM");
 		window.setContentPane(client.applet);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setSize(1117, 690);
 		window.setVisible(true);
-		
 	
 	}
 	
