@@ -108,7 +108,7 @@ public class Login extends PApplet{
 		image(backgroundImg,0,0);
 		tint(255, 255);
 		noStroke();
-		loginFont = loadFont("resource/fonts/Sorry.ttf");
+		loginFont = createFont("resource/fonts/HappyGiraffe.ttf",52);
 		textFont(loginFont);
 		//Main login window
 		if(state == loginState.LOGINATTEMPT){
@@ -468,8 +468,9 @@ public class Login extends PApplet{
 			else if (confirmBtn.checkLimits()){
 				//check if user existed before
 				if(!newNameBox.getText().isEmpty() && !newPassBox.getText().isEmpty() && !confirmPassBox.getText().isEmpty()){
-					if( newPassBox.getText().equals( confirmPassBox.getText() ) )
+					if( newPassBox.getText().equals( confirmPassBox.getText() ) ){
 						newUser();
+					}
 					else
 						state = loginState.REGISTERWRONGPASS;
 				}
@@ -635,4 +636,5 @@ public class Login extends PApplet{
 		
 		return;
 	}
+
 }

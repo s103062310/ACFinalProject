@@ -223,7 +223,7 @@ public class Client extends JFrame{
 		client.connect();
 		
 		//Run login app
-		client.loginApplet.runFrame();
+		//client.loginApplet.runFrame();
 		
 		if (!isConnect)return;
 		// create frame and connect to server
