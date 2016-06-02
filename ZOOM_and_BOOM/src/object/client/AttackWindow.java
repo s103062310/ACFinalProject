@@ -23,7 +23,7 @@ public class AttackWindow extends PApplet{
 	private String[] playerName;
 	private ArrayList<Player> otherPlayers = new ArrayList<Player>();
 	//TODO 新增取消按鈕~
-	
+	private Button cancelBtn;
 	
 	// Constructor: initialize
 	public AttackWindow(MainApplet p, ArrayList<Player> list){
@@ -34,10 +34,8 @@ public class AttackWindow extends PApplet{
 		setSize(400, 700);
 		
 		//construct "otherPlayers"
-		int j=0;
 		for(Player player: list){
-			if(list.get(j).getName()!=parent.getPlayer().getName()) otherPlayers.add(player);
-			j++;
+			if(!player.getName().equals(parent.getPlayer().getName())) otherPlayers.add(player);
 		}
 		
 		// create button through list
@@ -51,7 +49,7 @@ public class AttackWindow extends PApplet{
 		}
 		
 		//TODO 取消按鈕初始
-		
+		cancelBtn = new Button(this, 300, 100, 50, 255);
 	}
 	
 	
@@ -70,7 +68,10 @@ public class AttackWindow extends PApplet{
 		}
 		
 		//TODO 畫取消按鈕
-		
+		cancelBtn.display();
+		fill(255);
+		textSize(15);
+		text("Cancel", 275, 180);
 	}
 	
 	
@@ -90,7 +91,9 @@ public class AttackWindow extends PApplet{
 		}
 		
 		//TODO 取消按鈕點選 -> 什麼都不做只關閉視窗
-		
+		if(cancelBtn.inBtn()){
+			window.dispose();
+		}
 	}
 	
 	
@@ -103,7 +106,8 @@ public class AttackWindow extends PApplet{
 			else b.setOver(false);
 			
 		}
-		
+		if(cancelBtn.inBtn()) cancelBtn.setOver(true);
+		else cancelBtn.setOver(false);
 	}
 
 
