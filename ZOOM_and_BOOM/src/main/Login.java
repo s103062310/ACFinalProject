@@ -1,7 +1,6 @@
 package main;
 
 import java.awt.Color;
-import java.util.*;
 
 import javax.swing.JFrame;
 
@@ -9,10 +8,7 @@ import java.sql.*;
 
 import processing.core.PApplet;
 import processing.core.PFont;
-import processing.core.PGraphics;
 import processing.core.PImage;
-import processing.data.JSONArray;
-import processing.data.JSONObject;
 
 import object.server.Player;
 import object.tool.SplashButton;
@@ -40,7 +36,7 @@ public class Login extends PApplet{
 	
 	//GUI		
 	private static enum loginState {
-	    LOGINATTEMPT,LOGINSUCCESS,LOGINPASSFAIL,LOGINUSERFAIL,LOGININFO,
+	    WAIT,LOGINATTEMPT,LOGINSUCCESS,LOGINPASSFAIL,LOGINUSERFAIL,LOGININFO,
 	    REGISTER,REGISTERSUCCESS,REGISTERWRONGPASS,REGISTERDUPLICATED,REGISTERINFO
 	}
 	private loginState state;
@@ -61,6 +57,10 @@ public class Login extends PApplet{
 	private SecretTextbox newPassBox;
 	private SecretTextbox confirmPassBox;
 	
+	//Wait
+	private int rand=0;
+	private Color[] splashColors;
+	
 	//Client
 	private Client client;
 	private boolean loginSucc;
@@ -77,6 +77,9 @@ public class Login extends PApplet{
 		//GUI
 		size(width, height);
 		smooth();
+		noStroke();
+		loginFont = createFont("resource/fonts/HappyGiraffe.ttf",52);
+		textFont(loginFont);
 		//Buttons
 		loginBtn = new SplashButton(this, 110, 200, Color.RED, "Login");
 		registerBtn = new SplashButton(this, 310, 200, Color.RED, "New");
@@ -99,17 +102,36 @@ public class Login extends PApplet{
 			System.err.println("Unable to laod cursor or Backgroun Images");
 			ex.printStackTrace();
 		}
+		//Wait animation
+		setColors();
+		rand = (int) random(12);
 	}
 	
 	//Processing Draw
 	public void draw(){
-		background(255);
-		tint(255, 130);
-		image(backgroundImg,0,0);
-		tint(255, 255);
-		noStroke();
-		loginFont = createFont("resource/fonts/HappyGiraffe.ttf",52);
-		textFont(loginFont);
+		//If not WAIT
+		if (!(state == loginState.WAIT)){
+			frameRate(60);
+			background(255);
+			tint(255, 130);
+			image(backgroundImg,0,0);
+			tint(255, 255);
+		}
+		//Wait state
+		else if (state == loginState.WAIT){
+			 if (frameCount % 30 == 0){
+				rand = (int) random(12);
+			  }
+			  if (frameCount % 2 == 0) {
+			    fill(splashColors[rand].getRed(),splashColors[rand].getGreen(),splashColors[rand].getBlue());
+			    pushMatrix();
+			    translate(300, 175);
+			    rotate(radians(frameCount/2  % 360));
+			    rect(0, 25, 50, 2);
+			    popMatrix();
+			    
+			  }
+		}
 		//Main login window
 		if(state == loginState.LOGINATTEMPT){
 			//transparent rectangle
@@ -126,10 +148,10 @@ public class Login extends PApplet{
 			fill(122,122,122);
 			
 			//Cursor
-			 if (nameBox.checkLimits() || passBox.checkLimits()) {
+			 if (nameBox.isHovered() || passBox.isHovered()) {
 				 cursor(TEXT);
 			 } 
-			 else if(loginBtn.checkLimits() || registerBtn.checkLimits()){
+			 else if(loginBtn.isHovered() || registerBtn.isHovered()){
 				 cursor(HAND);
 			 }
 			 else
@@ -152,7 +174,7 @@ public class Login extends PApplet{
 			//Button
 			playBtn.display();
 			//Cursor
-			if(playBtn.checkLimits())
+			if(playBtn.isHovered())
 				cursor(HAND);
 			else 
 				cursor(aimCursor,16,16);
@@ -174,7 +196,7 @@ public class Login extends PApplet{
 			//Button
 			retryLoginBtn.display();
 			//Cursor
-			if(retryLoginBtn.checkLimits())
+			if(retryLoginBtn.isHovered())
 				cursor(HAND);
 			else 
 				cursor(aimCursor,16,16);
@@ -196,7 +218,7 @@ public class Login extends PApplet{
 			//Button
 			retryLoginBtn.display();
 			//Cursor
-			if(retryLoginBtn.checkLimits())
+			if(retryLoginBtn.isHovered())
 				cursor(HAND);
 			else 
 				cursor(aimCursor,16,16);
@@ -218,7 +240,7 @@ public class Login extends PApplet{
 			//Button
 			retryLoginBtn.display();
 			//Cursor
-			if(retryLoginBtn.checkLimits())
+			if(retryLoginBtn.isHovered())
 				cursor(HAND);
 			else 
 				cursor(aimCursor,16,16);
@@ -239,10 +261,10 @@ public class Login extends PApplet{
 			fill(122,122,122);
 			
 			//Cursor
-			 if (newNameBox.checkLimits() || newPassBox.checkLimits() || confirmPassBox.checkLimits()) {
+			 if (newNameBox.isHovered() || newPassBox.isHovered() || confirmPassBox.isHovered()) {
 				 cursor(TEXT);
 			 } 
-			 else if(confirmBtn.checkLimits() || backBtn.checkLimits()){
+			 else if(confirmBtn.isHovered() || backBtn.isHovered()){
 				 cursor(HAND);
 			 }
 			 else
@@ -265,7 +287,7 @@ public class Login extends PApplet{
 			//Button
 			retryLoginBtn.display();
 			//Cursor
-			if(retryLoginBtn.checkLimits())
+			if(retryLoginBtn.isHovered())
 				cursor(HAND);
 			else 
 				cursor(aimCursor,16,16);
@@ -287,7 +309,7 @@ public class Login extends PApplet{
 			//Button
 			retryLoginBtn.display();
 			//Cursor
-			if(retryLoginBtn.checkLimits())
+			if(retryLoginBtn.isHovered())
 				cursor(HAND);
 			else 
 				cursor(aimCursor,16,16);
@@ -309,7 +331,7 @@ public class Login extends PApplet{
 			//Button
 			retryLoginBtn.display();
 			//Cursor
-			if(retryLoginBtn.checkLimits())
+			if(retryLoginBtn.isHovered())
 				cursor(HAND);
 			else 
 				cursor(aimCursor,16,16);
@@ -331,7 +353,7 @@ public class Login extends PApplet{
 			//Button
 			retryLoginBtn.display();
 			//Cursor
-			if(retryLoginBtn.checkLimits())
+			if(retryLoginBtn.isHovered())
 				cursor(HAND);
 			else 
 				cursor(aimCursor,16,16);
@@ -404,21 +426,23 @@ public class Login extends PApplet{
 	public void mousePressed(){
 		//main login window
 		if ( state == loginState.LOGINATTEMPT ){
-			if (nameBox.checkLimits()){
+			if (nameBox.isHovered()){
 				nameBox.select();
 				passBox.unselect();
 			}
-			else if(passBox.checkLimits()){
+			else if(passBox.isHovered()){
 				passBox.select();
 				nameBox.unselect();
 			 }
-			else if(registerBtn.checkLimits()){
+			else if(registerBtn.isHovered()){
 				nameBox.reset();
 				passBox.reset();
 				state = loginState.REGISTER;
 			}
-			else if(loginBtn.checkLimits()){
+			else if(loginBtn.isHovered()){
 				if (!nameBox.getText().isEmpty() && !passBox.getText().isEmpty()){
+					state = loginState.WAIT;
+					setWaitScreen();
 					checkDatabase();
 				}
 				else{
@@ -431,44 +455,46 @@ public class Login extends PApplet{
 		//return to login
 		else if ( state == loginState.LOGINPASSFAIL || state == loginState.LOGINUSERFAIL ||
 				state == loginState.LOGININFO || state == loginState.REGISTERSUCCESS){
-			if (retryLoginBtn.checkLimits()){
+			if (retryLoginBtn.isHovered()){
 				state = loginState.LOGINATTEMPT;
 			}
 		}
 		//return to register
 		else if (state == loginState.REGISTERWRONGPASS || 
 				state == loginState.REGISTERDUPLICATED || state == loginState.REGISTERINFO){
-			if (retryLoginBtn.checkLimits()){
+			if (retryLoginBtn.isHovered()){
 				state = loginState.REGISTER;
 			}
 		}
 		//login success
 		else if ( state == loginState.LOGINSUCCESS ){
-			if (playBtn.checkLimits()){
+			if (playBtn.isHovered()){
 				this.loginSucc = true;
 			}
 		}
 		//register window 
 		else if ( state == loginState.REGISTER){
-			if (newNameBox.checkLimits()){
+			if (newNameBox.isHovered()){
 				newNameBox.select();
 				newPassBox.unselect();
 				confirmPassBox.unselect();
 			}
-			else if(newPassBox.checkLimits()){
+			else if(newPassBox.isHovered()){
 				newNameBox.unselect();
 				newPassBox.select();
 				confirmPassBox.unselect();
 			 }
-			else if(confirmPassBox.checkLimits()){
+			else if(confirmPassBox.isHovered()){
 				newNameBox.unselect();
 				newPassBox.unselect();
 				confirmPassBox.select();
 			 }
-			else if (confirmBtn.checkLimits()){
+			else if (confirmBtn.isHovered()){
 				//check if user existed before
 				if(!newNameBox.getText().isEmpty() && !newPassBox.getText().isEmpty() && !confirmPassBox.getText().isEmpty()){
 					if( newPassBox.getText().equals( confirmPassBox.getText() ) ){
+						setWaitScreen();
+						state = loginState.WAIT;
 						newUser();
 					}
 					else
@@ -477,7 +503,7 @@ public class Login extends PApplet{
 				else
 					state = loginState.REGISTERINFO;
 			}
-			else if (backBtn.checkLimits()){
+			else if (backBtn.isHovered()){
 				newNameBox.reset();
 				newPassBox.reset();
 				confirmPassBox.reset();
@@ -486,127 +512,163 @@ public class Login extends PApplet{
 		}
 	}
 	
+	private void setColors(){
+		splashColors = new Color[12];
+		splashColors[0]  = new Color(255,0,128);//PINK
+		splashColors[1]  = new Color(255,0,0); //RED
+		splashColors[2]  = new Color(255,128,0); //ORANGE
+		splashColors[3]  = new Color(255,255,0);//YELLOW
+		splashColors[4]  = new Color(128,255,0); //LIME GREEN
+		splashColors[5]  = new Color(0,255,0);//GREEN
+		splashColors[6]  = new Color(0,255,128);//AQUA
+		splashColors[7]  = new Color(0,255,255);//CYAN
+		splashColors[8]  = new Color(0,128,255);//LIGHT BLUE
+		splashColors[9]  = new Color(0,255,255);//BLUE
+		splashColors[10] = new Color(128,0,255);//PURPLE
+		splashColors[11]  = new Color(255,0,255);//MAGENTA
+	}
+	
+	public void setWaitScreen(){
+		background(255);
+		tint(255, 130);
+		image(backgroundImg,0,0);
+		tint(255, 255);
+		frameRate(500);
+	}
+	
 	//Check user/pass in database
 	private void checkDatabase(){
 		
-		Connection sqlConn = null;
-		Statement sqlState = null;
-		String selectQuery = null;
-		ResultSet sqlResult = null;
-		
-		try{
-			
-			Class.forName(jdbcDriver);
-			
-			sqlConn = DriverManager.getConnection(sqlDriver,sqlUser,sqlPass);
-			sqlState = sqlConn.createStatement();
-			selectQuery = "SELECT username,password,score,completed,shield,color FROM player_table WHERE username = \"" + nameBox.getText() +"\"";
-			sqlResult = sqlState.executeQuery(selectQuery);
-			
-			//DEBUG
-			//System.out.println("QUERY: " + selectQuery);
-			
-			//if query returns results
-			if (sqlResult.next()){
+		Thread databaseThread = new Thread(new Runnable() {
+			public void run(){
+				Connection sqlConn = null;
+				Statement sqlState = null;
+				String selectQuery = null;
+				ResultSet sqlResult = null;
 				
-				String resultName, resultPass;
-				int resultScore=0, resultColor=0, resultShield =0, resultCompleted=0;
-				
-				resultName = sqlResult.getString("username");
-				resultPass = sqlResult.getString("password");
-				resultScore = sqlResult.getInt("score");
-				resultCompleted = sqlResult.getInt("completed");
-				resultShield = sqlResult.getInt("shield");
-				resultColor = sqlResult.getInt("color");
-				
-				if (resultPass.equals(passBox.getText())){
-					state = loginState.LOGINSUCCESS;
-					client.setPlayer( new Player(resultColor, resultName, resultScore, resultCompleted, resultShield) );
+				try{
+					
+					Class.forName(jdbcDriver);
+					
+					sqlConn = DriverManager.getConnection(sqlDriver,sqlUser,sqlPass);
+					sqlState = sqlConn.createStatement();
+					selectQuery = "SELECT username,password,score,completed,shield,color FROM player_table WHERE username = \"" + nameBox.getText() +"\"";
+					sqlResult = sqlState.executeQuery(selectQuery);
+					
+					//DEBUG
+					//System.out.println("QUERY: " + selectQuery);
+					
+					//if query returns results
+					if (sqlResult.next()){
+						
+						String resultName, resultPass;
+						int resultScore=0, resultColor=0, resultShield =0, resultCompleted=0;
+						
+						resultName = sqlResult.getString("username");
+						resultPass = sqlResult.getString("password");
+						resultScore = sqlResult.getInt("score");
+						resultCompleted = sqlResult.getInt("completed");
+						resultShield = sqlResult.getInt("shield");
+						resultColor = sqlResult.getInt("color");
+						
+						if (resultPass.equals(passBox.getText())){
+							state = loginState.LOGINSUCCESS;
+							client.setPlayer( new Player(resultColor, resultName, resultScore, resultCompleted, resultShield) );
+						}
+						//if password doesn't match database's
+						else{
+							state = loginState.LOGINPASSFAIL;
+						}
+					}
+					//if username not in database
+					else{
+						state = loginState.LOGINUSERFAIL;	
+					}
 				}
-				//if password doesn't match database's
-				else{
-					state = loginState.LOGINPASSFAIL;
+				
+				catch (SQLException ex){
+					System.err.println("SQLException: " + ex.getMessage());
+					System.err.println("VendorError: " + ex.getErrorCode());
+					ex.printStackTrace();
+				}
+				
+				catch (ClassNotFoundException ex){
+					System.err.println("Unable to locate Driver");
+					ex.printStackTrace();
+				}
+				//close connection
+				finally{
+					try{
+						if(sqlState!=null && sqlConn!=null)
+							sqlConn.close();
+					}
+					catch(SQLException ex){
+						System.err.println("Unable to close SSL connection to database");
+						ex.printStackTrace();
+					}
 				}
 			}
-			//if username not in database
-			else{
-				state = loginState.LOGINUSERFAIL;	
-			}
-		}
+		});
 		
-		catch (SQLException ex){
-			System.err.println("SQLException: " + ex.getMessage());
-			System.err.println("VendorError: " + ex.getErrorCode());
-			ex.printStackTrace();
-		}
-		
-		catch (ClassNotFoundException ex){
-			System.err.println("Unable to locate Driver");
-			ex.printStackTrace();
-		}
-		//close connection
-		finally{
-			try{
-				if(sqlState!=null && sqlConn!=null)
-					sqlConn.close();
-			}
-			catch(SQLException ex){
-				System.err.println("Unable to close SSL connection to database");
-				ex.printStackTrace();
-			}
-		}
+		databaseThread.start();
 	}
 	
 	//Add newUser to database
 	private void newUser(){
+		
+		Thread databaseThread = new Thread(new Runnable() {
+			public void run(){
 		//Money and Color will be set to 0 by default as per database's settings
-		
-		Connection sqlConn = null;
-		Statement sqlState = null;
-		String newEntry = null;
-		
-		try{
-			
-			Class.forName(jdbcDriver);
-			
-			sqlConn = DriverManager.getConnection(sqlDriver,sqlUser,sqlPass);
-			sqlState = sqlConn.createStatement();
-			
-			int randomColor = (int) random(1,5);
-			newEntry = "INSERT INTO player_table (username,password,color) VALUES ('" + newNameBox.getText() + "', '" + newPassBox.getText() + "', " + randomColor + " )";
+				
+				Connection sqlConn = null;
+				Statement sqlState = null;
+				String newEntry = null;
+				
+				try{
 					
-			sqlState.executeUpdate(newEntry);
-			
-			//DEBUG
-			System.out.println("NEWENTRY: " + newEntry);
-			
-			state = loginState.REGISTERSUCCESS;
-			
-		}
-		
-		catch (SQLException ex){
-			System.err.println("SQLException: " + ex.getMessage());
-			System.err.println("VendorError: " + ex.getErrorCode());
-			ex.printStackTrace();
-			if(ex.getMessage().contains("Duplicate"))
-				state = loginState.REGISTERDUPLICATED;
-		}
-		
-		catch (ClassNotFoundException ex){
-			System.err.println("Unable to locate Driver");
-			ex.printStackTrace();
-		}
-		//close connection
-		finally{
-			try{
-				if(sqlState!=null && sqlConn!=null)
-					sqlConn.close();
+					Class.forName(jdbcDriver);
+					
+					sqlConn = DriverManager.getConnection(sqlDriver,sqlUser,sqlPass);
+					sqlState = sqlConn.createStatement();
+					
+					int randomColor = (int) random(1,5);
+					newEntry = "INSERT INTO player_table (username,password,color) VALUES ('" + newNameBox.getText() + "', '" + newPassBox.getText() + "', " + randomColor + " )";
+							
+					sqlState.executeUpdate(newEntry);
+					
+					//DEBUG
+					System.out.println("NEWENTRY: " + newEntry);
+					
+					state = loginState.REGISTERSUCCESS;
+					
+				}
+				
+				catch (SQLException ex){
+					System.err.println("SQLException: " + ex.getMessage());
+					System.err.println("VendorError: " + ex.getErrorCode());
+					ex.printStackTrace();
+					if(ex.getMessage().contains("Duplicate"))
+						state = loginState.REGISTERDUPLICATED;
+				}
+				
+				catch (ClassNotFoundException ex){
+					System.err.println("Unable to locate Driver");
+					ex.printStackTrace();
+				}
+				//close connection
+				finally{
+					try{
+						if(sqlState!=null && sqlConn!=null)
+							sqlConn.close();
+					}
+					catch(SQLException ex){
+						System.err.println("Unable to close SSL connection to database");
+						ex.printStackTrace();
+					}
+				}
 			}
-			catch(SQLException ex){
-				System.err.println("Unable to close SSL connection to database");
-				ex.printStackTrace();
-			}
-		}
+		});
+		databaseThread.start();
 	}
 	
 	//Returns true if player already logged in

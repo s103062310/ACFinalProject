@@ -80,7 +80,7 @@ public class Textbox {
 	}
 	
 	//checks if mouse is in textbox
-	public boolean checkLimits (){
+	public boolean isHovered (){
 		float width = this.defaultWidth;
 		if (parent.textWidth(text) > this.defaultWidth)
 			width = parent.textWidth(text);
