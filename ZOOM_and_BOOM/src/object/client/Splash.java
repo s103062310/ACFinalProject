@@ -15,7 +15,7 @@ public class Splash {
 	public Splash(PApplet p, int x, int y, int t, int c){
 		
 		parent = p;
-		img = parent.loadImage("src/resource/splash.png");
+		img = parent.loadImage("src/resource/other_images/splash.png");
 		color = c;
 		setSplash();
 		this.x = x;

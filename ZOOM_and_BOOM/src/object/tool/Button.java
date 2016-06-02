@@ -1,17 +1,20 @@
 package object.tool;
 
+import java.util.ArrayList;
 import processing.core.PApplet;
-
-//TODO image! (( 2 type
+import processing.core.PImage;
 
 public class Button {
 	
 	protected PApplet parent;
-	protected float x, y,d, scroll;
+	protected PImage image;
+	protected ArrayList<PImage> animate = new ArrayList<PImage>();
+	protected int color, width, height;
+	protected float x, y, d, centerX, centerY, dis, scroll=0;
 	protected boolean over;
-	protected int color;
 	
-	// Constructor
+	
+	// Constructor - circle
 	public Button(PApplet p, float x, float y, float d, int c){
 		
 		this.parent = p;
@@ -20,12 +23,30 @@ public class Button {
 		this.d = d;
 		this.over = false;
 		this.color = c;
+		this.centerX = x;
+		this.centerY = y;
+		this.dis = d/2;
 		
 	}
 	
 	
-	// draw button
-	public void display(){
+	// Constructor - image
+	public Button(PApplet p, float x, float y, int w, int h, int dummy){
+		
+		this.parent = p;
+		this.x = x;
+		this.y = y;
+		this.width = w;
+		this.height = h;
+		this.centerX = x + w/2;
+		this.centerY = y + h/2;
+		this.dis = (w+h)/4;
+		
+	}
+	
+	
+	// draw button - circle version
+	public void display_circle(){
 		
 		// button
 		parent.noStroke();
@@ -35,17 +56,30 @@ public class Button {
 		
 	}
 	
+	
+	// draw button - image version
+	public void display_image(){
+		
+		// button
+		if(over) parent.image(image, x-5, y-5, width+10, height+10);
+		else parent.image(image, x, y, width, height);
+		
+	}
+	
 
 	// detect mouse move into button
 	public boolean inBtn(){
-		if(PApplet.dist(parent.mouseX, parent.mouseY, x-scroll, y)<=d/2)
+		if(PApplet.dist(parent.mouseX, parent.mouseY, centerX, centerY)<=dis)
 			return true;
 		else return false;
 	}
 	
-	public void setPosition(float scrollbar){
-		this.scroll = scrollbar/2;
+	
+	// add resource image to list
+	public void addImage(String path){
+		animate.add(parent.loadImage(path));
 	}
+	
 	
 	/**-----------------------------------------------
 	 * ¡õ seter and geter
@@ -53,6 +87,14 @@ public class Button {
 	
 	public void setOver(boolean b){
 		this.over = b;
+	}
+	
+	public void setPosition(float scrollbar){
+		this.scroll = scrollbar/2;
+	}
+	
+	public void setImage(int index){
+		image = animate.get(index);
 	}
 	
 }

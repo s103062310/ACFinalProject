@@ -49,7 +49,7 @@
 2. if server need => develop other type timer
 
 ### Button.java:
-1. image! (( 2 type
+1. ~~image! (( 2 type~~ by 頻
 
 ### Game.java:
 1. answerCorrect()
@@ -59,11 +59,15 @@
 
 ## 5/28 Integrate
 
+### Market.java
+1. ~~新增scrollbar~~ by Tera
+2. 調成喜歡的美工~
+
 ### AttackWindow.java
-1. 新增取消按鈕
+1. ~~新增取消按鈕~~ by 竹
 2. 試做 scrollbar
 3. 需要一點美工設計(?
-4. 點選之後的後續連接(包含MainApplet裡)
+4. 點選之後的後續連接
 
 ### MainApplet.java
 1. Attacked() (頻)
@@ -72,6 +76,15 @@
 ### Scoreboard.java
 1. 處理同分排名(是否給黃冠)
 2. 調成喜歡的美工~
+
+## 6/2 Integrate
+
+1. ~~統合 score board & market 的顏色~~ by Tera
+2. 自己的所屬色價格訂低一點(匿名性)
+3. 做Random商品
+4. 做防護罩
+5. ~~研究嵌入不同字體(找有明顯差異的先試試)~~ by Eva
+6. 傳送圖片
 
 ## ScreenShot
 ![alt tag](/UserInterface.png)

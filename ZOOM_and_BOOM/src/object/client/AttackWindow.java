@@ -7,7 +7,6 @@ import object.tool.Button;
 import main.MainApplet;
 import processing.core.PApplet;
 
-//TODO 試做 scrollbar
 //TODO 需要一點美工設計(?
 
 public class AttackWindow extends PApplet{
@@ -61,14 +60,14 @@ public class AttackWindow extends PApplet{
 		
 		for(int i=0; i<btn.length; i++){
 			
-			btn[i].display();
+			btn[i].display_circle();
 			textSize(20);
 			text(playerName[i], 200, 80+100*i);
 			
 		}
 		
 		//TODO 畫取消按鈕
-		cancelBtn.display();
+		cancelBtn.display_circle();
 		fill(255);
 		textSize(15);
 		text("Cancel", 275, 180);

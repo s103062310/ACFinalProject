@@ -24,7 +24,7 @@ public class ColorButton extends Button{
 	public void display(){
 		
 		// button
-		super.display();
+		super.display_circle();
 		
 		// text
 		parent.fill(0);

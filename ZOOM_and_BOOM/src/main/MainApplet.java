@@ -187,25 +187,13 @@ public class MainApplet extends PApplet{
 	}
 
 	
-	// if answer is correct
-	public void correct(){
-		game.answerCorrect();
-	}
-	
-	
-	// if answer is correct
-	public void wrong(){
-		game.answerWrong();
-	}
-	
-	
 	// send object to server
 	public void send(Object o){
 		thread.send(o);
 	}
 	
 	
-	// modify money
+	// modify money by amount
 	public void calMoney(int amount){
 		player.setScore(player.getScore()+amount);
 	}
@@ -233,6 +221,10 @@ public class MainApplet extends PApplet{
 	
 	public void setClientThread(ClientThread thread){
 		this.thread = thread; 
+	}
+	
+	public Game getGame(){
+		return this.game;
 	}
 	
 }

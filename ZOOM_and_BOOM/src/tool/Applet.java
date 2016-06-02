@@ -32,13 +32,13 @@ public class Applet extends PApplet {
 			
 			// resize the image and draw
 			if(image.width<800||image.height<450){
-				int w = 800/image.width;
-				int h = 450/image.height;
+				float w = 800/image.width;
+				float h = 450/image.height;
 				if(w>h) image(image, 0, 0-(image.height*w-450)/2, 800, image.height*w);
 				else image(image, 0-(image.width*h-800)/2, 0, image.width*h, 450);
 			} else{
-				int w = image.width/800;
-				int h = image.height/450;
+				float w = image.width/800;
+				float h = image.height/450;
 				if(w>h) image(image, 0-(image.width/h-800)/2, 0, image.width/h, 450);
 				else image(image, 0, 0-(image.height/w-450)/2, 800, image.height/w);
 			}
