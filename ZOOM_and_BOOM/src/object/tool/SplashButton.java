@@ -2,21 +2,18 @@ package object.tool;
 
 import processing.core.PApplet;
 import processing.core.PImage;
-import processing.core.PImage;
-import javax.imageio.ImageIO;
-import ddf.minim.signals.*;
 import java.awt.Color;
 
 /**
 * Creates Buttons with Splash image and text, wraps text
 * 2 constructors: 1) default height and width values, 2) customizable
-* checkLimit() checks if mouse is over Button
+* isSelected() checks if mouse is over Button
 */
 
 public class SplashButton {
 	
 	private PApplet parent;
-	private PImage splashImg;
+	private PImage splashImg, selectedSplashImg;
 	private int normalWidth = 200;
 	private int normalHeight = 130;
 	private int selectedWidth = 220;
@@ -24,9 +21,8 @@ public class SplashButton {
 	private final int normSelDifference = 20;
 	private String text;
 	private int textSize;
-	//Public
-	public int x, y;
-	public Color color;
+	private int x, y;
+	private Color color;
 	
 	// Constructor with default width and height
 	public SplashButton(PApplet p, int x, int y, Color color, String text){
@@ -45,16 +41,19 @@ public class SplashButton {
 		//loadImage
 		try { 
 			splashImg = parent.loadImage("resource/splash.png");
+			selectedSplashImg = (PImage) splashImg.clone();
 			setSplash(color);
+			splashImg.resize(normalWidth,normalHeight);
+			selectedSplashImg.resize(selectedWidth,selectedHeight);
 		}
 		catch(Exception ex){
-			System.err.println("Unable to laod Splash Image");
+			System.err.println("Unable to load Splash Image");
 			ex.printStackTrace();
 		}
 
 	}
 	
-	//Constructor with costumized values
+	//Constructor with customized values
 	public SplashButton(PApplet p, int x, int y, int height, int width, Color color, String text){
 		this(p, x, y, color, text);
 		this.normalWidth = height;
@@ -65,16 +64,10 @@ public class SplashButton {
 	
 	// draw button
 	public void display(){
-		//display selected button
-		if (checkLimits()){
-			splashImg.resize(selectedWidth,selectedHeight);
-			parent.image(splashImg,x-normSelDifference/2,y-normSelDifference/2);
-		}
-		//display unselected button
-		else{
-			splashImg.resize(normalWidth,normalHeight);
+		if (isHovered())
+			parent.image(selectedSplashImg,x-normSelDifference/2,y-normSelDifference/2);
+		else
 			parent.image(splashImg,x,y);
-		}
 		//display text
 		parent.fill(255);
 		parent.textSize(textSize);
@@ -82,7 +75,7 @@ public class SplashButton {
 	}
 	
 	//See if mouse is in Button
-	public boolean checkLimits(){
+	public boolean isHovered(){
 		if (   parent.mouseX > this.x  &&  parent.mouseX < (this.x + this.normalWidth )
 			&& parent.mouseY > this.y  &&  parent.mouseY < (this.y + this.normalHeight) )
 			return true;
@@ -96,6 +89,10 @@ public class SplashButton {
 		for(int i=0; i<splashImg.pixels.length; i++){
 			if(splashImg.pixels[i]==-16777216) splashImg.pixels[i] = splashColor;
 			else splashImg.pixels[i] = 16777215;
+		}
+		for(int i=0; i<selectedSplashImg.pixels.length; i++){
+			if(selectedSplashImg.pixels[i]==-16777216) selectedSplashImg.pixels[i] = splashColor;
+			else selectedSplashImg.pixels[i] = 16777215;
 		}
 	}
 }
