@@ -12,7 +12,7 @@ public class AnimatedBackground extends PApplet{
 	
 	private final int width = 600;
 	private final int height = 300;
-	private AnimatedSplash[] splashArr;
+	//private AnimatedSplash[] splashArr;
 	private Color[] splashColors;
 	private int splashInTurn;
 	private PImage backgroundImg;
@@ -30,10 +30,11 @@ public class AnimatedBackground extends PApplet{
 		backgroundImg.resize(width, height);
 		image(backgroundImg, 0, 0);
 		setColors();
+		/*
 		splashArr = new AnimatedSplash[50];
 		for( int i=0; i<50 ; i++){
 			splashArr[i] = new AnimatedSplash( this, splashColors[(int)random(11)] );
-		}
+		}*/
 
 	}
 	

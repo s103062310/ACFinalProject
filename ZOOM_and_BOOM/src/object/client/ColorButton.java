@@ -10,7 +10,7 @@ public class ColorButton extends Button{
 
 	
 	// Constructor
-	public ColorButton(PApplet p, int x, int y, int money, String colorName, int color){
+	public ColorButton(PApplet p, float x, float y, int money, String colorName, int color){
 		
 		super(p, x, y, 70, color);
 		this.money = money;
@@ -27,10 +27,10 @@ public class ColorButton extends Button{
 		super.display();
 		
 		// text
-		parent.fill(255);
+		parent.fill(0);
 		parent.textSize(20);
-		parent.text(colorName, x-25, y+80);
-		parent.text("$"+money, x-20, y+100);
+		parent.text(colorName, x-25-scroll, y+80);
+		parent.text("$"+money, x-20-scroll, y+100);
 		
 	}
 	

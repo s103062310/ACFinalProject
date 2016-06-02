@@ -87,7 +87,7 @@ public class Client extends JFrame{
 		
 			//TODO 等有login系統後，可能要搬到server分配給client，以下就不用傳了~
 			// server 創造一個player給client，每次登入都傳
-			int color = rand.nextInt(5);
+			int color = rand.nextInt(9);
 			// int color , int score , String name // tmppppppppppppppppppppppppppp
 			if(player==null) applet.setPlayer(new Player(color, "*"+Integer.toString(color)+"*"));
 			else applet.setPlayer(player);

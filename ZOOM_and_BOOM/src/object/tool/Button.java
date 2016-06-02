@@ -7,12 +7,12 @@ import processing.core.PApplet;
 public class Button {
 	
 	protected PApplet parent;
-	protected int x, y, d, color;
+	protected float x, y,d, scroll;
 	protected boolean over;
-	
+	protected int color;
 	
 	// Constructor
-	public Button(PApplet p, int x, int y, int d, int c){
+	public Button(PApplet p, float x, float y, float d, int c){
 		
 		this.parent = p;
 		this.x = x;
@@ -30,19 +30,22 @@ public class Button {
 		// button
 		parent.noStroke();
 		parent.fill(color);
-		if(over) parent.ellipse(x, y, d+10, d+10);
-		else parent.ellipse(x, y, d, d);
+		if(over) parent.ellipse(x-scroll, y, d+10, d+10);
+		else parent.ellipse(x-scroll, y, d, d);
 		
 	}
 	
 
 	// detect mouse move into button
 	public boolean inBtn(){
-		if(PApplet.dist(parent.mouseX, parent.mouseY, x, y)<=d/2)
+		if(PApplet.dist(parent.mouseX, parent.mouseY, x-scroll, y)<=d/2)
 			return true;
 		else return false;
 	}
 	
+	public void setPosition(float scrollbar){
+		this.scroll = scrollbar/2;
+	}
 	
 	/**-----------------------------------------------
 	 * ¡õ seter and geter

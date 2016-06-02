@@ -25,7 +25,7 @@ public class VScrollbar {
 		xpos = xp;
 		ypos = yp;
 		//spos = ypos + sheight / 2 - swidth / 2;
-		spos=80;
+		spos=0;
 		newspos = spos;
 		sposMin = ypos;
 		sposMax = ypos + sheight - 2*swidth;
@@ -39,16 +39,16 @@ public class VScrollbar {
 	public void display() {
 		
 		// bar
-		parent.fill(187,255,255);
-		parent.rect(xpos, ypos, 20, sheight);
+		parent.fill(209,238,238);
+		parent.rect(xpos, ypos, 17, sheight);
 		
 		// slider
 		if (over || locked) {
-			parent.fill(0, 250, 154);
+			parent.fill(34,139,34);
 		} else {
-			parent.fill(85,26,139);
+			parent.fill(0, 250, 154);
 		}
-		parent.rect(xpos, spos, swidth, 40);
+		parent.rect(xpos, spos, swidth, 27);
 		
 	}
 
