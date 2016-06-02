@@ -27,7 +27,7 @@ public class ConfirmWindow extends PApplet {
 	public void draw(){
 		
 		image(img, 0, 0, 800, 450);
-		btn.display();
+		btn.display_circle();
 		
 	}
 

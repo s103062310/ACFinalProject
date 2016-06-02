@@ -3,11 +3,9 @@ package main;
 import java.io.File;
 import java.util.Random;
 import java.util.ArrayList;
-import java.awt.Color;
 import processing.core.PImage;
 import processing.core.PApplet;
 import object.client.Splash;
-import object.tool.Image;
 import object.tool.Timer;
 import object.tool.Button;
 
@@ -29,7 +27,6 @@ public class Game {
 	
 	// resources
 	private MainApplet parent;
-	private String path = new String("src/resource/pic_rsc");
 	private String[] list;
 	private Random r = new Random();
 	
@@ -40,16 +37,19 @@ public class Game {
 		parent = p;
 		
 		// open file and load all file name
-		File folder = new File(path);
+		File folder = new File("src/resource/pic_rsc");
 		list = folder.list();
 		
 		// load image
 		imageNumber = r.nextInt(list.length);
-		img = parent.loadImage(path + "/" + list[imageNumber]);
+		img = parent.loadImage("src/resource/pic_rsc/" + list[imageNumber]);
 		
 		// set tool bar
-		ctrlBtn = new Button(parent, 760, 40, 50, new Color(130, 180, 150).getRGB());
 		timer = new Timer(parent, 690, 40, 50, 5);
+		ctrlBtn = new Button(parent, 735, 15, 50, 50, 0);
+		ctrlBtn.addImage("src/resource/other_images/pause.png");
+		ctrlBtn.addImage("src/resource/other_images/play.png");
+		ctrlBtn.setImage(0);
 		
 		// set splash list
 		splash = new ArrayList<Splash>();
@@ -102,7 +102,7 @@ public class Game {
 		parent.fill(125, 125, 125, 150);
 		parent.rect(650, 0, 150, 80);
 		timer.display();
-		ctrlBtn.display();
+		ctrlBtn.display_image();
 	}
 	
 	
@@ -133,7 +133,7 @@ public class Game {
 		// change image
 		int temp = imageNumber;
 		while (imageNumber==temp) imageNumber = r.nextInt(list.length);
-		img = parent.loadImage(path + "/" + list[imageNumber]);
+		img = parent.loadImage("src/resource/pic_rsc/" + list[imageNumber]);
 		
 		// restart timer
 		timer.reset();
@@ -184,6 +184,7 @@ public class Game {
 		isPlay = true;
 		timer.reset();
 		lastTime = parent.millis();
+		ctrlBtn.setImage(1);
 		
 	}
 
@@ -194,6 +195,7 @@ public class Game {
 		isPlay = false;
 		//TODO confirm earned money
 		parent.calMoney(accumulateMoney);
+		ctrlBtn.setImage(0);
 		
 	}
 	

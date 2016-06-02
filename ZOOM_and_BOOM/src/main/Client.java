@@ -129,13 +129,13 @@ public class Client extends JFrame{
 					// send answer is correct
 					case "Correct":
 						
-						applet.correct();
+						applet.getGame().answerCorrect();
 						break;
 						
 					// send answer is wrong
 					case "Wrong":
 						
-						applet.wrong();
+						applet.getGame().answerWrong();
 						break;
 					
 					// being attacked by other players
