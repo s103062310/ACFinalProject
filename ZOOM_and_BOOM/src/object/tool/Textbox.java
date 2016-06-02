@@ -3,7 +3,6 @@ package object.tool;
 import processing.core.PApplet;
 import ddf.minim.signals.*;
 import java.awt.Color;
-import object.tool.Timer;
 
 /**
 * Creates Textboxes with default text, wraps text, adds cursor
@@ -18,7 +17,6 @@ import object.tool.Timer;
 public class Textbox {
 
 	protected PApplet parent;
-	protected Timer cursorTimer;
 	protected boolean firstClick;
 	protected final int defaultWidth;
 	protected String defaultText;
@@ -51,7 +49,6 @@ public class Textbox {
 			parent.textSize(textSize);
 		}
 	}
-	
 	
 	//displays Textbox
 	public void display(){
@@ -104,8 +101,7 @@ public class Textbox {
 		return this.text;
 	}
 	public void setText(String newText){
-		this.text = newText;
-		
+		this.text = newText;	
 	}
 	
 	public void appendText(String appendedText){

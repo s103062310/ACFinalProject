@@ -2,13 +2,16 @@ package main;
 
 import java.io.File;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.ArrayList;
 import java.awt.Color;
 import processing.core.PImage;
 import processing.core.PApplet;
+import processing.core.PFont;
 import object.client.Splash;
 import object.tool.Image;
-import object.tool.Timer;
+import object.tool.DigitalTimer;
 import object.tool.Button;
 
 //TODO start animate
@@ -17,8 +20,8 @@ public class Game {
 	
 	// content
 	private PImage img;
+	private PFont gameFont;
 	private Button ctrlBtn;
-	private Timer timer;
 	private ArrayList<Splash> splash;
 	private int accumulateMoney=0;
 	
@@ -33,6 +36,9 @@ public class Game {
 	private String[] list;
 	private Random r = new Random();
 	
+	//timer related resources
+	private DigitalTimer imageTimer;
+	private Timer timerCheckScheduler = new Timer ();
 	
 	// Constructor
 	public Game(MainApplet p){
@@ -49,22 +55,37 @@ public class Game {
 		
 		// set tool bar
 		ctrlBtn = new Button(parent, 760, 40, 50, new Color(130, 180, 150).getRGB());
-		timer = new Timer(parent, 690, 40, 50, 5);
 		
 		// set splash list
 		splash = new ArrayList<Splash>();
 		
+		//font
+		gameFont = parent.createFont("resource/fonts/HappyGiraffe.ttf",32);
+
+		//Timer and Timer Control Task Scheduler
+		imageTimer = new DigitalTimer(parent,5,5,5);
+		timerCheckScheduler.scheduleAtFixedRate(new TimerTask() {
+			public void run() {
+				if(imageTimer.getValue()<10)
+					frameEnd(true);
+				if(isPlay){
+					imageTimer.resume();
+				}
+				else
+					imageTimer.pause();
+			}
+		}, 0, 1);
+
 	}
 
 	
 	// update screen content
 	public void display(){
-		
+		parent.textFont(gameFont);
 		if(isPlay){
-			
 			// draw image
 			parent.image(img, 0, 0, width, height);
-			
+		
 			// draw splash
 			for(int i=0; i<splash.size(); i++){
 				if(splash.get(i).getTrans()==0) splash.remove(i);
@@ -81,40 +102,26 @@ public class Game {
 				parent.rect(startX, startY, frameX, frameY);
 			}
 			parent.noStroke();
-			
-			// time related: timer, change image
-			if(parent.millis()-lastTime>1000){
-				if(timer.getValue()==0){
-					frameEnd(true);
-				} else {
-					timer.work();
-					lastTime = parent.millis();
-				}
-			}
-			
+	
 		} else {
-			
 			parent.background(200, 200, 0);
-			
 		}
 		
 		// draw tool bar
 		parent.fill(125, 125, 125, 150);
-		parent.rect(650, 0, 150, 80);
-		timer.display();
+		parent.rect(720, 0, 150, 80);
 		ctrlBtn.display();
+		imageTimer.display();
+		parent.textFont(gameFont);
 	}
 	
 	
 	// start to frame object => draw green frame
 	public void frameStart(){
-		
 		isFrame = true;
 		startX = parent.mouseX;
 		startY = parent.mouseY;
-		
 	}
-	
 	
 	// end to frame object => frame disappear and transmit answer
 	public void frameEnd(boolean timeout){
@@ -134,10 +141,6 @@ public class Game {
 		int temp = imageNumber;
 		while (imageNumber==temp) imageNumber = r.nextInt(list.length);
 		img = parent.loadImage(path + "/" + list[imageNumber]);
-		
-		// restart timer
-		timer.reset();
-		lastTime = parent.millis();
 		
 	}
 
@@ -180,11 +183,7 @@ public class Game {
 	
 	// start to play game
 	public void gameStart(){
-		
 		isPlay = true;
-		timer.reset();
-		lastTime = parent.millis();
-		
 	}
 
 	
