@@ -40,7 +40,7 @@ public class SplashButton {
 		}
 		//loadImage
 		try { 
-			splashImg = parent.loadImage("resource/splash.png");
+			splashImg = parent.loadImage("resource/other_images/splash.png");
 			selectedSplashImg = (PImage) splashImg.clone();
 			setSplash(color);
 			splashImg.resize(normalWidth,normalHeight);

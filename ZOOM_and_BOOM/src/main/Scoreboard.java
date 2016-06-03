@@ -25,10 +25,10 @@ public class Scoreboard {
 
 		this.parent = p;
 		this.vs = new VScrollbar(1083, 0, 17, 450, 16, parent);
-		this.crown = parent.loadImage("src/resource/crown.png");
+		this.crown = parent.loadImage("src/resource/other_images/crown.png");
 
-		this.bg = parent.loadImage("src/resource/scoreboard.PNG");
-		this.selfbg = parent.loadImage("src/resource/self.PNG");
+		this.bg = parent.loadImage("src/resource/other_images/scoreboard.PNG");
+		this.selfbg = parent.loadImage("src/resource/other_images/self.PNG");
 	}
 
 	// update screen content

@@ -95,8 +95,8 @@ public class Login extends PApplet{
 		confirmPassBox = new SecretTextbox(this, 160, 170, Color.GREEN, "Check Password");
 		//loadImages
 		try { 
-			aimCursor = loadImage("resource/aimCursor.png");
-			backgroundImg = loadImage("resource/paintBackground.png");
+			aimCursor = loadImage("resource/other_images/aimCursor.png");
+			backgroundImg = loadImage("resource/other_images/paintBackground.png");
 		}
 		catch(Exception ex){
 			System.err.println("Unable to laod cursor or Backgroun Images");

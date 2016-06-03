@@ -29,7 +29,7 @@ public class DigitalTimer {
 		digitalFont = parent.createFont("resource/fonts/digital7segment.ttf", 48);
 		//load Image
 		try { 
-			clockImg = parent.loadImage("resource/clock.png");
+			clockImg = parent.loadImage("resource/other_images/clock.png");
 			clockImg.resize(80, 70);
 		}
 		catch(Exception ex){

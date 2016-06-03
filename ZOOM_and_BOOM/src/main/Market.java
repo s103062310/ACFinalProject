@@ -23,7 +23,7 @@ public class Market{
 		
 		this.parent = p;
 		//this.bg = parent.loadImage("src/resource/market.PNG");
-		this.bg = parent.loadImage("src/resource/marketBackground.jpg");
+		this.bg = parent.loadImage("src/resource/other_images/marketBackground.jpg");
 		this.hs = new HScrollbar(0 ,640, 800, 20 ,16, parent);
 		// create buttons
 		int s=70, d=120;
