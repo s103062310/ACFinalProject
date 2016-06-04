@@ -30,6 +30,7 @@ public class Client extends JFrame{
 	// resources
 	private Random rand = new Random();
 	private static JFrame window;
+	private static AudioPlayer audio;  ////***
 	
 	//Player
 	private Player player;
@@ -224,8 +225,14 @@ public class Client extends JFrame{
 		
 		//Run login app
 		//client.loginApplet.runFrame();
+		audio = new AudioPlayer();   ///***
+		audio.loadAudio("src/resource/bgm.wav", null);   ///***
+		audio.setPlayCount(0);   ////****/
 		
 		if (!isConnect)return;
+		
+		audio.play();  ////***
+		
 		// create frame and connect to server
 		window = new JFrame("ZOOM and BOOM");
 		window.setContentPane(client.applet);
