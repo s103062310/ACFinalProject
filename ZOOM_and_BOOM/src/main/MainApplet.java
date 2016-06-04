@@ -91,7 +91,7 @@ public class MainApplet extends PApplet{
 				if(player.getScore() >= btn.getMoney()){
 					
 					// create new PApplet
-					AttackWindow app = new AttackWindow(this, list);
+					AttackWindow app = new AttackWindow(this, list, btn);
 					app.init();
 					app.start();
 					app.setFocusable(true);
@@ -99,7 +99,7 @@ public class MainApplet extends PApplet{
 					// create new frame
 					JFrame window = new JFrame("Attack!!!");
 					window.setContentPane(app);
-					window.setSize(400, 700);
+					window.setSize(400, 600);
 					window.setVisible(true);
 					app.setWindow(window);
 						
@@ -108,13 +108,19 @@ public class MainApplet extends PApplet{
 					// remind that player doesn't have enough money
 					int dialogButton = 0;
 					dialogButton = JOptionPane.showConfirmDialog (null, "Sorry, your money is not enough!","Confirm", dialogButton);
-				
 				}
-				
 			}
-			
 		}
-		
+		if(market.getShieldBtn().inBtn()){
+			if(player.getScore() >= market.getShieldBtn().getMoney()){
+				calMoney(-market.getShieldBtn().getMoney());
+				beProtected();
+			} else {
+				// remind that player doesn't have enough money
+				int dialogButton = 0;
+				dialogButton = JOptionPane.showConfirmDialog (null, "Sorry, your money is not enough!","Confirm", dialogButton);
+			}
+		}
 	}
 	
 	
@@ -133,7 +139,8 @@ public class MainApplet extends PApplet{
 			else btn.setOver(false);
 			
 		}
-		
+		if(market.getShieldBtn().inBtn()) market.getShieldBtn().setOver(true);
+		else market.getShieldBtn().setOver(false);
 	}
 	
 	
@@ -185,7 +192,10 @@ public class MainApplet extends PApplet{
 		thread.send(game.screenshot());
 		
 	}
-
+	// be protected     //////******
+	public void beProtected(){
+		
+	}
 	
 	// send object to server
 	public void send(Object o){

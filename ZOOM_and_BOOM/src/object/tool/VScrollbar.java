@@ -1,6 +1,7 @@
 package object.tool;
 
 import main.MainApplet;
+import processing.core.PApplet;
 
 public class VScrollbar {
 
@@ -12,11 +13,11 @@ public class VScrollbar {
 	private boolean over; 				// is the mouse over the slider?
 	private boolean locked;
 	//private float ratio;
-	private MainApplet parent;
+	private PApplet parent;  ////****MainApplet -> PApplet
 
 	
 	// Constructor
-	public VScrollbar(int xp, int yp, int sw, int sh, int l, MainApplet p) {
+	public VScrollbar(int xp, int yp, int sw, int sh, int l, PApplet p) {  ////****MainApplet -> PApplet
 		
 		swidth = sw;
 		sheight = sh;

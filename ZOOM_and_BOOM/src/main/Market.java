@@ -2,6 +2,7 @@ package main;
 
 import java.awt.Color;
 import object.client.ColorButton;
+import object.client.ShieldBtn;
 import object.tool.HScrollbar;
 import processing.core.PImage;
 
@@ -12,6 +13,7 @@ public class Market{
 	private float scroll;
 	// content
 	private ColorButton[] button;
+	private ShieldBtn shieldbutton;
 	private int[] price = {0, 10, 20, 10, 15, 30};
 	
 	// resources
@@ -24,7 +26,7 @@ public class Market{
 		this.parent = p;
 		//this.bg = parent.loadImage("src/resource/market.PNG");
 		this.bg = parent.loadImage("src/resource/other_images/marketBackground.jpg");
-		this.hs = new HScrollbar(0 ,640, 800, 20 ,16, parent);
+		this.hs = new HScrollbar(0 ,640, 800, 20 ,16, parent);    ////* TODO increase size
 		// create buttons
 		int s=70, d=120;
 		button = new ColorButton[10];
@@ -40,6 +42,8 @@ public class Market{
 		button[8] = new ColorButton(parent, s+d*8, 515, price[4], "OLIVE", new Color(105,139,34).getRGB());
 		button[9] = new ColorButton(parent, s+d*9, 515, price[5], "GUESS", Color.GRAY.getRGB());
 	
+		shieldbutton = new ShieldBtn(parent, s+d*10, 515, price[5], Color.WHITE.getRGB());
+		
 	}
 	
 	
@@ -58,6 +62,10 @@ public class Market{
 			btn.setPosition(hs.getPos());
 			btn.display();
 		}
+		
+		shieldbutton.setPosition(hs.getPos());
+		shieldbutton.display();
+		
 		hs.display();
 		
 	}
@@ -70,5 +78,7 @@ public class Market{
 	public ColorButton[] getButtons(){
 		return button;
 	}
-	
+	public ShieldBtn getShieldBtn(){
+		return shieldbutton;
+	}
 }

@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import object.server.Player;
 import object.tool.Button;
+import object.tool.VScrollbar;
 import main.MainApplet;
 import processing.core.PApplet;
+import processing.core.PImage;
 
 //TODO 需要一點美工設計(?
 
@@ -13,24 +15,35 @@ public class AttackWindow extends PApplet{
 	
 	private static final long serialVersionUID = 1L;
 	
+	// scrollbar
+	private VScrollbar vs;
+	private float scroll;
+	
 	// resources
 	private JFrame window;
 	private MainApplet parent;
+	private PImage bg;
 	
 	// content
 	private Button[] btn;
+	private ColorButton marketBtn;
 	private String[] playerName;
 	private ArrayList<Player> otherPlayers = new ArrayList<Player>();
 	//TODO 新增取消按鈕~
 	private Button cancelBtn;
 	
 	// Constructor: initialize
-	public AttackWindow(MainApplet p, ArrayList<Player> list){
+	public AttackWindow(MainApplet p, ArrayList<Player> list, ColorButton marketBtn){
 		
 		parent = p;
+		this.marketBtn = marketBtn;
 		
 		// set window size
-		setSize(400, 700);
+		setSize(400, 600);
+		
+		// set scroll & background img
+		this.vs = new VScrollbar(365, 0, 17, 600, 16, this);
+		this.bg = parent.loadImage("src/resource/other_images/scoreboard.PNG");
 		
 		//construct "otherPlayers"
 		for(Player player: list){
@@ -57,6 +70,9 @@ public class AttackWindow extends PApplet{
 		
 		// background
 		background(0, 0, 0);
+		image(bg, 0, 0, 400, 600);
+		vs.update();
+		scroll = vs.getspos();
 		
 		for(int i=0; i<btn.length; i++){
 			
@@ -71,6 +87,8 @@ public class AttackWindow extends PApplet{
 		fill(255);
 		textSize(15);
 		text("Cancel", 275, 180);
+		
+		vs.display();
 	}
 	
 	
@@ -82,7 +100,11 @@ public class AttackWindow extends PApplet{
 			if(btn[i].inBtn()){
 				
 				//TODO call method to modify money in MainApplet
+				parent.calMoney(-marketBtn.getMoney());
+				
 				//TODO call method to attack in MainApplet
+				//parent.attacked(playerName[i], new Color(0, 0, 0).getRGB());
+				
 				window.dispose();
 				
 			}
