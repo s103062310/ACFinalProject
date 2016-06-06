@@ -62,25 +62,7 @@ public class Game {
 		gameFont = parent.createFont("resource/fonts/HappyGiraffe.ttf",32);
 
 		//Timer and Timer Control Thread
-		imageTimer = new DigitalTimer(parent,5,5,5);
-
-		timerThread = new Thread (new Runnable() {
-			public void run(){
-				while(true){
-					System.out.print("*");
-					if(imageTimer.getValue()==0)
-						frameEnd(true);
-					if(isPlay){
-						imageTimer.resume();
-					}
-					else
-						imageTimer.pause();
-				}
-			}
-				
-		});
-		
-		timerThread.start();
+		imageTimer = new DigitalTimer(parent,this,5,5,5);
 
 	}
 
@@ -195,6 +177,7 @@ public class Game {
 	public void gameStart(){
 		
 		isPlay = true;
+		imageTimer.resume();
 		ctrlBtn.setImage(0);
 		
 	}
@@ -204,6 +187,7 @@ public class Game {
 	public void gameEnd(){
 		
 		isPlay = false;
+		imageTimer.pause();
 		//TODO confirm earned money
 		parent.calMoney(accumulateMoney);
 		accumulateMoney = 0;
@@ -270,10 +254,14 @@ public class Game {
 	
 	public void play(){
 		this.isPlay=true;
+		this.imageTimer.resume();
+		ctrlBtn.setImage(0);
 	}
 	
 	public void pause(){
 		this.isPlay=false;
+		this.imageTimer.pause();
+		ctrlBtn.setImage(1);
 	}
 	
 	public Button getGameControlButton(){
