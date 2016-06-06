@@ -61,8 +61,8 @@ public class Button {
 	public void display_image(){
 		
 		// button
-		if(over) parent.image(image, x-5, y-5, width+10, height+10);
-		else parent.image(image, x, y, width, height);
+		if(over) parent.image(image, x-5-scrollX, y-5-scrollY, width+10, height+10);
+		else parent.image(image, x-scrollX, y-scrollY, width, height);
 		
 	}
 	

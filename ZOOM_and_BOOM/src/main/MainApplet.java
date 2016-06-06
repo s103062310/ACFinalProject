@@ -126,6 +126,7 @@ public class MainApplet extends PApplet{
 		if(market.getShieldBtn().inBtn()){
 			if(player.getScore() >= market.getShieldBtn().getMoney()){
 				calMoney(-market.getShieldBtn().getMoney());
+				player.buyShield();
 				beProtected();
 			} else {
 				// remind that player doesn't have enough money
