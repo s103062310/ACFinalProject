@@ -75,18 +75,19 @@ public class AttackWindow extends PApplet{
 		scroll = vs.getspos();
 		
 		for(int i=0; i<btn.length; i++){
-			
+			btn[i].setPosition(0,scroll);
 			btn[i].display_circle();
 			textSize(20);
-			text(playerName[i], 200, 80+100*i);
+			text(playerName[i], 200, 80+100*i-scroll/(float)1.5);
 			
 		}
 		
 		//TODO µe¨ú®ø«ö¶s
+		cancelBtn.setPosition(0,scroll);
 		cancelBtn.display_circle();
 		fill(255);
 		textSize(15);
-		text("Cancel", 275, 180);
+		text("Cancel", 275, 180-scroll/(float)1.5);
 		
 		vs.display();
 	}
