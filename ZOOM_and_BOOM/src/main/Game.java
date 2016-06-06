@@ -75,9 +75,6 @@ public class Game {
 		audio = new AudioPlayer(new File("src/resource/crrect_answer2.wav"));   ///***
 		//audio.loadAudio("src/resource/crrect_answer2.wav", null);   ///***
 		audio.setPlayCount(1);   ////****/
-		
-		imageTimer = new DigitalTimer(parent, this, 5, 5, 5);
-
 	}
 
 	
