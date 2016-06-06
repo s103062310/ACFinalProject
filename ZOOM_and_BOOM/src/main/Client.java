@@ -254,7 +254,7 @@ public class Client extends JFrame{
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		        if (JOptionPane.showConfirmDialog(window, 
-		            "Are you sure to close this game?", "Really Closing?", 
+		            "Are you sure you want to close this game?", "Really Closing?", 
 		            JOptionPane.YES_NO_OPTION,
 		            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
 	        		window.dispose();
