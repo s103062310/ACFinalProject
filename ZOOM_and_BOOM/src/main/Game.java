@@ -23,12 +23,9 @@ public class Game {
 	private Wallet wallet;
 	private Button ctrlBtn;
 	private ArrayList<Splash> splash;
-<<<<<<< HEAD
 	private int accumulateMoney=0;
 	private int changeRest;
-=======
 	private ArrayList<ImageMessage> message;
->>>>>>> 62dd7d5d32881cedad37b77aa4e077e771ebd480
 	
 	// variable & constant
 	private boolean isFrame=false, isPlay=false;
@@ -58,7 +55,6 @@ public class Game {
 		// load image
 		imageNumber = r.nextInt(list.length);
 		img = parent.loadImage("src/resource/pic_rsc/" + list[imageNumber]);
-<<<<<<< HEAD
 		rest = new PImage[4];    ///*****
 		/*for(int j=0;j<4;j++){
 			rest[j] = parent.loadImage("src/resource/other_images/coffee"+Integer.toString(3-j)+".png");
@@ -68,13 +64,11 @@ public class Game {
 		rest[1] = parent.loadImage("src/resource/other_images/coffee3.png");
 		rest[2] = parent.loadImage("src/resource/other_images/coffee2.png");
 		rest[3] = parent.loadImage("src/resource/other_images/coffee1.png");
-			
-=======
+		
 		
 		// set wallet
 		wallet = new Wallet(parent, 700, 380, 90, 60);
 		
->>>>>>> 62dd7d5d32881cedad37b77aa4e077e771ebd480
 		// set tool bar
 		ctrlBtn = new Button(parent, 735, 15, 50, 50, 0);
 		ctrlBtn.addImage("src/resource/other_images/pause.png");
