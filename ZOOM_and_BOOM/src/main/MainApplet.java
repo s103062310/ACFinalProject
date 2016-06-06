@@ -5,6 +5,8 @@ import processing.core.PImage;
 import java.util.ArrayList;
 import java.util.Random;
 import java.awt.Color;
+import java.io.File;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import main.Client.ClientThread;
@@ -25,6 +27,8 @@ public class MainApplet extends PApplet{
 	// resources
 	private ClientThread thread;
 	private Random r = new Random();
+	private static AudioPlayer click;
+	private static AudioPlayer beAtk;
 	
 	// player content
 	private Player player = new Player();
@@ -41,7 +45,11 @@ public class MainApplet extends PApplet{
 		game = new Game(this);
 		market = new Market(this);
 		scoreboard = new Scoreboard(this);
-
+		click = new AudioPlayer(new File("src/resource/refrigerater2_O.wav"));
+		click.setPlayCount(1);
+		beAtk = new AudioPlayer(new File("src/resource/bomb.wav"));
+		beAtk.setPlayCount(1);
+		
 	}
 	
 	
@@ -85,7 +93,7 @@ public class MainApplet extends PApplet{
 		// buy and use at market
 		ColorButton[] btns = market.getButtons();
 		for(ColorButton btn : btns){
-			
+			click.play();
 			if(btn.inBtn()){
 				
 				if(player.getScore() >= btn.getMoney()){
@@ -197,7 +205,7 @@ public class MainApplet extends PApplet{
 	
 	// be attacked by other players
 	public void beAttacked(int color){
-		
+		beAtk.play();
 		game.addSplash(color);
 		thread.send(game.screenshot());
 		
