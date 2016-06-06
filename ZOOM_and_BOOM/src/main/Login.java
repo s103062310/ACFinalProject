@@ -121,6 +121,7 @@ public class Login extends PApplet{
 		else if (state == loginState.WAIT){
 			 if (frameCount % 30 == 0){
 				rand = (int) random(12);
+				text("LOADING...",(width-textWidth("LOADING..."))/2,300);
 			  }
 			  if (frameCount % 2 == 0) {
 			    fill(splashColors[rand].getRed(),splashColors[rand].getGreen(),splashColors[rand].getBlue());
