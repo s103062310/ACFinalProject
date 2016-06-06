@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import java.util.ArrayList;
@@ -14,8 +15,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+
+import object.client.UpdateDatabaseWindow;
 import object.server.Answer;
 import object.server.Player;
+import object.server.ServerUpdateDatabaseWindow;
 import processing.core.PImage;
 
 //TODO 結合帳戶系統
@@ -35,18 +39,40 @@ public class Server extends JFrame {
 	private int people=0;
 	
 	// resources
-	private HashMap<String, Answer> answer = new HashMap<String, Answer>();
+	public HashMap<String, Answer> answer = new HashMap<String, Answer>();
 	private String path = new String("src/resource/pic_rsc");
 	private String[] list;
+	
+	//Update database
+	private ServerUpdateDatabaseWindow updateWindow;
 
 	
 	// Constructor
 	public Server(int portNum) {
 		
+		//create update database window
+		updateWindow = new ServerUpdateDatabaseWindow(this);
+		updateWindow.init();
+		updateWindow.start();
+		
 		// set up of server's frame
 		setSize(400, 200);
 		setLocation(0, 500);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		JFrame frame = this;
+		frame.addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		        if (JOptionPane.showConfirmDialog(frame, 
+		            "Are you sure you want to close the server?", "Really Closing?", 
+		            JOptionPane.YES_NO_OPTION,
+		            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+	        		frame.dispose();
+		        	updateWindow.runFrame();
+		        	System.exit(0);
+		        }
+		    }
+		});
 		
 		// create server's socket (set port)
 		try {
@@ -326,7 +352,6 @@ public class Server extends JFrame {
 		return answer.get(image).check(x, y, width, height);
 	
 	}
-		
 	
 	// main
 	public static void main(String[] args) {

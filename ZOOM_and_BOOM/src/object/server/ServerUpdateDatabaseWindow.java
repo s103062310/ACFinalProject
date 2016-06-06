@@ -1,20 +1,24 @@
-package object.client;
+package object.server;
 
 import java.awt.Color;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.List;
+import object.server.Answer;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import object.server.Player;
+import main.Server;
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PImage;
 
-public class UpdateDatabaseWindow extends PApplet{
+
+public class ServerUpdateDatabaseWindow extends PApplet {
 	
 	//Database data
 	private static final String jdbcDriver = "com.mysql.jdbc.Driver";
@@ -35,9 +39,12 @@ public class UpdateDatabaseWindow extends PApplet{
 	//Update successful
 	boolean updateSuccessful;
 	
+	private Server server;
+	
 	//Constructor
-	public UpdateDatabaseWindow(){
+	public ServerUpdateDatabaseWindow(Server server){
 		updateSuccessful=false;
+		this.server=server;
 	}
 		
 	//Processing Setup
@@ -84,7 +91,7 @@ public class UpdateDatabaseWindow extends PApplet{
 	
 	
 	//update player data in database
-	public void updateDatabase(Player player){
+	public void updateDatabase(){
 		
 		Thread databaseThread = new Thread(new Runnable() {
 			public void run(){
@@ -92,7 +99,7 @@ public class UpdateDatabaseWindow extends PApplet{
 				
 				Connection sqlConn = null;
 				Statement sqlState = null;
-				String updateEntry = null;
+				String newEntry = null;
 				
 				try{
 					
@@ -101,13 +108,24 @@ public class UpdateDatabaseWindow extends PApplet{
 					sqlConn = DriverManager.getConnection(sqlDriver,sqlUser,sqlPass);
 					sqlState = sqlConn.createStatement();
 					
-					updateEntry = "UPDATE player_table SET score="+ player.getScore() +",shield="+  player.getShield() +", completed="+  player.getCompleted() +" WHERE username='"+player.getName()+"'";
-							
-					sqlState.executeUpdate(updateEntry);
-					
-					//DEBUG
-					System.out.println("updateEntry: " + updateEntry);
-					
+					//for each entry in hash
+					for(String key : server.answer.keySet()){
+						
+						float entryWidth = server.answer.get(key).width;
+						float entryHeight = server.answer.get(key).height;
+						float entryX = server.answer.get(key).x;
+						float entryY = server.answer.get(key).y;
+						
+						newEntry = "INSERT INTO answer_table (picture,width,height,x,y) VALUES ('" + key 
+								 + "', " + entryWidth + ", " + entryHeight + ", " + entryX + ", "
+								 + entryY + ")";
+								
+						sqlState.executeUpdate(newEntry);
+						
+						//DEBUG
+						System.out.println("updateEntry: " + newEntry);
+					}
+
 					updateSuccessful=true;
 					
 				}
@@ -154,17 +172,17 @@ public class UpdateDatabaseWindow extends PApplet{
 		splashColors[11]  = new Color(255,0,255);//MAGENTA
 	}
 	
-	public void runFrame(Player player){
+	public void runFrame(){
 		JFrame updateFrame;
 		
-		updateFrame = new JFrame("ZOOM and BOOM - UPDATING DATABASE");
+		updateFrame = new JFrame("ZOOM and BOOM - UPDATING SERVER DATABASE");
 		updateFrame.setContentPane(this);
 		updateFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		updateFrame.addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		        if (JOptionPane.showConfirmDialog(updateFrame, 
-		            "Are you sure you don't want to save your progress?", "Really Closing?", 
+		            "Are you sure you don't want to save new answers?", "Really Closing?", 
 		            JOptionPane.YES_NO_OPTION,
 		            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
 		        	updateFrame.dispose();
@@ -175,7 +193,7 @@ public class UpdateDatabaseWindow extends PApplet{
 		updateFrame.setLocation(400,200);
 		updateFrame.setVisible(true);		
 		
-		updateDatabase(player);
+		updateDatabase();
 		
 		while(!updateSuccessful){
 			System.out.print("*");
@@ -187,5 +205,3 @@ public class UpdateDatabaseWindow extends PApplet{
 	}
 
 }
-
-

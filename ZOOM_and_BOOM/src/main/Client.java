@@ -62,6 +62,7 @@ public class Client extends JFrame{
 		loginApplet.init();
 		loginApplet.start();
 		
+		//create update database window
 		updateWindow = new UpdateDatabaseWindow();
 		updateWindow.init();
 		updateWindow.start();
