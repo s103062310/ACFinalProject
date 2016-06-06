@@ -268,6 +268,14 @@ public class Game {
 		return isPlay;
 	}
 	
+	public void play(){
+		this.isPlay=true;
+	}
+	
+	public void pause(){
+		this.isPlay=false;
+	}
+	
 	public Button getGameControlButton(){
 		return ctrlBtn;
 	}

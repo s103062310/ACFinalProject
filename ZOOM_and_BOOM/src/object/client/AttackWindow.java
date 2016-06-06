@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import object.server.Player;
 import object.tool.Button;
 import object.tool.VScrollbar;
+import main.Game;
 import main.MainApplet;
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -23,6 +24,7 @@ public class AttackWindow extends PApplet{
 	private JFrame window;
 	private MainApplet parent;
 	private PImage bg;
+	private Game game;
 	
 	// content
 	private Button[] btn;
@@ -33,10 +35,11 @@ public class AttackWindow extends PApplet{
 	private Button cancelBtn;
 	
 	// Constructor: initialize
-	public AttackWindow(MainApplet p, ArrayList<Player> list, ColorButton marketBtn){
+	public AttackWindow(MainApplet p, ArrayList<Player> list, ColorButton marketBtn, Game game){
 		
 		parent = p;
 		this.marketBtn = marketBtn;
+		this.game = game;
 		
 		// set window size
 		setSize(400, 600);
@@ -105,7 +108,7 @@ public class AttackWindow extends PApplet{
 				
 				//TODO call method to attack in MainApplet
 				//parent.attacked(playerName[i], new Color(0, 0, 0).getRGB());
-				
+				game.play();
 				window.dispose();
 				
 			}
@@ -114,6 +117,7 @@ public class AttackWindow extends PApplet{
 		
 		//TODO 取消按鈕點選 -> 什麼都不做只關閉視窗
 		if(cancelBtn.inBtn()){
+			game.play();
 			window.dispose();
 		}
 	}

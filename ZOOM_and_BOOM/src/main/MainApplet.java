@@ -89,9 +89,9 @@ public class MainApplet extends PApplet{
 			if(btn.inBtn()){
 				
 				if(player.getScore() >= btn.getMoney()){
-					
+					game.pause();
 					// create new PApplet
-					AttackWindow app = new AttackWindow(this, list, btn);
+					AttackWindow app = new AttackWindow(this, list, btn, game);
 					app.init();
 					app.start();
 					app.setFocusable(true);
