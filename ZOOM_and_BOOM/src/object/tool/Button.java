@@ -10,7 +10,7 @@ public class Button {
 	protected PImage image;
 	protected ArrayList<PImage> animate = new ArrayList<PImage>();
 	protected int color, width, height;
-	protected float x, y, d, centerX, centerY, dis, scroll=0;
+	protected float x, y, d, centerX, centerY, dis, scrollX=0,scrollY=0;
 	protected boolean over;
 	
 	
@@ -51,8 +51,8 @@ public class Button {
 		// button
 		parent.noStroke();
 		parent.fill(color);
-		if(over) parent.ellipse(x-scroll, y, d+10, d+10);
-		else parent.ellipse(x-scroll, y, d, d);
+		if(over) parent.ellipse(x-scrollX, y-scrollY, d+10, d+10);
+		else parent.ellipse(x-scrollX, y-scrollY, d, d);
 		
 	}
 	
@@ -69,7 +69,7 @@ public class Button {
 
 	// detect mouse move into button
 	public boolean inBtn(){
-		if(PApplet.dist(parent.mouseX, parent.mouseY, centerX-scroll, centerY)<=dis)
+		if(PApplet.dist(parent.mouseX, parent.mouseY, centerX-scrollX, centerY-scrollY)<=dis)
 			return true;
 		else return false;
 	}
@@ -89,8 +89,9 @@ public class Button {
 		this.over = b;
 	}
 	
-	public void setPosition(float scrollbar){
-		this.scroll = scrollbar/(float)1.5;
+	public void setPosition(float scrollbarX,float scrollbarY){
+		this.scrollX = scrollbarX/(float)1.5;
+		this.scrollY = scrollbarY/(float)1.5;
 	}
 	
 	public void setImage(int index){

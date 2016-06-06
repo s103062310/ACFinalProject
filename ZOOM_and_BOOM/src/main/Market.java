@@ -59,7 +59,7 @@ public class Market{
 		
 		// button
 		for(ColorButton btn : button){
-			btn.setPosition(hs.getPos());
+			btn.setPosition(hs.getPos(),0);
 			btn.display();
 		}
 		

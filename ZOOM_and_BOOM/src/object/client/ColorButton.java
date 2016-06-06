@@ -29,8 +29,8 @@ public class ColorButton extends Button{
 		// text
 		parent.fill(0);
 		parent.textSize(20);
-		parent.text(colorName, x-25-scroll, y+80);
-		parent.text("$"+money, x-20-scroll, y+100);
+		parent.text(colorName, x-25-scrollX, y+80);
+		parent.text("$"+money, x-20-scrollX, y+100);
 		
 	}
 	

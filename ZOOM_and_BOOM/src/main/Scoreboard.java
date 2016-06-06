@@ -62,7 +62,6 @@ public class Scoreboard {
 			}
 			// self
 			if (parent.getPlayer().getName().equals(pl.getName())) {
-
 				parent.fill(238, 224, 229);
 				parent.ellipse(840, 100 - scroll + i * (radius + 15), 20, 20);
 			}
@@ -74,6 +73,12 @@ public class Scoreboard {
 		if (num >= 5) {
 			for (int i = 0; i < 3; i++) {
 				parent.image(crown, 840, 100 - scroll + i * (radius + 15) - 4 * radius / 5, 20, 20);
+			}
+			int thirdScore = parent.getList().get(2).getScore();
+			for(int i=3;i<num;i++){
+				if(parent.getList().get(i).getScore()==thirdScore)
+					parent.image(crown, 840, 100 - scroll + i * (radius + 15) - 4 * radius / 5, 20, 20);
+				else break;
 			}
 		}
 
