@@ -4,10 +4,17 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
+
 import object.server.Player;
 
 @SuppressWarnings("serial")
@@ -34,7 +41,6 @@ public class Client extends JFrame{
 	
 	//Player
 	private Player player;
-	
 
 	// Constructor
 	public Client(String IPAddress, int portNum) {
@@ -209,7 +215,6 @@ public class Client extends JFrame{
 	
 	}
 	
-	
 	//set player
 	public void setPlayer(Player player){
 		this.player = player;
@@ -224,7 +229,7 @@ public class Client extends JFrame{
 		client.connect();
 		
 		//Run login app
-		//client.loginApplet.runFrame();
+		client.loginApplet.runFrame();
 		audio = new AudioPlayer();   ///***
 		audio.loadAudio("src/resource/bgm.wav", null);   ///***
 		audio.setPlayCount(0);   ////****/
@@ -236,11 +241,20 @@ public class Client extends JFrame{
 		// create frame and connect to server
 		window = new JFrame("ZOOM and BOOM");
 		window.setContentPane(client.applet);
+		window.addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		        if (JOptionPane.showConfirmDialog(window, 
+		            "Are you sure to close this game?", "Really Closing?", 
+		            JOptionPane.YES_NO_OPTION,
+		            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+		        	System.exit(0);
+		        }
+		    }
+		});
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setSize(1117, 690);
-		window.setLocation(120, 20);
 		window.setVisible(true);
-	
 	}
 	
 }

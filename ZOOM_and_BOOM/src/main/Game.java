@@ -1,6 +1,10 @@
 package main;
 
 import java.io.File;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -9,6 +13,7 @@ import processing.core.PImage;
 import processing.core.PApplet;
 import processing.core.PFont;
 import object.client.Splash;
+import object.server.Player;
 import object.tool.DigitalTimer;
 import object.tool.Button;
 
@@ -25,7 +30,7 @@ public class Game {
 	
 	// variable & constant
 	private boolean isFrame=false, isPlay=false;
-	private int height=450, width=800, lastTime=0, imageNumber;
+	private int height=450, width=800, imageNumber;
 	private float startX, startY, frameX, frameY, lineW=(float)2.5;
 	
 	// resources
@@ -35,7 +40,6 @@ public class Game {
 	
 	// timer related resources
 	private DigitalTimer imageTimer;
-	private Timer timerCheckScheduler = new Timer ();
 	private Thread timerThread;
 	
 	
@@ -152,6 +156,7 @@ public class Game {
 		int temp = imageNumber;
 		while (imageNumber==temp) imageNumber = r.nextInt(list.length);
 		img = parent.loadImage("src/resource/pic_rsc/" + list[imageNumber]);
+		imageTimer.reset();
 		
 	}
 
@@ -209,7 +214,7 @@ public class Game {
 		parent.calMoney(accumulateMoney);
 		accumulateMoney = 0;
 		ctrlBtn.setImage(1);
-		
+		updateDatabase();
 	}
 	
 	
@@ -272,6 +277,67 @@ public class Game {
 	
 	public Button getGameControlButton(){
 		return ctrlBtn;
+	}
+	
+	//update player data in database
+	public  void updateDatabase(){
+		
+		Player player = parent.getPlayer();
+		
+		//Database data
+		String jdbcDriver = "com.mysql.jdbc.Driver";
+		String sqlDriver = "jdbc:mysql://db4free.net:3306/player_database";
+		String sqlUser = "ssnthuac_final";
+		String sqlPass = "ssnthuac";
+		
+		Thread databaseThread = new Thread(new Runnable() {
+			public void run(){
+		//Money and Color will be set to 0 by default as per database's settings
+				
+				Connection sqlConn = null;
+				Statement sqlState = null;
+				String updateEntry = null;
+				
+				try{
+					
+					Class.forName(jdbcDriver);
+					
+					sqlConn = DriverManager.getConnection(sqlDriver,sqlUser,sqlPass);
+					sqlState = sqlConn.createStatement();
+					
+					updateEntry = "UPDATE player_table SET score="+player.getScore()+",shield="+player.getShield()+", completed="+player.getCompleted()+" WHERE username='"+player.getName()+"'";
+							
+					sqlState.executeUpdate(updateEntry);
+					
+					//DEBUG
+					System.out.println("updateEntry: " + updateEntry);
+					
+				}
+				
+				catch (SQLException ex){
+					System.err.println("SQLException: " + ex.getMessage());
+					System.err.println("VendorError: " + ex.getErrorCode());
+					ex.printStackTrace();
+				}
+				
+				catch (ClassNotFoundException ex){
+					System.err.println("Unable to locate Driver");
+					ex.printStackTrace();
+				}
+				//close connection
+				finally{
+					try{
+						if(sqlState!=null && sqlConn!=null)
+							sqlConn.close();
+					}
+					catch(SQLException ex){
+						System.err.println("Unable to close SSL connection to database");
+						ex.printStackTrace();
+					}
+				}
+			}
+		});
+		databaseThread.start();
 	}
 	
 }
