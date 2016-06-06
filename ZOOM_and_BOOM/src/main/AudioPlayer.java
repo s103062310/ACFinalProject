@@ -1,377 +1,384 @@
 package main;
-import javax.sound.sampled.*;   
-import java.io.*;   
-import java.net.*; 
+
+import java.io.File;
+import java.net.URI;
+import java.net.URL;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.LineEvent;
+
+/**
+ * 音訊播放器，支援WAV、AIFF、AU格式
+ *
+ * @author magiclen
+ */
 public class AudioPlayer {
-	private AudioInputStream currentSound;   
 
-    private Clip clip;   
+    /**
+     * 音訊播放器的狀態
+     */
+    public static enum Status {
 
-    private float gain;
-    private FloatControl gainControl;
-
-    //控制聲道,-1.0f:只有左聲道, 0.0f:雙聲道,1.0f右聲道
-    private float pan;
-    private FloatControl panControl;  
-
-    //控制靜音 開/關
-    private boolean mute;
-    private BooleanControl muteControl;
-
-    //播放次數,小於等於0:無限次播放,大於0:播放次數
-    private int playCount;
-
-    private DataLine.Info dlInfo;
-    private Object loadReference;   
-    private AudioFormat format;
-
-    //音樂播放完畢時，若有設定回call的對象，則會通知此對象
-    //private AudioPlayerCallback callbackTartet;
-    private Object callbackObj ;
-    private boolean isPause;
-
-    public AudioPlayer(){   
-        AudioPlayerInit();
+	OPEN, START, STOP, CLOSE;
     }
 
-    public void AudioPlayerInit(){
-        currentSound = null;
-        clip = null;
-        gain = 0.5f;
-        gainControl = null;  
-        pan = 0.0f;
-        panControl = null;
-        mute = false;
-        muteControl = null;
-        playCount = 0;
-        dlInfo = null;
-        isPause = false;
+    public static interface StatusChangedListener {
+
+	public void statusChanged(Status status);
     }
 
+    //-----物件變數-----
+    private AudioInputStream audioInputStream;
+    private AudioFormat audioFormat;
+    private DataLine.Info dataLineInfo;
+    private Clip clip;
+    private int playCount = 1, playCountBuffer = 1;
+    private int volume = 50, balance = 0;
+    private Status status = null;
+    private boolean autoClose = false;
+    private StatusChangedListener statusListener;
+
+    //-----建構子-----
     /**
-     * 設定要接收音樂播放完時事件的對象
-     * @param cb    接收callback的對象
-     * @param obj    callback回來的物件
-     */
-    /*public void setCallbackTartet(AudioPlayerCallback cb, Object obj){
-        callbackTartet = cb;
-        callbackObj = obj;
-    }*/
-
-    /**
-     * 設定播放次數,播放次數,小於等於0:無限次播放,大於0:播放次數
-     * @param c
-     */
-    public void setPlayCount(int c){
-        if(c < -1){
-            c = -1;
-        }
-        playCount = c - 1;
-    }
-
-    /**
-     * 指定路徑讀取音檔,回傳true:播放成功,false:播放失敗
-     * @param filePath
-     * @param obj 目前物件放置的package路徑
-     */
-    public boolean loadAudio(String filePath){
-        try {
-            loadAudio(new File(filePath));
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    /**
-     * 指定路徑讀取音檔,使用目前物件放置的package當相對路徑root,null時不使用物件路徑為root
-     * @param filePath
-     * @param obj 目前物件放置的package路徑
-     * @return 回傳true:播放成功,false:播放失敗
-     */
-    public boolean loadAudio(String filePath, Object obj){
-        try {
-            if(obj != null){
-                loadAudio(obj.getClass().getResourceAsStream(filePath));
-            }else{
-                loadAudio(new File(filePath));
-            }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    /**  
-     * 從遠端讀取音檔
-     */   
-    //public void loadAudio(URL url) throws Exception{   
-       // loadReference = url;    
-       // currentSound = AudioSystem.getAudioInputStream(url);    
-      //  finishLoadingAudio();    
-   // }
-
-    /**
-     * 讀取本地端音檔
-     * @param file
-     * @throws Exception
-     */
-    public void loadAudio(File file) throws Exception{   
-        loadReference = file;    
-        currentSound = AudioSystem.getAudioInputStream(file);    
-        finishLoadingAudio();    
-    }   
-
-    /**
-     * 從串流讀取音檔
-     * @param iStream
-     * @throws Exception
-     */
-    public void loadAudio(InputStream iStream) throws Exception{   
-        loadReference = iStream;    
-
-        if (iStream instanceof AudioInputStream){   
-            currentSound = (AudioInputStream)iStream;   
-        } else { 
-           //2014-02-02 修正bug:當音檔包裝在jar檔裡時無法播放
-            InputStream bufferedIn = new BufferedInputStream(iStream);
-            currentSound = AudioSystem.getAudioInputStream(bufferedIn); 
-        }   
-        finishLoadingAudio();    
-    }   
-
-    /**  
-     * load完音檔後，進行播放設定
-     */   
-    protected void finishLoadingAudio() throws Exception {   
-        format = currentSound.getFormat();   
-        dlInfo = new DataLine.Info(Clip.class, format, ((int) currentSound.getFrameLength() * format.getFrameSize()));   
-        clip = (Clip) AudioSystem.getLine(dlInfo);   
-        clip.open(currentSound);   
-        clip.addLineListener(   
-                new LineListener() {   
-                    public void update(LineEvent event) {
-                        if (event.getType().equals(LineEvent.Type.STOP)){
-                            if(!isPause){
-                               /* if(callbackTartet != null){
-                                    callbackTartet.audioPlayEnd(callbackObj);
-                                }*/
-                                close();
-                            }
-                        }   
-                    }   
-                }   
-        );   
-    }
-
-    /**
-     * 播放音檔
-     */
-    public void play(){
-        if(clip != null){
-            clip.setFramePosition(0);  
-            clip.loop(playCount);
-        }
-    }
-
-    /**
-     * 恢復播放音檔
+     * 建構子，傳入檔案
      *
+     * @param file 傳入聲音檔案
      */
-    public void resume(){
-        isPause = false;
-        
-        if(clip != null){
-            clip.setFramePosition(clip.getFramePosition());
-            clip.loop(playCount);
-        }
-        
+    public AudioPlayer(final File file) {
+	try {
+	    final URL url = file.toURI().toURL();
+	    init(url);
+	} catch (final Exception ex) {
+	    throw new RuntimeException(ex.getMessage());
+	}
+
     }
 
     /**
-     * 暫停播放音檔
+     * 建構子，傳入URL
+     *
+     * @param url 傳入聲音URL
      */
-    public void pause(){
-        isPause = true;
-        if(clip != null){
-            clip.stop();
-        }
+    public AudioPlayer(final URL url) {
+	try {
+	    init(url);
+	} catch (final Exception ex) {
+	    throw new RuntimeException(ex.getMessage());
+	}
     }
 
     /**
-     * 停止播放音檔,且將音檔播放位置移回開始處
+     * 建構子，傳入URL String
+     *
+     * @param str 傳入聲音URL String
      */
-    public void stop(){
-        if(clip != null){
-            clip.stop();   
-        }
-    }   
+    public AudioPlayer(final String str) {
+	try {
+	    final URL url = URI.create(str).toURL();
+	    init(url);
+	} catch (final Exception ex) {
+	    throw new RuntimeException(ex.getMessage());
+	}
+    }
+
+    //-----初始化-----
+    /**
+     * 初始化AudioPlayer
+     *
+     * @param url 傳入聲音URL
+     * @throws Exception 拋出例外
+     */
+    private void init(final URL url) throws Exception {
+	//讀取音樂輸入串流
+	try {
+	    audioInputStream = AudioSystem.getAudioInputStream(url);
+	} catch (final Exception ex) {
+	    throw new RuntimeException(ex.getMessage());
+	}
+	//進行播放設定
+	audioFormat = audioInputStream.getFormat();
+	int bufferSize = (int) Math.min(audioInputStream.getFrameLength() * audioFormat.getFrameSize(), Integer.MAX_VALUE); //緩衝大小，如果音訊檔案不大，可以全部存入緩衝空間。這個數值應該要按照用途來決定
+	dataLineInfo = new DataLine.Info(Clip.class, audioFormat, bufferSize);
+	clip = (Clip) AudioSystem.getLine(dataLineInfo);
+	clip.addLineListener(e -> {
+	    LineEvent.Type type = e.getType();
+	    if (type.equals(LineEvent.Type.START)) {
+		status = Status.START;
+	    } else if (type.equals(LineEvent.Type.STOP)) {
+		status = Status.STOP;
+		if (clip.getFramePosition() == clip.getFrameLength()) {
+		    clip.setFramePosition(0);
+		}
+		if (playCount == 0 || (playCount > 0 && playCountBuffer < playCount)) {
+		    playCountBuffer++;
+		    clip.start();
+		} else {
+		    playCountBuffer = 1;
+		    if (autoClose) {
+			clip.close();
+		    }
+		}
+	    } else if (type.equals(LineEvent.Type.OPEN)) {
+		status = Status.OPEN;
+	    } else if (type.equals(LineEvent.Type.CLOSE)) {
+		status = Status.CLOSE;
+	    } else {
+		return;
+	    }
+	    if (statusListener != null) {
+		statusListener.statusChanged(status);
+	    }
+	});
+	clip.open(audioInputStream);
+	setVolume();
+	setBalance();
+    }
+
+    /**
+     * 開始播放音訊，可以回復暫停時的狀態
+     */
+    public void play() {
+	clip.start();
+    }
+
+    /**
+     * 暫停播放音訊
+     */
+    public void pause() {
+	clip.stop();
+    }
+
+    /**
+     * 停止播放音訊，下次播放將會重頭開始
+     */
+    public void stop() {
+	clip.stop();
+	clip.setFramePosition(0);
+    }
+
+    /**
+     * 設定播放次數，0為無限次播放
+     *
+     * @param playCount 傳入播放次數
+     */
+    public void setPlayCount(final int playCount) {
+	if (playCount < 0) {
+	    throw new RuntimeException("PlayCount must be at least 0!");
+	}
+	this.playCount = playCount;
+    }
+
+    /**
+     * 設定靜音
+     */
+    public void mute() {
+	setVolume(0);
+    }
+
+    /**
+     * 是否靜音
+     *
+     * @return 傳回是否靜音
+     */
+    public boolean isMute() {
+	return volume == 0;
+    }
+
+    /**
+     * 設定音量，範圍是0~100，數值愈大愈大聲
+     *
+     * @param volume 傳入音量
+     */
+    public void setVolume(final int volume) {
+	if (volume < 0 || volume > 100) {
+	    throw new RuntimeException("Volumn must be at least 0 and at most 100!");
+	}
+	this.volume = volume;
+	setVolume();
+    }
+
+    /**
+     * 取得音量
+     *
+     * @return 傳回音量
+     */
+    public int getVolume() {
+	return volume;
+    }
 
     /**
      * 設定音量
-     * @param dB 0~1,預設為0.5
      */
-    public void setVolume(float dB){
-        float tempB = floor_pow(dB,0.1);
-        //System.out.println("目前音量+"+tempB);
-        gain = tempB;   
-        resetVolume();
-
+    private void setVolume() {
+	final FloatControl floatControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+	final float db = (float) (Math.log10(volume * 0.039) * 10);
+	floatControl.setValue(db);
     }
 
     /**
-     * @param min 要無條件捨去的數字
-     * @param d 要捨去的位數
+     * 取得目前音訊播放器的狀態
+     *
+     * @return 傳回狀態
+     */
+    public Status getStatus() {
+	return status;
+    }
+
+    /**
+     * 只開啟右聲道
+     */
+    public void onlyRight() {
+	setBalance(100);
+    }
+
+    /**
+     * 是否只開啟右聲道
+     *
+     * @return 傳回是否只開啟右聲道
+     */
+    public boolean isOnlyRight() {
+	return balance == 100;
+    }
+
+    /**
+     * 只開啟左聲道
+     */
+    public void onlyLeft() {
+	setBalance(-100);
+    }
+
+    /**
+     * 是否只開啟左聲道
+     *
+     * @return 傳回是否只開啟左聲道
+     */
+    public boolean isOnlyLeft() {
+	return balance == -100;
+    }
+
+    /**
+     * 設定聲道音量為平衡狀態
+     */
+    public void balance() {
+	setBalance(0);
+    }
+
+    /**
+     * 聲道音量是否為平衡狀態
+     *
+     * @return 傳回聲道音量是否為平衡狀態
+     */
+    public boolean isBalance() {
+	return balance == 0;
+    }
+
+    /**
+     * 設定聲道音量的平衡，範圍-100~100，數值愈大愈靠近右邊，0為平衡狀態
+     *
+     * @param balance 傳入聲道音量的平衡值
+     */
+    public void setBalance(final int balance) {
+	if (volume < 0 || volume > 100) {
+	    throw new RuntimeException("Balance must be at least -100 and at most 100!");
+	}
+	this.balance = balance;
+	setBalance();
+    }
+
+    /**
+     * 取得聲道音量的平衡值
+     *
+     * @return 傳回聲道音量的平衡值
+     */
+    public int getBalance() {
+	return balance;
+    }
+
+    /**
+     * 設定聲道音量的平衡值
+     */
+    private void setBalance() {
+	try {
+	    final FloatControl floatControl = (FloatControl) clip.getControl(FloatControl.Type.PAN);
+	    final float pan = balance / 100.0f;
+	    floatControl.setValue(pan);
+	} catch (final Exception ex) {
+	    //可能是單聲道音訊檔造成的例外
+	}
+    }
+
+    /**
+     * 取得音訊的長度(微秒)
+     *
+     * @return 傳回音訊的長度
+     */
+    public long getAudioLength() {
+	return clip.getMicrosecondLength();
+    }
+
+    /**
+     * 取得音訊目前的位置(微秒)
+     *
+     * @return 傳回音訊目前的位置
+     */
+    public long getAudioPosition() {
+	return clip.getMicrosecondPosition();
+    }
+
+    /**
+     * 設定音訊的位置(微秒)
+     *
+     * @param position 傳入音訊的位置
      *
      */
-    private float floor_pow(float min, double d){
-        float n = (float)Math.pow(10, d);
-        float tmp_Num = ((int)(min*n))/n;
-        return tmp_Num ;
+    public void setAudioPosition(long position) {
+	clip.setMicrosecondPosition(position);
     }
 
     /**
-     * 重設音量
+     * 關閉音訊
      */
-    protected void resetVolume(){
-        gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-        //double gain = .5D; // number between 0 and 1 (loudest)
-        float dB = (float) (Math.log(gain) / Math.log(10.0) * 20.0);
-        gainControl.setValue(dB);
-    }   
-
-    /**
-     * 設定聲道,-1.0f:只有左聲道, 0.0f:雙聲道,1.0f右聲道
-     * @param p
-     */
-    public void setPan(float p){   
-        pan = p;   
-        resetPan();   
-    }   
-
-    /**
-     * 重設單雙道、雙聲道
-     */
-    protected void resetPan(){   
-        panControl = (FloatControl) clip.getControl(FloatControl.Type.PAN);   
-        panControl.setValue(this.pan);   
+    public void close() {
+	clip.close();
     }
 
     /**
-     * 設定靜音狀態,true:靜音,false:不靜音
-     * @param m
-     */
-    public void setMute(boolean m){
-        mute  = m;
-        resetMute();
-    }
-
-    /**
-     * 重設靜音狀態
+     * 設定播放結束後是否自動關閉
      *
+     * @param autoClose 傳入播放結束後是否自動關閉
      */
-    protected void resetMute(){
-        muteControl = (BooleanControl) clip.getControl(BooleanControl.Type.MUTE);
-        muteControl.setValue(mute);
+    public void setAutoClose(final boolean autoClose) {
+	this.autoClose = autoClose;
     }
 
     /**
+     * 取得播放結束後是否自動關閉
      *
-     * @return
+     * @return 傳回播放結束後是否自動關閉
      */
-    public int getFramePosition(){   
-        try {   
-            return clip.getFramePosition();   
-        } catch (Exception e) {   
-            return -1;   
-        }   
-    }   
-
-    /**
-     * 取得音檔格式
-     * @return
-     */
-    public AudioFormat getCurrentFormat(){   
-        return format;   
-    }   
-
-    /**
-     * 取得音檔的串流
-     * @return
-     */
-    public AudioInputStream getAudioInputStream(){   
-        try {   
-            AudioInputStream aiStream;   
-
-
-            if (loadReference == null){   
-                return null;   
-            } else if (loadReference instanceof URL) {   
-                URL url = (URL)loadReference;   
-                aiStream = AudioSystem.getAudioInputStream(url);   
-            } else if (loadReference instanceof File) {   
-                File file = (File)loadReference;   
-                aiStream = AudioSystem.getAudioInputStream(file);   
-            } else if (loadReference instanceof AudioInputStream){   
-                AudioInputStream stream = (AudioInputStream)loadReference;   
-                aiStream = AudioSystem.getAudioInputStream(stream.getFormat(), stream);   
-                stream.reset();   
-            } else {   
-
-                InputStream inputStream = (InputStream)loadReference;   
-                aiStream = AudioSystem.getAudioInputStream(inputStream);   
-            }   
-
-            return aiStream;   
-        } catch (Exception e) {   
-            e.printStackTrace();   
-            return null;   
-        }   
-    }   
-
-
-    /**
-     * 目前音檔是否已存在
-     * @return
-     */
-    public boolean isAudioLoaded(){   
-        return loadReference!= null;   
-    }   
-
-    /**
-     * 取得剪輯音檔
-     * @return
-     */
-    public Clip getClip() {   
-        return clip;   
+    public boolean isAutoClose() {
+	return autoClose;
     }
 
-    /**  
-     * 關閉音檔
-     */   
-    public void close(){   
-        try {   
-            if (clip != null)   
-                clip.close();   
-            if (currentSound != null)   
-                currentSound.close();   
-            loadReference = null;   
-        } catch (Exception e){   
-            //System.out.println("unloadAudio: " + e);   
-            e.printStackTrace();   
-        }
-        
-        currentSound = null;   
-        clip = null;   
-        gainControl = null;   
-        panControl = null;   
-        dlInfo = null;   
-        loadReference = null;
-        muteControl = null;
-      //  callbackTartet = null;
-        callbackObj = null;
+    /**
+     * 設定狀態改變後的監聽事件
+     *
+     * @param listener 傳入狀態改變的監聽事件
+     */
+    public void setStatusChangedListener(StatusChangedListener listener) {
+	this.statusListener = listener;
+    }
+
+    /**
+     * 取得狀態改變後的監聽事件
+     *
+     * @return 傳回狀態改變後的監聽事件
+     */
+    public StatusChangedListener getStatusChangedListener() {
+	return statusListener;
     }
 }
-

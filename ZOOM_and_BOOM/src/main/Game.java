@@ -30,6 +30,7 @@ public class Game {
 	private MainApplet parent;
 	private String[] list;
 	private Random r = new Random();
+	private static AudioPlayer audio;
 	
 	// timer related resources
 	private DigitalTimer imageTimer;
@@ -63,7 +64,11 @@ public class Game {
 
 		//Timer and Timer Control Thread
 		imageTimer = new DigitalTimer(parent,this,5,5,5);
-
+		
+		audio = new AudioPlayer(new File("src/resource/crrect_answer2.wav"));   ///***
+		//audio.loadAudio("src/resource/crrect_answer2.wav", null);   ///***
+		audio.setPlayCount(1);   ////****/
+		
 	}
 
 	
@@ -133,6 +138,9 @@ public class Game {
 		while (imageNumber==temp) imageNumber = r.nextInt(list.length);
 		img = parent.loadImage("src/resource/pic_rsc/" + list[imageNumber]);
 		imageTimer.reset();
+		//audio.loadAudio("src/resource/crrect_answer2.wav", null); 
+		audio.stop();
+		audio.play();
 		
 	}
 

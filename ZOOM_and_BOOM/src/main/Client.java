@@ -1,5 +1,6 @@
 package main;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -285,13 +286,13 @@ public class Client extends JFrame{
 	public static void main(String[] args) {
 		
 		//set sound
-		audio = new AudioPlayer();   ///***
-		audio.loadAudio("src/resource/bgm.wav", null);   ///***
+		audio = new AudioPlayer(new File("src/resource/bgm.wav"));   ///***
+		//audio.loadAudio("src/resource/bgm.wav", null);   ///***
 		audio.setPlayCount(0);   ////****/
 		
 		// create client & Run login app
 		Client client = new Client("127.0.0.1", 8000);
-		client.loginApplet.runFrame();
+		//client.loginApplet.runFrame();
 		client.connect();
 
 		if (!isConnect)return;
