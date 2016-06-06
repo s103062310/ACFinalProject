@@ -2,6 +2,8 @@ package object.client;
 
 import java.util.ArrayList;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import object.server.Player;
 import object.tool.Button;
 import object.tool.VScrollbar;
@@ -143,6 +145,12 @@ public class AttackWindow extends PApplet{
 	
 	public void setWindow(JFrame w){
 		window = w;
+		window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		window.addWindowListener(new java.awt.event.WindowAdapter() {
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		        game.play();
+		    }
+		});
 	}
 
 }

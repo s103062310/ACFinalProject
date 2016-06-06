@@ -5,9 +5,12 @@ import processing.core.PFont;
 import processing.core.PImage;
 import java.util.*;
 
+import main.Game;
+
 public class DigitalTimer {
 	
 	private PApplet parent;
+	private Game game;
 	private PFont digitalFont;
 	private PImage clockImg;
 	private static enum timerState{ON,OFF};
@@ -18,9 +21,10 @@ public class DigitalTimer {
 	
 	
 	// Constructor
-	public DigitalTimer(PApplet p, int x, int y, int max){
+	public DigitalTimer(PApplet p, Game game, int x, int y, int max){
 		
 		this.parent = p;
+		this.game = game;
 		this.x = x;
 		this.y = y;
 		this.max = max * 1000 + 100 ;
@@ -63,8 +67,10 @@ public class DigitalTimer {
 	// count down
 	public void tick(){
 		
-		if(time==0)
+		if(time==0){
 			time=max;
+			game.frameEnd(true);
+		}
 		else 
 			time--;
 		timeString = String.format("%d.%d", time / 1000, time % 1000 /100);
