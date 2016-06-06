@@ -2,8 +2,6 @@ package object.client;
 
 import java.util.ArrayList;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
 import object.server.Player;
 import object.tool.Button;
 import object.tool.VScrollbar;
@@ -60,13 +58,15 @@ public class AttackWindow extends PApplet{
 		playerName = new String[otherPlayers.size()];
 		int i=0;
 		for(Player player: otherPlayers){
-			btn[i] = new Button(this, 100, 80+100*i, 60, player.getColor());
+			btn[i] = new Button(this, 60, 60+80*i, 60, player.getColor());
 			playerName[i] = player.getName();
 			i++;
 		}
 		
 		//TODO 取消按鈕初始
-		cancelBtn = new Button(this, 300, 100, 50, 255);
+		cancelBtn = new Button(this, 270, 70, 60, 60, 1);
+		cancelBtn.addImage("src/resource/other_images/cancel-button.png");
+		cancelBtn.setImage(0);
 	}
 	
 	
@@ -76,6 +76,7 @@ public class AttackWindow extends PApplet{
 		// background
 		background(0, 0, 0);
 		image(bg, 0, 0, 400, 600);
+		
 		vs.update();
 		scroll = vs.getspos();
 		
@@ -83,16 +84,17 @@ public class AttackWindow extends PApplet{
 			btn[i].setPosition(0,scroll);
 			btn[i].display_circle();
 			textSize(20);
-			text(playerName[i], 200, 80+100*i-scroll/(float)1.5);
-			
+			fill(0);
+			text(playerName[i], 141, 60+80*i-scroll/(float)1.5);
 		}
 		
 		//TODO 畫取消按鈕
 		cancelBtn.setPosition(0,scroll);
-		cancelBtn.display_circle();
-		fill(255);
+		//cancelBtn.display_circle();
+		cancelBtn.display_image();
+		/*fill(255);
 		textSize(15);
-		text("Cancel", 275, 180-scroll/(float)1.5);
+		text("Cancel", 275, 150-scroll/(float)1.5);*/
 		
 		vs.display();
 	}
@@ -145,12 +147,6 @@ public class AttackWindow extends PApplet{
 	
 	public void setWindow(JFrame w){
 		window = w;
-		window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		window.addWindowListener(new java.awt.event.WindowAdapter() {
-		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-		        game.play();
-		    }
-		});
 	}
 
 }
