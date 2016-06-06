@@ -49,7 +49,7 @@ public class ShieldBtn {
 	}
 	
 	public void setPosition(float scrollbar){
-		this.scroll = scrollbar/2;
+		this.scroll = scrollbar/(float)1.5;
 	}
 	
 	/**-----------------------------------------------

@@ -12,7 +12,7 @@ public class HScrollbar {
 	boolean over; // is the mouse over the slider?
 	boolean locked;
 	float ratio;
-// 0 450 800 20 16
+
 	public HScrollbar(float xp, float yp, int sw, int sh, int l, MainApplet p) {
 		swidth = sw;
 		sheight = sh;

@@ -69,7 +69,7 @@ public class Button {
 
 	// detect mouse move into button
 	public boolean inBtn(){
-		if(PApplet.dist(parent.mouseX, parent.mouseY, centerX, centerY)<=dis)
+		if(PApplet.dist(parent.mouseX, parent.mouseY, centerX-scroll, centerY)<=dis)
 			return true;
 		else return false;
 	}
@@ -90,7 +90,7 @@ public class Button {
 	}
 	
 	public void setPosition(float scrollbar){
-		this.scroll = scrollbar/2;
+		this.scroll = scrollbar/(float)1.5;
 	}
 	
 	public void setImage(int index){

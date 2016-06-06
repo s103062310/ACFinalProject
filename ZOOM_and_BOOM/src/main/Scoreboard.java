@@ -78,7 +78,7 @@ public class Scoreboard {
 		}
 
 		// text "Score Board"
-		parent.textSize(42);
+		parent.textSize(39);
 		parent.fill(0, 0, 205);
 		parent.text("Score Board", 820, 50 - scroll);
 		parent.fill(0, 191, 255);
@@ -87,16 +87,6 @@ public class Scoreboard {
 
 		// scroll bar
 		vs.display();
-
-		// my score (background)
-		// parent.stroke(130, 210, 75);
-		// parent.strokeWeight(10);
-		// parent.fill(0, 0, 0);
-		// parent.rect(800, 450, 300, 200);
-		// parent.rect(805, 455, 290, 190);
-
-
-		// parent.noStroke();
 
 		// own information
 		parent.image(selfbg, 800, 450, 300, 200);
