@@ -36,6 +36,7 @@ public class Game {
 	//timer related resources
 	private DigitalTimer imageTimer;
 	private Timer timerCheckScheduler = new Timer ();
+	private Thread timerThread;
 	
 	// Constructor
 	public Game(MainApplet p){
@@ -62,19 +63,25 @@ public class Game {
 		//font
 		gameFont = parent.createFont("resource/fonts/HappyGiraffe.ttf",32);
 
-		//Timer and Timer Control Task Scheduler
+		//Timer and Timer Control Thread
 		imageTimer = new DigitalTimer(parent,5,5,5);
-		timerCheckScheduler.scheduleAtFixedRate(new TimerTask() {
-			public void run() {
-				if(imageTimer.getValue()<10)
-					frameEnd(true);
-				if(isPlay){
-					imageTimer.resume();
+
+		timerThread = new Thread (new Runnable() {
+			public void run(){
+				while(true){
+					if(imageTimer.getValue()==0)
+						frameEnd(true);
+					if(isPlay){
+						imageTimer.resume();
+					}
+					else
+						imageTimer.pause();
 				}
-				else
-					imageTimer.pause();
 			}
-		}, 0, 1);
+				
+		});
+		
+		timerThread.start();
 
 	}
 
