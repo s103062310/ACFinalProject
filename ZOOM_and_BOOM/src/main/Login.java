@@ -691,7 +691,9 @@ public class Login extends PApplet{
 		loginWindow.setVisible(true);
 		
 		//loop while login unsuccesful
-		while(!loginSuccess());
+		while(!loginSuccess()){
+			System.out.print("**");
+		}
 			
 		loginWindow.setVisible(false);
 		loginWindow.dispose();
