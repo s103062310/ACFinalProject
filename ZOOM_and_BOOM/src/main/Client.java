@@ -225,7 +225,7 @@ public class Client extends JFrame{
 	public static void main(String[] args) {
 		
 		// create client
-		Client client = new Client("127.0.0.1", 8000);
+		Client client = new Client("140.114.86.66", 8000);
 		client.connect();
 		
 		//Run login app

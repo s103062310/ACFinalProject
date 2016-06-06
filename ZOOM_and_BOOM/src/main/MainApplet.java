@@ -106,9 +106,17 @@ public class MainApplet extends PApplet{
 				} else {
 					
 					// remind that player doesn't have enough money
-					int dialogButton = 0;
-					dialogButton = JOptionPane.showConfirmDialog (null, "Sorry, your money is not enough!","Confirm", dialogButton);
+					JOptionPane.showMessageDialog(null,"Sorry, your money is not enough!");
 				}
+			}
+		}
+		if(market.getRandomBtn().inBtn()){
+			if(player.getScore() >= market.getRandomBtn().getMoney()){
+				calMoney(-market.getShieldBtn().getMoney());
+				//attacked(list.get(r.nextInt(list.size())).getName(), new Color(0, 0, 0).getRGB());
+			} else {
+				// remind that player doesn't have enough money
+				JOptionPane.showMessageDialog(null,"Sorry, your money is not enough!");
 			}
 		}
 		if(market.getShieldBtn().inBtn()){
@@ -117,8 +125,7 @@ public class MainApplet extends PApplet{
 				beProtected();
 			} else {
 				// remind that player doesn't have enough money
-				int dialogButton = 0;
-				dialogButton = JOptionPane.showConfirmDialog (null, "Sorry, your money is not enough!","Confirm", dialogButton);
+				JOptionPane.showMessageDialog(null,"Sorry, your money is not enough!");
 			}
 		}
 	}
@@ -139,6 +146,8 @@ public class MainApplet extends PApplet{
 			else btn.setOver(false);
 			
 		}
+		if(market.getRandomBtn().inBtn()) market.getRandomBtn().setOver(true);
+		else market.getRandomBtn().setOver(false);
 		if(market.getShieldBtn().inBtn()) market.getShieldBtn().setOver(true);
 		else market.getShieldBtn().setOver(false);
 	}

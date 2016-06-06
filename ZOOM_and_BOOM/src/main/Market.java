@@ -14,6 +14,7 @@ public class Market{
 	// content
 	private ColorButton[] button;
 	private ShieldBtn shieldbutton;
+	private ColorButton randomBtn;
 	private int[] price = {0, 10, 20, 10, 15, 30};
 	
 	// resources
@@ -29,7 +30,7 @@ public class Market{
 		this.hs = new HScrollbar(0 ,640, 800, 20 ,16, parent);    ////* TODO increase size
 		// create buttons
 		int s=70, d=120;
-		button = new ColorButton[10];
+		button = new ColorButton[9];
 		//TODO try to use for loop
 		button[0] = new ColorButton(parent, s, 515, price[0], "DEMON", Color.BLACK.getRGB());
 		button[1] = new ColorButton(parent, s+d*2, 515, price[2], "LIME", new Color(0,255,127).getRGB());
@@ -40,7 +41,8 @@ public class Market{
 		button[6] = new ColorButton(parent, s+d*6, 515, price[4], "GOLD", new Color(238,180,34).getRGB());
 		button[7] = new ColorButton(parent, s+d*7, 515, price[4], "ORCHID", new Color(255,0,255).getRGB());
 		button[8] = new ColorButton(parent, s+d*8, 515, price[4], "OLIVE", new Color(105,139,34).getRGB());
-		button[9] = new ColorButton(parent, s+d*9, 515, price[5], "GUESS", Color.GRAY.getRGB());
+		
+		randomBtn = new ColorButton(parent, s+d*9, 515, price[5], "GUESS", Color.GRAY.getRGB());
 	
 		shieldbutton = new ShieldBtn(parent, s+d*10, 515, price[5], Color.WHITE.getRGB());
 		
@@ -63,6 +65,9 @@ public class Market{
 			btn.display();
 		}
 		
+		randomBtn.setPosition(hs.getPos(),0);
+		randomBtn.display();
+		
 		shieldbutton.setPosition(hs.getPos());
 		shieldbutton.display();
 		
@@ -74,7 +79,9 @@ public class Market{
 	/**-----------------------------------------------
 	 * ¡õ seter and geter
 	 ----------------------------------------------**/
-	
+	public ColorButton getRandomBtn(){
+		return randomBtn;
+	}
 	public ColorButton[] getButtons(){
 		return button;
 	}
