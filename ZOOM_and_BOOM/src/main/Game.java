@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Random;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.ArrayList;
 import processing.core.PImage;
 import processing.core.PApplet;

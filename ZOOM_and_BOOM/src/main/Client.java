@@ -229,7 +229,7 @@ public class Client extends JFrame{
 		client.connect();
 		
 		//Run login app
-		client.loginApplet.runFrame();
+		//client.loginApplet.runFrame();
 		audio = new AudioPlayer();   ///***
 		audio.loadAudio("src/resource/bgm.wav", null);   ///***
 		audio.setPlayCount(0);   ////****/
