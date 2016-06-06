@@ -18,10 +18,13 @@ public class Game {
 	
 	// content
 	private PImage img;
+	private PImage[] rest;
 	private PFont gameFont;
 	private Wallet wallet;
 	private Button ctrlBtn;
 	private ArrayList<Splash> splash;
+	private int accumulateMoney=0;
+	private int changeRest;
 	private ArrayList<ImageMessage> message;
 	
 	// variable & constant
@@ -52,6 +55,16 @@ public class Game {
 		// load image
 		imageNumber = r.nextInt(list.length);
 		img = parent.loadImage("src/resource/pic_rsc/" + list[imageNumber]);
+		rest = new PImage[4];    ///*****
+		/*for(int j=0;j<4;j++){
+			rest[j] = parent.loadImage("src/resource/other_images/coffee"+Integer.toString(3-j)+".png");
+		}*/
+		rest = new PImage[4];    ///*****
+		rest[0] = parent.loadImage("src/resource/other_images/coffee4.png");
+		rest[1] = parent.loadImage("src/resource/other_images/coffee3.png");
+		rest[2] = parent.loadImage("src/resource/other_images/coffee2.png");
+		rest[3] = parent.loadImage("src/resource/other_images/coffee1.png");
+		
 		
 		// set wallet
 		wallet = new Wallet(parent, 700, 380, 90, 60);
@@ -105,6 +118,17 @@ public class Game {
 	
 		} else {
 			parent.background(200, 200, 0);
+			changeRest++;
+			if(changeRest<=10) parent.image(rest[0], 360, 200, 100, 100);
+			else if(changeRest<=20) parent.image(rest[1], 360, 200, 100, 100);
+			else if(changeRest<=30) parent.image(rest[2], 360, 200, 100, 100);
+			else if(changeRest<=40) parent.image(rest[3], 360, 200, 100, 100);
+			else {
+				changeRest=0;
+				parent.image(rest[0], 360, 200, 100, 100);
+			}
+			parent.textSize(70);
+			parent.text("ZOOM & BOOM", 150, 150);
 		}
 		
 		// draw tool bar
