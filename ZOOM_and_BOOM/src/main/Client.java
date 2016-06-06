@@ -219,6 +219,66 @@ public class Client extends JFrame{
 	public void setPlayer(Player player){
 		this.player = player;
 	}
+	
+	
+	//update player data in database
+	public  void updateDatabase(){
+		
+		//Database data
+		String jdbcDriver = "com.mysql.jdbc.Driver";
+		String sqlDriver = "jdbc:mysql://db4free.net:3306/player_database";
+		String sqlUser = "ssnthuac_final";
+		String sqlPass = "ssnthuac";
+		
+		Thread databaseThread = new Thread(new Runnable() {
+			public void run(){
+		//Money and Color will be set to 0 by default as per database's settings
+				
+				Connection sqlConn = null;
+				Statement sqlState = null;
+				String updateEntry = null;
+				
+				try{
+					
+					Class.forName(jdbcDriver);
+					
+					sqlConn = DriverManager.getConnection(sqlDriver,sqlUser,sqlPass);
+					sqlState = sqlConn.createStatement();
+					
+					updateEntry = "UPDATE player_table SET score="+player.getScore()+",shield="+player.getShield()+", completed="+player.getCompleted()+" WHERE username='"+player.getName()+"'";
+							
+					sqlState.executeUpdate(updateEntry);
+					
+					//DEBUG
+					System.out.println("updateEntry: " + updateEntry);
+					
+				}
+				
+				catch (SQLException ex){
+					System.err.println("SQLException: " + ex.getMessage());
+					System.err.println("VendorError: " + ex.getErrorCode());
+					ex.printStackTrace();
+				}
+				
+				catch (ClassNotFoundException ex){
+					System.err.println("Unable to locate Driver");
+					ex.printStackTrace();
+				}
+				//close connection
+				finally{
+					try{
+						if(sqlState!=null && sqlConn!=null)
+							sqlConn.close();
+					}
+					catch(SQLException ex){
+						System.err.println("Unable to close SSL connection to database");
+						ex.printStackTrace();
+					}
+				}
+			}
+		});
+		databaseThread.start();
+	}
 
 		
 	// main
@@ -248,11 +308,13 @@ public class Client extends JFrame{
 		            "Are you sure to close this game?", "Really Closing?", 
 		            JOptionPane.YES_NO_OPTION,
 		            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
-		        	System.exit(0);
+		        		client.updateDatabase();
+		        		window.dispose();
+		        		System.exit(0);
 		        }
 		    }
 		});
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		window.setSize(1117, 690);
 		window.setVisible(true);
 	}

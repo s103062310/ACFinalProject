@@ -23,7 +23,7 @@ public class DigitalTimer {
 		this.parent = p;
 		this.x = x;
 		this.y = y;
-		this.max = max * 1000 ;
+		this.max = max * 1000 + 100 ;
 		this.time = max * 1000 ;
 		this.state = timerState.OFF;
 		digitalFont = parent.createFont("resource/fonts/digital7segment.ttf", 48);
