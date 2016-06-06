@@ -70,17 +70,14 @@ public class Game {
 		gameFont = parent.createFont("resource/fonts/HappyGiraffe.ttf",32);
 
 		//Timer and Timer Control Thread
-<<<<<<< HEAD
 		imageTimer = new DigitalTimer(parent,this,5,5,5);
 		
 		audio = new AudioPlayer(new File("src/resource/crrect_answer2.wav"));   ///***
 		//audio.loadAudio("src/resource/crrect_answer2.wav", null);   ///***
 		audio.setPlayCount(1);   ////****/
 		
-=======
 		imageTimer = new DigitalTimer(parent, this, 5, 5, 5);
 
->>>>>>> eeaef077dd27a2225a8a1b34b396bb7dc832db4c
 	}
 
 	
