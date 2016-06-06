@@ -33,10 +33,11 @@ public class Game {
 	private String[] list;
 	private Random r = new Random();
 	
-	//timer related resources
+	// timer related resources
 	private DigitalTimer imageTimer;
 	private Timer timerCheckScheduler = new Timer ();
 	private Thread timerThread;
+	
 	
 	// Constructor
 	public Game(MainApplet p){
@@ -55,7 +56,7 @@ public class Game {
 		ctrlBtn = new Button(parent, 735, 15, 50, 50, 0);
 		ctrlBtn.addImage("src/resource/other_images/pause.png");
 		ctrlBtn.addImage("src/resource/other_images/play.png");
-		ctrlBtn.setImage(0);
+		ctrlBtn.setImage(1);
 		
 		// set splash list
 		splash = new ArrayList<Splash>();
@@ -88,6 +89,7 @@ public class Game {
 	
 	// update screen content
 	public void display(){
+		
 		parent.textFont(gameFont);
 		if(isPlay){
 			// draw image
@@ -115,20 +117,22 @@ public class Game {
 		}
 		
 		// draw tool bar
-		parent.fill(125, 125, 125, 150);
-		parent.rect(720, 0, 150, 80);
 		ctrlBtn.display_image();
 		imageTimer.display();
 		parent.textFont(gameFont);
+		
 	}
 	
 	
 	// start to frame object => draw green frame
 	public void frameStart(){
+		
 		isFrame = true;
 		startX = parent.mouseX;
 		startY = parent.mouseY;
+		
 	}
+
 	
 	// end to frame object => frame disappear and transmit answer
 	public void frameEnd(boolean timeout){
@@ -190,8 +194,10 @@ public class Game {
 	
 	// start to play game
 	public void gameStart(){
+		
 		isPlay = true;
-		ctrlBtn.setImage(1);
+		ctrlBtn.setImage(0);
+		
 	}
 
 	
@@ -201,28 +207,35 @@ public class Game {
 		isPlay = false;
 		//TODO confirm earned money
 		parent.calMoney(accumulateMoney);
-		ctrlBtn.setImage(0);
+		accumulateMoney = 0;
+		ctrlBtn.setImage(1);
 		
 	}
 	
 	
 	// save money temporarily and show animate
 	public void answerCorrect(){
+		
 		//TODO
 		parent.getPlayer().Completed();
 		accumulateMoney += 10;
+		
 	}
 	
 	
 	// show animate
 	public void answerWrong(){
+		
 		//TODO
+		
 	}
 
 	
 	// add new splash
 	public void addSplash(int color){
+		
 		splash.add(new Splash(parent, r.nextInt(800)-210, r.nextInt(450)-170, 10, color));
+	
 	}
 	
 	

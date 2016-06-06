@@ -238,6 +238,7 @@ public class Client extends JFrame{
 		window.setContentPane(client.applet);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setSize(1117, 690);
+		window.setLocation(120, 20);
 		window.setVisible(true);
 	
 	}

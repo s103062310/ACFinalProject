@@ -45,6 +45,7 @@ public class Server extends JFrame {
 		
 		// set up of server's frame
 		setSize(400, 200);
+		setLocation(0, 500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		// create server's socket (set port)
