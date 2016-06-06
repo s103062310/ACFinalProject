@@ -291,7 +291,7 @@ public class Client extends JFrame{
 		
 		// create client & Run login app
 		Client client = new Client("127.0.0.1", 8000);
-		client.loginApplet.runFrame();
+		//client.loginApplet.runFrame();
 		client.connect();
 
 		if (!isConnect)return;
@@ -316,6 +316,7 @@ public class Client extends JFrame{
 		});
 		window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		window.setSize(1117, 690);
+		window.setLocation(120, 30);
 		window.setVisible(true);
 	}
 	

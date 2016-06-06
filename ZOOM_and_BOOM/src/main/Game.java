@@ -7,6 +7,8 @@ import processing.core.PImage;
 import processing.core.PApplet;
 import processing.core.PFont;
 import object.client.Splash;
+import object.client.Wallet;
+import object.client.ImageMessage;
 import object.tool.DigitalTimer;
 import object.tool.Button;
 
@@ -17,9 +19,10 @@ public class Game {
 	// content
 	private PImage img;
 	private PFont gameFont;
+	private Wallet wallet;
 	private Button ctrlBtn;
 	private ArrayList<Splash> splash;
-	private int accumulateMoney=0;
+	private ArrayList<ImageMessage> message;
 	
 	// variable & constant
 	private boolean isFrame=false, isPlay=false;
@@ -49,6 +52,9 @@ public class Game {
 		imageNumber = r.nextInt(list.length);
 		img = parent.loadImage("src/resource/pic_rsc/" + list[imageNumber]);
 		
+		// set wallet
+		wallet = new Wallet(parent, 700, 380, 90, 60);
+		
 		// set tool bar
 		ctrlBtn = new Button(parent, 735, 15, 50, 50, 0);
 		ctrlBtn.addImage("src/resource/other_images/pause.png");
@@ -57,12 +63,13 @@ public class Game {
 		
 		// set splash list
 		splash = new ArrayList<Splash>();
+		message = new ArrayList<ImageMessage>();
 		
 		//font
 		gameFont = parent.createFont("resource/fonts/HappyGiraffe.ttf",32);
 
 		//Timer and Timer Control Thread
-		imageTimer = new DigitalTimer(parent,this,5,5,5);
+		imageTimer = new DigitalTimer(parent, this, 5, 5, 5);
 
 	}
 
@@ -70,7 +77,6 @@ public class Game {
 	// update screen content
 	public void display(){
 		
-		parent.textFont(gameFont);
 		if(isPlay){
 			// draw image
 			parent.image(img, 0, 0, width, height);
@@ -78,6 +84,7 @@ public class Game {
 			// draw splash
 			for(int i=0; i<splash.size(); i++){
 				if(splash.get(i).getTrans()==0) splash.remove(i);
+				else break;
 			}
 			for(int i=0; i<splash.size(); i++){
 				splash.get(i).display();
@@ -99,6 +106,26 @@ public class Game {
 		// draw tool bar
 		ctrlBtn.display_image();
 		imageTimer.display();
+		wallet.display();
+		
+		// draw answer message
+		for(int i=0; i<message.size(); i++){
+			message.get(i).display();
+		}
+		if(message.size()>0){
+			ImageMessage m = message.get(0);
+			if(m.isCorrect()&&wallet.in(m.getX()+m.getD(), m.getY()+m.getD())){
+				if(!wallet.isIn()){
+					wallet.setIn(true);
+					wallet.add(10);
+				}
+			}
+			if(m.getD()==0){
+				wallet.setIn(false);
+				message.remove(m);
+			}
+		}
+		
 		parent.textFont(gameFont);
 		
 	}
@@ -189,8 +216,8 @@ public class Game {
 		isPlay = false;
 		imageTimer.pause();
 		//TODO confirm earned money
-		parent.calMoney(accumulateMoney);
-		accumulateMoney = 0;
+		parent.calMoney(wallet.getMoney());
+		wallet.reset();
 		ctrlBtn.setImage(1);
 	}
 	
@@ -200,7 +227,7 @@ public class Game {
 		
 		//TODO
 		parent.getPlayer().Completed();
-		accumulateMoney += 10;
+		message.add(new ImageMessage(parent, "correct.png", 250, 75, 300));
 		
 	}
 	
@@ -209,6 +236,7 @@ public class Game {
 	public void answerWrong(){
 		
 		//TODO
+		message.add(new ImageMessage(parent, "wrong.png", 250, 75, 300));
 		
 	}
 

@@ -35,7 +35,7 @@ public class Server extends JFrame {
 	private int people=0;
 	
 	// resources
-	private HashMap<String, Answer> answer = new HashMap<String, Answer>();;
+	private HashMap<String, Answer> answer = new HashMap<String, Answer>();
 	private String path = new String("src/resource/pic_rsc");
 	private String[] list;
 

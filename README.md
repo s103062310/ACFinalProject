@@ -39,21 +39,19 @@
 ### Client.java:
 1. 等有login系統後，server 創造一個player給client，每次登入都傳給client
 2. Fail to establish I/O channel with server! => exception confirm
-3. Correct => add money and display message(先用System.out)
-4. Wrong => display message(先用System.out)
-5. transmit screenshot after being attacked(頻)
-6. ~~try transmit list directly~~ by 頻
+3. transmit screenshot after being attacked(頻)
+4. ~~try transmit list directly~~ by 頻
 
 ### Timer.java: 
-1. clock image!
+1. ~~clock image!~~ by Eva
 2. if server need => develop other type timer
 
 ### Button.java:
 1. ~~image! (( 2 type~~ by 頻
 
 ### Game.java:
-1. answerCorrect()
-2. answerWrong()
+1. ~~answerCorrect()~~ by 頻
+2. ~~answerWrong()~~ by 頻
 3. gameEnd()
 4. start animate!
 
@@ -65,13 +63,14 @@
 
 ### AttackWindow.java
 1. ~~新增取消按鈕~~ by 竹
-2. 試做 scrollbar
+2. ~~試做 scrollbar~~ by Tera
 3. 需要一點美工設計(?
 4. 點選之後的後續連接
 
 ### MainApplet.java
 1. Attacked() (頻)
 2. beAttacked() (頻)
+3. add state
 
 ### Scoreboard.java
 1. 處理同分排名(是否給黃冠)
