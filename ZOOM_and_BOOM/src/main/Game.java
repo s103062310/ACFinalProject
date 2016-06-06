@@ -1,17 +1,12 @@
 package main;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Random;
 import java.util.ArrayList;
 import processing.core.PImage;
 import processing.core.PApplet;
 import processing.core.PFont;
 import object.client.Splash;
-import object.server.Player;
 import object.tool.DigitalTimer;
 import object.tool.Button;
 
@@ -72,6 +67,7 @@ public class Game {
 		timerThread = new Thread (new Runnable() {
 			public void run(){
 				while(true){
+					System.out.print("*");
 					if(imageTimer.getValue()==0)
 						frameEnd(true);
 					if(isPlay){
