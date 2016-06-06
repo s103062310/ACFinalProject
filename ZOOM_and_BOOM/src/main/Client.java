@@ -259,7 +259,7 @@ public class Client extends JFrame{
 		            JOptionPane.YES_NO_OPTION,
 		            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
 	        		window.dispose();
-		        	client.updateWindow.runFrame(client.getPlayer());
+		        	//client.updateWindow.runFrame(client.getPlayer());
 		        	System.exit(0);
 		        }
 		    }

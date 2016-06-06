@@ -12,8 +12,6 @@ import object.client.ImageMessage;
 import object.tool.DigitalTimer;
 import object.tool.Button;
 
-//TODO start animate
-
 public class Game {
 	
 	// content
@@ -23,13 +21,11 @@ public class Game {
 	private Wallet wallet;
 	private Button ctrlBtn;
 	private ArrayList<Splash> splash;
-	private int accumulateMoney=0;
-	private int changeRest;
 	private ArrayList<ImageMessage> message;
 	
 	// variable & constant
 	private boolean isFrame=false, isPlay=false;
-	private int height=450, width=800, imageNumber;
+	private int height=450, width=800, imageNumber, changeRest;
 	private float startX, startY, frameX, frameY, lineW=(float)2.5;
 	
 	// resources
@@ -40,7 +36,6 @@ public class Game {
 	
 	// timer related resources
 	private DigitalTimer imageTimer;
-	private Thread timerThread;
 	
 	
 	// Constructor
@@ -117,6 +112,7 @@ public class Game {
 			parent.noStroke();
 	
 		} else {
+			
 			parent.background(200, 200, 0);
 			changeRest++;
 			if(changeRest<=10) parent.image(rest[0], 360, 200, 100, 100);
@@ -129,6 +125,7 @@ public class Game {
 			}
 			parent.textSize(70);
 			parent.text("ZOOM & BOOM", 150, 150);
+			
 		}
 		
 		// draw tool bar
@@ -255,8 +252,7 @@ public class Game {
 	
 	// save money temporarily and show animate
 	public void answerCorrect(){
-		
-		//TODO
+	
 		parent.getPlayer().Completed();
 		message.add(new ImageMessage(parent, "correct.png", 250, 75, 300));
 		
@@ -266,7 +262,6 @@ public class Game {
 	// show animate
 	public void answerWrong(){
 		
-		//TODO
 		message.add(new ImageMessage(parent, "wrong.png", 250, 75, 300));
 		
 	}
@@ -315,12 +310,6 @@ public class Game {
 		this.isPlay=true;
 		this.imageTimer.resume();
 		ctrlBtn.setImage(0);
-	}
-	
-	public void pause(){
-		this.isPlay=false;
-		this.imageTimer.pause();
-		ctrlBtn.setImage(1);
 	}
 	
 	public Button getGameControlButton(){

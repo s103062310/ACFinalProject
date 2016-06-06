@@ -19,10 +19,12 @@ public class MainApplet extends PApplet{
 	
 	private static final long serialVersionUID = 1L;
 
-	// sub window
+	// sub window and state
 	private Game game;
 	private Market market;
 	private Scoreboard scoreboard;
+	private enum GameState {MAIN, PLAY, PLAYEND, ATTACK};
+	private GameState state;
 	
 	// resources
 	private ClientThread thread;
@@ -45,6 +47,9 @@ public class MainApplet extends PApplet{
 		game = new Game(this);
 		market = new Market(this);
 		scoreboard = new Scoreboard(this);
+		state = GameState.MAIN;
+		
+		// set music
 		click = new AudioPlayer(new File("src/resource/refrigerater2_O.wav"));
 		click.setPlayCount(1);
 		beAtk = new AudioPlayer(new File("src/resource/bomb.wav"));
@@ -66,7 +71,9 @@ public class MainApplet extends PApplet{
 	// control mouse pressed
 	public void mousePressed(){
 		
-		if(game.inGame()&&game.isPlay()) game.frameStart();
+		if(state==GameState.PLAY){
+			if(game.inGame()) game.frameStart();
+		}
 		
 	}
 	
@@ -74,7 +81,9 @@ public class MainApplet extends PApplet{
 	// control mouse released
 	public void mouseReleased(){
 		
-		if(game.isFrame()&&game.isPlay()) game.frameEnd(false);
+		if(state==GameState.PLAY){
+			if(game.isFrame()) game.frameEnd(false);
+		}
 		
 	}
 	
@@ -82,90 +91,136 @@ public class MainApplet extends PApplet{
 	// control mouse clicked
 	public void mouseClicked(){
 
-		// game process control
-		if(game.getGameControlButton().inBtn()){
+		if(state==GameState.MAIN){
 			
-			if(game.isPlay()) game.gameEnd();
-			else game.gameStart();
+			// game process control
+			if(game.getGameControlButton().inBtn()){
+				game.gameStart();
+				state = GameState.PLAY;
+			}
 			
-		}
-		
-		// buy and use at market
-		ColorButton[] btns = market.getButtons();
-		for(ColorButton btn : btns){
-			click.play();
-			if(btn.inBtn()){
+			// buy and use at market (general)
+			ColorButton[] btns = market.getButtons();
+			for(ColorButton btn : btns){
 				
-				if(player.getScore() >= btn.getMoney()){
-					game.pause();
-					// create new PApplet
-					AttackWindow app = new AttackWindow(this, list, btn, game);
-					app.init();
-					app.start();
-					app.setFocusable(true);
+				click.play();
+				
+				if(btn.inBtn()){
 					
-					// create new frame
-					JFrame window = new JFrame("Attack!!!");
-					window.setContentPane(app);
-					window.setSize(400, 600);
-					window.setVisible(true);
-					app.setWindow(window);
+					state = GameState.ATTACK;
+					if(player.getScore() >= btn.getMoney()){
 						
-				} else {
+						// create new PApplet
+						AttackWindow app = new AttackWindow(this, list, btn, game);
+						app.init();
+						app.start();
+						app.setFocusable(true);
+						
+						// create new frame
+						JFrame window = new JFrame("Attack!!!");
+						window.setContentPane(app);
+						window.setSize(400, 600);
+						window.setVisible(true);
+						app.setWindow(window);
+							
+					} else {
+						
+						// remind that player doesn't have enough money
+						JOptionPane.showMessageDialog(null,"Sorry, your money is not enough!");
 					
+					}
+					state = GameState.MAIN;
+					
+				}
+				
+			}
+			
+			// buy and use at market (Random)
+			if(market.getRandomBtn().inBtn()){
+				
+				state = GameState.ATTACK;
+				if(player.getScore() >= market.getRandomBtn().getMoney()){	
+					calMoney(-market.getRandomBtn().getMoney());
+					//attacked(list.get(r.nextInt(list.size())).getName(), new Color(0, 0, 0).getRGB());
+				} else {
 					// remind that player doesn't have enough money
 					JOptionPane.showMessageDialog(null,"Sorry, your money is not enough!");
 				}
+				state = GameState.MAIN;
+				
 			}
-		}
-		if(market.getRandomBtn().inBtn()){
-			if(player.getScore() >= market.getRandomBtn().getMoney()){
-				calMoney(-market.getShieldBtn().getMoney());
-				//attacked(list.get(r.nextInt(list.size())).getName(), new Color(0, 0, 0).getRGB());
-			} else {
-				// remind that player doesn't have enough money
-				JOptionPane.showMessageDialog(null,"Sorry, your money is not enough!");
+			
+			// buy shield
+			if(market.getShieldBtn().inBtn()){
+				
+				state = GameState.ATTACK;	
+				if(player.getScore() >= market.getShieldBtn().getMoney()){
+					calMoney(-market.getShieldBtn().getMoney());
+					player.buyShield();
+				} else {
+					// remind that player doesn't have enough money
+					JOptionPane.showMessageDialog(null,"Sorry, your money is not enough!");
+				}
+				state = GameState.MAIN;
+				
 			}
-		}
-		if(market.getShieldBtn().inBtn()){
-			if(player.getScore() >= market.getShieldBtn().getMoney()){
-				calMoney(-market.getShieldBtn().getMoney());
-				player.buyShield();
-				beProtected();
-			} else {
-				// remind that player doesn't have enough money
-				JOptionPane.showMessageDialog(null,"Sorry, your money is not enough!");
+			
+		} else if(state==GameState.PLAY){
+			
+			// game process control
+			if(game.getGameControlButton().inBtn()){
+				game.gameEnd();
+				state = GameState.PLAYEND;
 			}
+			
+		} else if(state==GameState.PLAYEND){
+			
+			state = GameState.MAIN;
+			
 		}
+		
 	}
 	
 	
 	// control mouse moved
 	public void mouseMoved(){
-
-		// game process control
-		if(game.getGameControlButton().inBtn()) game.getGameControlButton().setOver(true);
-		else game.getGameControlButton().setOver(false);
 		
-		// buy and use at market
-		ColorButton[] btns = market.getButtons();
-		for(ColorButton btn : btns){
+		if(state==GameState.MAIN){
 			
-			if(btn.inBtn()) btn.setOver(true);
-			else btn.setOver(false);
+			// game process control
+			if(game.getGameControlButton().inBtn()) game.getGameControlButton().setOver(true);
+			else game.getGameControlButton().setOver(false);
+			
+			// buy and use at market
+			if(market.getRandomBtn().inBtn()) market.getRandomBtn().setOver(true);
+			else market.getRandomBtn().setOver(false);
+			if(market.getShieldBtn().inBtn()) market.getShieldBtn().setOver(true);
+			else market.getShieldBtn().setOver(false);
+			ColorButton[] btns = market.getButtons();
+			for(ColorButton btn : btns){
+				if(btn.inBtn()) btn.setOver(true);
+				else btn.setOver(false);
+			}
+			
+		} else if(state==GameState.PLAY){
+			
+			// game process control
+			if(game.getGameControlButton().inBtn()) game.getGameControlButton().setOver(true);
+			else game.getGameControlButton().setOver(false);
 			
 		}
-		if(market.getRandomBtn().inBtn()) market.getRandomBtn().setOver(true);
-		else market.getRandomBtn().setOver(false);
-		if(market.getShieldBtn().inBtn()) market.getShieldBtn().setOver(true);
-		else market.getShieldBtn().setOver(false);
+
+		
+		
 	}
 	
 	
 	// control mouse dragged
 	public void mouseDragged(){
 		
-		if(game.isFrame()&&game.isPlay()) game.frame();
+		if(state==GameState.PLAY){
+			if(game.isFrame()&&game.isPlay()) game.frame();
+		}
 		
 	}
 	
@@ -205,15 +260,19 @@ public class MainApplet extends PApplet{
 	
 	// be attacked by other players
 	public void beAttacked(int color){
+		
 		beAtk.play();
 		game.addSplash(color);
 		thread.send(game.screenshot());
 		
 	}
-	// be protected     //////******
+	
+	
+	// use shield
 	public void beProtected(){
-		
+		// TODO
 	}
+	
 	
 	// send object to server
 	public void send(Object o){
