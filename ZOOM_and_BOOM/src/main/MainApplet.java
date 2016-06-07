@@ -14,6 +14,7 @@ import object.server.Player;
 import object.client.ColorButton;
 import object.client.AttackWindow;
 import object.client.ConfirmWindow;
+import object.client.ImageButton;
 
 public class MainApplet extends PApplet{
 	
@@ -100,8 +101,8 @@ public class MainApplet extends PApplet{
 			}
 			
 			// buy and use at market (general)
-			ColorButton[] btns = market.getButtons();
-			for(ColorButton btn : btns){
+			ImageButton[] btns = market.getButtons();
+			for(ImageButton btn : btns){
 				
 				click.play();
 				
@@ -196,8 +197,8 @@ public class MainApplet extends PApplet{
 			else market.getRandomBtn().setOver(false);
 			if(market.getShieldBtn().inBtn()) market.getShieldBtn().setOver(true);
 			else market.getShieldBtn().setOver(false);
-			ColorButton[] btns = market.getButtons();
-			for(ColorButton btn : btns){
+			ImageButton[] btns = market.getButtons();
+			for(ImageButton btn : btns){
 				if(btn.inBtn()) btn.setOver(true);
 				else btn.setOver(false);
 			}

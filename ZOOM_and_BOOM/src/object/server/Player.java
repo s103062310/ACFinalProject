@@ -9,7 +9,7 @@ public class Player implements Serializable{
 	
 	// player information
 	private String name = new String();
-	private int color;		// a int of random from 0~5 will be mapped to real color in other class
+	private int color;		// a int of random from 0~8 will be mapped to real color in other class
 	private int score=0;
 	private int completed=0;
 	private int shield=0;

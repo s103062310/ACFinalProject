@@ -632,7 +632,7 @@ public class Login extends PApplet{
 					sqlConn = DriverManager.getConnection(sqlDriver,sqlUser,sqlPass);
 					sqlState = sqlConn.createStatement();
 					
-					int randomColor = (int) random(1,5);
+					int randomColor = (int) random(8);
 					newEntry = "INSERT INTO player_table (username,password,color) VALUES ('" + newNameBox.getText() + "', '" + newPassBox.getText() + "', " + randomColor + " )";
 							
 					sqlState.executeUpdate(newEntry);

@@ -28,14 +28,14 @@ public class AttackWindow extends PApplet{
 	
 	// content
 	private Button[] btn;
-	private ColorButton marketBtn;
+	private ImageButton marketBtn;
 	private String[] playerName;
 	private ArrayList<Player> otherPlayers = new ArrayList<Player>();
 	//TODO 新增取消按鈕~
 	private Button cancelBtn;
 	
 	// Constructor: initialize
-	public AttackWindow(MainApplet p, ArrayList<Player> list, ColorButton marketBtn, Game game){
+	public AttackWindow(MainApplet p, ArrayList<Player> list, ImageButton marketBtn, Game game){
 		
 		parent = p;
 		this.marketBtn = marketBtn;

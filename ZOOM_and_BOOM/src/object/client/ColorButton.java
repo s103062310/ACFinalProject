@@ -1,6 +1,7 @@
 package object.client;
 
 import processing.core.PApplet;
+import processing.core.PImage;
 import object.tool.Button;
 
 public class ColorButton extends Button{
@@ -12,10 +13,11 @@ public class ColorButton extends Button{
 	// Constructor
 	public ColorButton(PApplet p, float x, float y, int money, String colorName, int color){
 		
-		super(p, x, y, 70, color);
+		super(p, x, y, 70,70, color);
 		this.money = money;
 		this.color = color;
 		this.colorName = colorName;
+		this.image = image;
 		
 	}
 	
