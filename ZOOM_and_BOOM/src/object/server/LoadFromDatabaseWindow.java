@@ -3,11 +3,9 @@ package object.server;
 import java.awt.Color;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.List;
-import object.server.Answer;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -17,9 +15,8 @@ import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PImage;
 
-
-public class ServerUpdateDatabaseWindow extends PApplet {
-	
+public class LoadFromDatabaseWindow extends PApplet
+{
 	//Database data
 	private static final String jdbcDriver = "com.mysql.jdbc.Driver";
 	private static final String sqlDriver = "jdbc:mysql://db4free.net:3306/player_database";
@@ -42,7 +39,7 @@ public class ServerUpdateDatabaseWindow extends PApplet {
 	private Server server;
 	
 	//Constructor
-	public ServerUpdateDatabaseWindow(Server server){
+	public LoadFromDatabaseWindow(Server server){
 		updateSuccessful=false;
 		this.server=server;
 	}
@@ -54,21 +51,21 @@ public class ServerUpdateDatabaseWindow extends PApplet {
 		size(width, height);
 		smooth();
 		noStroke();
-		loginFont = createFont("resource/fonts/HappyGiraffe.ttf",32);
+		loginFont = createFont("../resource/fonts/HappyGiraffe.ttf",32);
 		textFont(loginFont);
 		//loadImages
 		try { 
-			backgroundImg = loadImage("../resource/other_images/paintBackground.png");
+			backgroundImg = loadImage("resource/paintBackground.png");
 		}
 		catch(Exception ex){
-			System.err.println("Unable to laod cursor or Background Images");
+			System.err.println("Unable to load cursor or Backgroun Images");
 			ex.printStackTrace();
 		}
 		//Wait animation
 		setColors();
 		rand = (int) random(12);
 		tint(255, 130);
-		image(backgroundImg,0,0);
+		//image(backgroundImg,0,0);
 		tint(255, 255);
 	}
 		
@@ -77,7 +74,7 @@ public class ServerUpdateDatabaseWindow extends PApplet {
 		
 		if (frameCount % 30 == 0){
 		    rand = (int) random(12);
-		    text("UPDATING DATABASE...",(width-textWidth("UPDATING DATABASE..."))/2,300);
+		    text("LOADING DATABASE...",(width-textWidth("UPDATING DATABASE..."))/2,300);
 		}
 		if (frameCount % 2 == 0) {
 		    fill(splashColors[rand].getRed(),splashColors[rand].getGreen(),splashColors[rand].getBlue());
@@ -91,7 +88,7 @@ public class ServerUpdateDatabaseWindow extends PApplet {
 	
 	
 	//update player data in database
-	public void updateDatabase(){
+	public void loadDatabase(){
 		
 		Thread databaseThread = new Thread(new Runnable() {
 			public void run(){
@@ -99,41 +96,42 @@ public class ServerUpdateDatabaseWindow extends PApplet {
 				
 				Connection sqlConn = null;
 				Statement sqlState = null;
-				String newEntry = null;
+				String selectQuery = null;
+				ResultSet sqlResult = null;
 				
 				try{
 					
 					Class.forName(jdbcDriver);
 					
+
 					sqlConn = DriverManager.getConnection(sqlDriver,sqlUser,sqlPass);
 					sqlState = sqlConn.createStatement();
+					selectQuery = "SELECT picture,width,height,x,y,datanum FROM answer_table";
+					sqlResult = sqlState.executeQuery(selectQuery);
 					
-					//for each entry in hash
-					for(String key : server.answer.keySet()){
+					//while query returns results
+					while (sqlResult.next() ){
 						
-						float entryWidth = server.answer.get(key).width;
-						float entryHeight = server.answer.get(key).height;
-						float entryX = server.answer.get(key).x;
-						float entryY = server.answer.get(key).y;
-						int entryDatanum = server.answer.get(key).dataNum;
+						String resultPicture;
+						float resultWidth=0, resultHeight=0, resultX=0, resultY=0;
+						int resultDatanum=0;
 						
-						//CREATE
-						//newEntry = "INSERT INTO answer_table (picture,width,height,x,y,datanum) VALUES ('" 
-								 //+ key + "', " + entryWidth + ", " + entryHeight + ", " + entryX + ", "
-								 //+ entryY + "', " + entryDatanum + ")";
+						resultPicture = sqlResult.getString("picture");
+						resultWidth = sqlResult.getFloat("width");
+						resultHeight = sqlResult.getFloat("height");
+						resultX = sqlResult.getFloat("x");
+						resultY = sqlResult.getFloat("y");
+						resultDatanum = sqlResult.getInt("datanum");
 						
-						//UPDATE
-						if(! (entryWidth==0 && entryHeight==0 && entryX==0 && entryY==0 && entryDatanum==0)){
-							newEntry = "UPDATE answer_table SET width=" + entryWidth + ", height="
-									 + entryHeight + ", x=" + entryX + ", y=" + entryY + ", datanum=" + 
-									 + entryDatanum	+ " WHERE picture='" + key + "'";
-							sqlState.executeUpdate(newEntry);
-							//DEBUG
-							System.out.println("updateEntry: " + newEntry);
-						}
+						Answer resultAnswer = new Answer(resultWidth,resultHeight,resultX,resultY);
+						
+						server.answer.put(resultPicture, resultAnswer);
+						
+						//DEBUG
+						System.out.println("Loading picture: " + resultPicture);
+						
+						updateSuccessful = true;
 					}
-
-					updateSuccessful=true;
 					
 				}
 				
@@ -180,35 +178,34 @@ public class ServerUpdateDatabaseWindow extends PApplet {
 	}
 	
 	public void runFrame(){
-		JFrame updateFrame;
+		JFrame loadFrame;
 		
-		updateFrame = new JFrame("ZOOM and BOOM - UPDATING SERVER DATABASE");
-		updateFrame.setContentPane(this);
-		updateFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		updateFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+		loadFrame = new JFrame("ZOOM and BOOM - UPDATING SERVER DATABASE");
+		loadFrame.setContentPane(this);
+		loadFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		loadFrame.addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-		        if (JOptionPane.showConfirmDialog(updateFrame, 
+		        if (JOptionPane.showConfirmDialog(loadFrame, 
 		            "Are you sure you don't want to save new answers?", "Really Closing?", 
 		            JOptionPane.YES_NO_OPTION,
 		            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
-		        	updateFrame.dispose();
+		        	loadFrame.dispose();
 		        }
 		    }
 		});
-		updateFrame.setSize(600, 400);
-		updateFrame.setLocation(400,200);
-		updateFrame.setVisible(true);		
+		loadFrame.setSize(600, 400);
+		loadFrame.setLocation(400,200);
+		loadFrame.setVisible(true);		
 		
-		updateDatabase();
+		loadDatabase();
 		
 		while(!updateSuccessful){
 			System.out.print("*");
 		}
 
-		updateFrame.dispose();
+		loadFrame.dispose();
 		
 		return;
 	}
-
 }
