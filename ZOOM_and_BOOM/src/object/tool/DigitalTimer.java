@@ -27,7 +27,7 @@ public class DigitalTimer {
 		this.game = game;
 		this.x = x;
 		this.y = y;
-		this.max = max * 1000 + 100 ;
+		this.max = max * 1000 + 10 ;
 		this.time = max * 1000 ;
 		this.state = timerState.OFF;
 		digitalFont = parent.createFont("resource/fonts/digital7segment.ttf", 48);
@@ -57,6 +57,7 @@ public class DigitalTimer {
 		parent.image(clockImg, x, y);
 		parent.textFont(digitalFont);
 		parent.fill(255,0,0);
+		timeString = String.format("%d.%d", time / 1000, time % 1000 /100);
 		if(time/1000 == 1)
 			parent.text(timeString, x+27, y+49);
 		else
@@ -73,7 +74,6 @@ public class DigitalTimer {
 		}
 		else 
 			time--;
-		timeString = String.format("%d.%d", time / 1000, time % 1000 /100);
 	}
 	
 	// reset timer

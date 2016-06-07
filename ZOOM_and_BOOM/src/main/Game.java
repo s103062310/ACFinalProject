@@ -17,14 +17,14 @@ public class Game {
 	// content
 	private PImage img;
 	private PImage[] rest;
-	private PFont gameFont;
+	private PFont font;
 	private Wallet wallet;
 	private Button ctrlBtn;
 	private ArrayList<Splash> splash;
 	private ArrayList<ImageMessage> message;
 	
 	// variable & constant
-	private boolean isFrame=false, isPlay=false;
+	private boolean isFrame=false, isPlay=false, end=false;
 	private int height=450, width=800, imageNumber, changeRest;
 	private float startX, startY, frameX, frameY, lineW=(float)2.5;
 	
@@ -48,41 +48,31 @@ public class Game {
 		list = folder.list();
 		
 		// load image
-		imageNumber = r.nextInt(list.length);
-		img = parent.loadImage("src/resource/pic_rsc/" + list[imageNumber]);
-		rest = new PImage[4];    ///*****
-		/*for(int j=0;j<4;j++){
-			rest[j] = parent.loadImage("src/resource/other_images/coffee"+Integer.toString(3-j)+".png");
-		}*/
-		rest = new PImage[4];    ///*****
+		rest = new PImage[4];
 		rest[0] = parent.loadImage("src/resource/other_images/coffee4.png");
 		rest[1] = parent.loadImage("src/resource/other_images/coffee3.png");
 		rest[2] = parent.loadImage("src/resource/other_images/coffee2.png");
 		rest[3] = parent.loadImage("src/resource/other_images/coffee1.png");
 		
-		
-		// set wallet
-		wallet = new Wallet(parent, 700, 380, 90, 60);
-		
-		// set tool bar
+		// set control button
 		ctrlBtn = new Button(parent, 735, 15, 50, 50, 0);
 		ctrlBtn.addImage("src/resource/other_images/pause.png");
 		ctrlBtn.addImage("src/resource/other_images/play.png");
 		ctrlBtn.setImage(1);
 		
+		// tools
+		wallet = new Wallet(parent, 700, 380, 90, 60);
+		imageTimer = new DigitalTimer(parent, this, 5, 5, 5);
+		
 		// set splash list
 		splash = new ArrayList<Splash>();
 		message = new ArrayList<ImageMessage>();
 		
-		//font
-		gameFont = parent.createFont("resource/fonts/HappyGiraffe.ttf",32);
-
-		//Timer and Timer Control Thread
-		imageTimer = new DigitalTimer(parent,this,5,5,5);
+		// font and audio
+		font = parent.createFont("src/resource/fonts/JOKERMAN.ttf", 70);
+		audio = new AudioPlayer(new File("src/resource/crrect_answer2.wav"));
+		audio.setPlayCount(1);
 		
-		audio = new AudioPlayer(new File("src/resource/crrect_answer2.wav"));   ///***
-		//audio.loadAudio("src/resource/crrect_answer2.wav", null);   ///***
-		audio.setPlayCount(1);   ////****/
 	}
 
 	
@@ -90,6 +80,7 @@ public class Game {
 	public void display(){
 		
 		if(isPlay){
+			
 			// draw image
 			parent.image(img, 0, 0, width, height);
 		
@@ -113,7 +104,10 @@ public class Game {
 	
 		} else {
 			
-			parent.background(200, 200, 0);
+			// background
+			parent.background(255, 255, 150);
+			
+			// animate
 			changeRest++;
 			if(changeRest<=10) parent.image(rest[0], 360, 200, 100, 100);
 			else if(changeRest<=20) parent.image(rest[1], 360, 200, 100, 100);
@@ -123,15 +117,17 @@ public class Game {
 				changeRest=0;
 				parent.image(rest[0], 360, 200, 100, 100);
 			}
-			parent.textSize(70);
+			
+			// title
+			parent.fill(255, 80, 0);
+			parent.textFont(font);
 			parent.text("ZOOM & BOOM", 150, 150);
 			
 		}
 		
-		// draw tool bar
+		// draw tools
 		ctrlBtn.display_image();
 		imageTimer.display();
-		wallet.display();
 		
 		// draw answer message
 		for(int i=0; i<message.size(); i++){
@@ -140,18 +136,23 @@ public class Game {
 		if(message.size()>0){
 			ImageMessage m = message.get(0);
 			if(m.isCorrect()&&wallet.in(m.getX()+m.getD(), m.getY()+m.getD())){
-				if(!wallet.isIn()){
-					wallet.setIn(true);
+				if(!wallet.isOver()){
+					wallet.setOver(true);
 					wallet.add(10);
 				}
 			}
 			if(m.getD()==0){
-				wallet.setIn(false);
+				wallet.setOver(false);
 				message.remove(m);
 			}
 		}
 		
-		parent.textFont(gameFont);
+		// game end check
+		if(end) {
+			parent.fill(0, 0, 0, 100);
+			parent.rect(0, 0, 800, 450);
+		}
+		wallet.display();
 		
 	}
 	
@@ -234,19 +235,32 @@ public class Game {
 		isPlay = true;
 		imageTimer.resume();
 		ctrlBtn.setImage(0);
+		imageNumber = r.nextInt(list.length);
+		img = parent.loadImage("src/resource/pic_rsc/" + list[imageNumber]);
 		
 	}
 
+	
+	// check money of this time's game
+	public void checkMoney(){
+		
+		imageTimer.pause();
+		wallet.setMove();
+		end = true;
+		
+	}
+	
 	
 	// close the game process
 	public void gameEnd(){
 		
 		isPlay = false;
-		imageTimer.pause();
-		//TODO confirm earned money
+		end = false;
 		parent.calMoney(wallet.getMoney());
 		wallet.reset();
+		imageTimer.reset();
 		ctrlBtn.setImage(1);
+		
 	}
 	
 	
@@ -299,21 +313,19 @@ public class Game {
 	 ----------------------------------------------**/
 	
 	public boolean isFrame(){
-		return isFrame;
+		return this.isFrame;
 	}
 
 	public boolean isPlay(){
-		return isPlay;
+		return this.isPlay;
 	}
 	
-	public void play(){
-		this.isPlay=true;
-		this.imageTimer.resume();
-		ctrlBtn.setImage(0);
+	public Wallet getWallet(){
+		return this.wallet;
 	}
 	
 	public Button getGameControlButton(){
-		return ctrlBtn;
+		return this.ctrlBtn;
 	}
 
 	
