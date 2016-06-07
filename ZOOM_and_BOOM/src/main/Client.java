@@ -242,7 +242,7 @@ public class Client extends JFrame{
 		
 		// create client & Run login app
 		Client client = new Client("127.0.0.1", 8000);
-		//client.loginApplet.runFrame();
+		client.loginApplet.runFrame();
 		client.connect();
 
 		if (!isConnect)return;
@@ -260,7 +260,7 @@ public class Client extends JFrame{
 		            JOptionPane.YES_NO_OPTION,
 		            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
 	        		window.dispose();
-		        	//client.updateWindow.runFrame(client.getPlayer());
+		        	client.updateWindow.runFrame(client.getPlayer());
 		        	System.exit(0);
 		        }
 		    }

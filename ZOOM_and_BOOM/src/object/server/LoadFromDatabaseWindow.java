@@ -55,7 +55,7 @@ public class LoadFromDatabaseWindow extends PApplet
 		textFont(loginFont);
 		//loadImages
 		try { 
-			backgroundImg = loadImage("resource/paintBackground.png");
+			backgroundImg = loadImage("../resource/other_images/paintBackground.png");
 		}
 		catch(Exception ex){
 			System.err.println("Unable to load cursor or Backgroun Images");
@@ -187,7 +187,7 @@ public class LoadFromDatabaseWindow extends PApplet
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		        if (JOptionPane.showConfirmDialog(loadFrame, 
-		            "Are you sure you don't want to save new answers?", "Really Closing?", 
+		            "Are you sure you don't want to load the database?", "Really Closing?", 
 		            JOptionPane.YES_NO_OPTION,
 		            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
 		        	loadFrame.dispose();

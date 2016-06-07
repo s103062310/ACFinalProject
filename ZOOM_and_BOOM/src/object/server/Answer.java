@@ -73,7 +73,6 @@ public class Answer {
 		
 	}
 
-	
 	// calculate current average
 	private void calAverage(float x, float y, float w, float h){
 		
