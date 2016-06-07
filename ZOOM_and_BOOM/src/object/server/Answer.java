@@ -33,9 +33,8 @@ public class Answer {
 		System.out.println("("+x+", "+y+") , width: "+width+" height: "+height);
 		
 		// compare method
-		if(dataNum==0){				// always correct
-			
-			dataNum++;
+		if(dataNum==0){	
+			dataNum++;// always correct
 			this.x = x;
 			this.y = y;
 			this.width = width;
