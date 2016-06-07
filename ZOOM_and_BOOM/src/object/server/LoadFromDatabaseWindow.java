@@ -123,7 +123,7 @@ public class LoadFromDatabaseWindow extends PApplet
 						resultY = sqlResult.getFloat("y");
 						resultDatanum = sqlResult.getInt("datanum");
 						
-						Answer resultAnswer = new Answer(resultWidth,resultHeight,resultX,resultY);
+						Answer resultAnswer = new Answer(resultWidth,resultHeight,resultX,resultY,resultDatanum);
 						
 						server.answer.put(resultPicture, resultAnswer);
 						

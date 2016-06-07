@@ -129,7 +129,7 @@ public class ServerUpdateDatabaseWindow extends PApplet {
 									 + entryDatanum	+ " WHERE picture='" + key + "'";
 							sqlState.executeUpdate(newEntry);
 							//DEBUG
-							System.out.println("updateEntry: " + newEntry);
+							System.out.println("updateEntry: " + newEntry + " dataNum " + entryDatanum);
 						}
 					}
 
