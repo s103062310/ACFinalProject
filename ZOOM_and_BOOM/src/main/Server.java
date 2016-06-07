@@ -17,13 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import object.client.UpdateDatabaseWindow;
-import object.server.Answer;
-import object.server.LoadFromDatabaseWindow;
-import object.server.Player;
-import object.server.ServerUpdateDatabaseWindow;
+import object.server.*;
 import processing.core.PImage;
-
-//TODO 結合帳戶系統
 
 @SuppressWarnings("serial")
 public class Server extends JFrame {
@@ -73,6 +68,7 @@ public class Server extends JFrame {
 		            JOptionPane.YES_NO_OPTION,
 		            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
 	        		frame.dispose();
+	        		createOutputImage();
 		        	updateWindow.runFrame();
 		        	System.exit(0);
 		        }
@@ -357,6 +353,19 @@ public class Server extends JFrame {
 		return answer.get(image).check(x, y, width, height);
 	
 	}
+	
+	
+	// output theme of images
+	private void createOutputImage(){
+		
+		// create PApplet
+		CreateOutput applet = new CreateOutput(list, answer);
+		applet.init();
+		applet.start();
+		applet.setFocusable(true);
+		
+	}
+	
 	
 	// main
 	public static void main(String[] args) {

@@ -112,7 +112,7 @@ public class MainApplet extends PApplet{
 					if(player.getScore() >= btn.getMoney()){
 						
 						// create new PApplet
-						AttackWindow app = new AttackWindow(this, list, btn, game);
+						AttackWindow app = new AttackWindow(this, list, btn);
 						app.init();
 						app.start();
 						app.setFocusable(true);
@@ -170,14 +170,18 @@ public class MainApplet extends PApplet{
 			
 			// game process control
 			if(game.getGameControlButton().inBtn()){
-				game.gameEnd();
 				state = GameState.PLAYEND;
+				game.checkMoney();
 			}
 			
 		} else if(state==GameState.PLAYEND){
 			
-			state = GameState.MAIN;
-			
+			// check money
+			if(game.getWallet().in(mouseX, mouseY)){
+				game.gameEnd();
+				state = GameState.MAIN;
+			}
+
 		}
 		
 	}
@@ -208,6 +212,12 @@ public class MainApplet extends PApplet{
 			// game process control
 			if(game.getGameControlButton().inBtn()) game.getGameControlButton().setOver(true);
 			else game.getGameControlButton().setOver(false);
+			
+		} else if(state==GameState.PLAYEND){
+			
+			// check money
+			if(game.getWallet().in(mouseX, mouseY)) game.getWallet().setOver(true);
+			else game.getWallet().setOver(false);
 			
 		}
 

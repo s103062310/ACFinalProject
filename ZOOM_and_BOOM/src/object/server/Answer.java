@@ -126,5 +126,26 @@ public class Answer {
 		System.out.println("Ans: ("+this.x+", "+this.y+") , width: "+this.width+" height: "+this.height);
 		
 	}
+	
+	
+	/**-----------------------------------------------
+	 * ¡õ seter and geter
+	 ----------------------------------------------**/
+	
+	public int getX(){
+		return (int)this.x;
+	}
+	
+	public int getY(){
+		return (int)this.y;
+	}
+	
+	public int getW(){
+		return (int)this.width;
+	}
+	
+	public int getH(){
+		return (int)this.height;
+	}
 
 }

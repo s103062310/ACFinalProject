@@ -1,11 +1,16 @@
 package object.client;
 
 import processing.core.PApplet;
+<<<<<<< HEAD
 import processing.core.PImage;
+=======
+import processing.core.PFont;
+>>>>>>> 34a70ceaf432feed55539aa540fe167b37c6d044
 import object.tool.Button;
 
 public class ColorButton extends Button{
 	
+	private PFont font;
 	private String colorName;
 	private int money, color;
 
@@ -17,7 +22,11 @@ public class ColorButton extends Button{
 		this.money = money;
 		this.color = color;
 		this.colorName = colorName;
+<<<<<<< HEAD
 		this.image = image;
+=======
+		this.font = parent.createFont("src/resource/fonts/HappyGiraffe.ttf", 20);
+>>>>>>> 34a70ceaf432feed55539aa540fe167b37c6d044
 		
 	}
 	
@@ -30,7 +39,7 @@ public class ColorButton extends Button{
 		
 		// text
 		parent.fill(0);
-		parent.textSize(20);
+		parent.textFont(font);
 		parent.text(colorName, x-25-scrollX, y+80);
 		parent.text("$"+money, x-20-scrollX, y+100);
 		
