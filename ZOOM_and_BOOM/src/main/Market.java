@@ -16,6 +16,7 @@ public class Market{
 	private ShieldBtn shieldbutton;
 	private ColorButton randomBtn;
 	private int[] price = new int[9];
+	
 	private int[] colorArray = {Color.BLACK.getRGB(), new Color(0,255,127).getRGB(), new Color(238,221,130).getRGB()
 			, new Color(0,0,128).getRGB(), Color.RED.getRGB(), new Color(135,206,235).getRGB()
 			, new Color(238,180,34).getRGB(), new Color(255,0,255).getRGB(), new Color(105,139,34).getRGB()};
@@ -28,8 +29,8 @@ public class Market{
 	// Constructor
 	public Market(MainApplet p){
 		for (int i = 0; i < 9; i++)
-			/*if (parent.getPlayer().getColor()==colorArray[i] )price[i] = 10;
-			else */price[i] = 24;
+			if (colorArray[parent.getPlayer().getColor()]==colorArray[i] )price[i] = 10;
+			else price[i] = 24;
 		
 		this.parent = p;
 		//this.bg = parent.loadImage("src/resource/market.PNG");
