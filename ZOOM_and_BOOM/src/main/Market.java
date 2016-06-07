@@ -15,7 +15,11 @@ public class Market{
 	private ColorButton[] button;
 	private ShieldBtn shieldbutton;
 	private ColorButton randomBtn;
-	private int[] price = {0, 10, 20, 10, 15, 30};
+	private int[] price = new int[9];
+	private int[] colorArray = {Color.BLACK.getRGB(), new Color(0,255,127).getRGB(), new Color(238,221,130).getRGB()
+			, new Color(0,0,128).getRGB(), Color.RED.getRGB(), new Color(135,206,235).getRGB()
+			, new Color(238,180,34).getRGB(), new Color(255,0,255).getRGB(), new Color(105,139,34).getRGB()};
+	private String[] colorNameArray = {"DEMON", "LIME", "MOON", "NAVY", "BLOOD", "SKY", "GOLD", "ORCHID", "OLIVE"};
 	
 	// resources
 	private MainApplet parent;
@@ -23,6 +27,9 @@ public class Market{
 	
 	// Constructor
 	public Market(MainApplet p){
+		for (int i = 0; i < 9; i++)
+			/*if (parent.getPlayer().getColor()==colorArray[i] )price[i] = 10;
+			else */price[i] = 24;
 		
 		this.parent = p;
 		//this.bg = parent.loadImage("src/resource/market.PNG");
@@ -32,7 +39,9 @@ public class Market{
 		int s=70, d=120;
 		button = new ColorButton[9];
 		//TODO try to use for loop
-		button[0] = new ColorButton(parent, s, 515, price[0], "DEMON", Color.BLACK.getRGB());
+		for (int i = 0; i < 9; i++)
+			button[i] = new ColorButton(parent, s+d*i, 515, price[i], colorNameArray[i], colorArray[i]);
+		/*button[0] = new ColorButton(parent, s, 515, price[0], "DEMON", Color.BLACK.getRGB());
 		button[1] = new ColorButton(parent, s+d*2, 515, price[2], "LIME", new Color(0,255,127).getRGB());
 		button[2] = new ColorButton(parent, s+d, 515, price[1], "MOON",  new Color(238,221,130).getRGB());
 		button[3] = new ColorButton(parent, s+d*3, 515, price[3], "NAVY", new Color(0,0,128).getRGB());
@@ -40,7 +49,7 @@ public class Market{
 		button[5] = new ColorButton(parent, s+d*5, 515, price[4], "SKY", new Color(135,206,235).getRGB());
 		button[6] = new ColorButton(parent, s+d*6, 515, price[4], "GOLD", new Color(238,180,34).getRGB());
 		button[7] = new ColorButton(parent, s+d*7, 515, price[4], "ORCHID", new Color(255,0,255).getRGB());
-		button[8] = new ColorButton(parent, s+d*8, 515, price[4], "OLIVE", new Color(105,139,34).getRGB());
+		button[8] = new ColorButton(parent, s+d*8, 515, price[4], "OLIVE", new Color(105,139,34).getRGB());*/
 		
 		randomBtn = new ColorButton(parent, s+d*9, 515, price[5], "GUESS", Color.GRAY.getRGB());
 	
@@ -88,4 +97,5 @@ public class Market{
 	public ShieldBtn getShieldBtn(){
 		return shieldbutton;
 	}
+	public int[] getColorArray(){return colorArray;}
 }

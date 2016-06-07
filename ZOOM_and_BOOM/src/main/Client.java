@@ -5,11 +5,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.JFrame;
@@ -24,7 +19,6 @@ public class Client extends JFrame{
 	// information of server
 	private String IPAddress;
 	private int portNum;
-	static boolean isConnect = true;
 	
 	// connection between server and client
 	private Socket socket;
@@ -85,7 +79,7 @@ public class Client extends JFrame{
 			System.out.println("Fail to connect with server!");
 			JOptionPane.showMessageDialog(null,"Server did not exist.\nPlease try again.");
 			applet.dispose();
-			isConnect = false;
+			System.exit(0);
 			return;
 			
 		}
@@ -103,7 +97,10 @@ public class Client extends JFrame{
 			// server 創造一個player給client，每次登入都傳
 			int color = rand.nextInt(9);
 			// int color , int score , String name // tmppppppppppppppppppppppppppp
-			if(player==null) applet.setPlayer(new Player(color, "*"+Integer.toString(color)+"*"));
+			if(player==null){applet.setPlayer(new Player(color, "*"+Integer.toString(color)+"*"));
+				JOptionPane.showMessageDialog(null,"Please login to start the game.");
+				System.exit(0);
+			}
 			else applet.setPlayer(player);
 			
 			// send the new add player's information to server
@@ -211,8 +208,7 @@ public class Client extends JFrame{
 				JOptionPane.showMessageDialog(null,"Server did not respond.\nThe window will be closed.");
 				window.dispose();
 				applet.dispose();
-				stop();
-				
+				stop();				
 			} catch (Exception e) {
 
 			}
@@ -242,10 +238,8 @@ public class Client extends JFrame{
 		
 		// create client & Run login app
 		Client client = new Client("127.0.0.1", 8000);
-		//client.loginApplet.runFrame();
+		client.loginApplet.runFrame();
 		client.connect();
-
-		if (!isConnect)return;
 		
 		audio.play();  ////***
 		
@@ -260,7 +254,7 @@ public class Client extends JFrame{
 		            JOptionPane.YES_NO_OPTION,
 		            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
 	        		window.dispose();
-		        	//client.updateWindow.runFrame(client.getPlayer());
+		        	client.updateWindow.runFrame(client.getPlayer());
 		        	System.exit(0);
 		        }
 		    }
