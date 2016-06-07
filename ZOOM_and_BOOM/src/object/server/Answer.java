@@ -9,6 +9,22 @@ public class Answer {
 	float x, y, width, height;
 	float x2, y2, w2, h2;
 	
+	//Default Constructor
+	public Answer(){
+		//empty
+	}
+	
+	public Answer(float width, float height, float x, float y){
+		this.width=width;
+		this.height=height;
+		this.x=x;
+		this.y=y;
+	}
+	
+	public Answer(float width, float height, float x, float y, int datanum){
+		this(width,height,x,y);
+		this.dataNum=datanum;
+	}
 	
 	// compare answers
 	public boolean check(float x, float y, float width, float height){
@@ -57,7 +73,6 @@ public class Answer {
 		
 	}
 
-	
 	// calculate current average
 	private void calAverage(float x, float y, float w, float h){
 		

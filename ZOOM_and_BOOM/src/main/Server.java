@@ -18,6 +18,7 @@ import java.util.List;
 
 import object.client.UpdateDatabaseWindow;
 import object.server.Answer;
+import object.server.LoadFromDatabaseWindow;
 import object.server.Player;
 import object.server.ServerUpdateDatabaseWindow;
 import processing.core.PImage;
@@ -43,17 +44,21 @@ public class Server extends JFrame {
 	private String path = new String("src/resource/pic_rsc");
 	private String[] list;
 	
-	//Update database
+	//Update/Load database
 	private ServerUpdateDatabaseWindow updateWindow;
+	private LoadFromDatabaseWindow loadWindow;
 
 	
 	// Constructor
 	public Server(int portNum) {
 		
-		//create update database window
+		//create update database load/update windows
 		updateWindow = new ServerUpdateDatabaseWindow(this);
 		updateWindow.init();
 		updateWindow.start();
+		loadWindow = new LoadFromDatabaseWindow(this);
+		loadWindow.init();
+		loadWindow.start();
 		
 		// set up of server's frame
 		setSize(400, 200);
@@ -358,6 +363,7 @@ public class Server extends JFrame {
 		
 		// create server
 		Server server = new Server(8000);
+		server.loadWindow.runFrame();
 		server.runForever();
 		
 	}
