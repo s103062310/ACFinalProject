@@ -121,6 +121,7 @@ public class MainApplet extends PApplet{
 						JFrame window = new JFrame("Attack!!!");
 						window.setContentPane(app);
 						window.setSize(400, 600);
+						window.setLocation(450, 40);
 						window.setVisible(true);
 						app.setWindow(window);
 							
@@ -142,7 +143,7 @@ public class MainApplet extends PApplet{
 				state = GameState.ATTACK;
 				if(player.getScore() >= market.getRandomBtn().getMoney()){	
 					calMoney(-market.getRandomBtn().getMoney());
-					//attacked(list.get(r.nextInt(list.size())).getName(), new Color(0, 0, 0).getRGB());
+					attacked(list.get(r.nextInt(list.size())).getName(), new Color(r.nextInt(256), r.nextInt(256), r.nextInt(256)).getRGB());
 				} else {
 					// remind that player doesn't have enough money
 					JOptionPane.showMessageDialog(null,"Sorry, your money is not enough!");
@@ -237,11 +238,11 @@ public class MainApplet extends PApplet{
 	
 	
 	// control key pressed
-	public void keyPressed(){
+	/*public void keyPressed(){
 		if(keyCode==32){
 			attacked(list.get(r.nextInt(list.size())).getName(), new Color(0, 0, 0).getRGB());
 		}
-	}
+	}*/
 	
 	
 	// attack other players
@@ -255,7 +256,7 @@ public class MainApplet extends PApplet{
 		thread.send(color);
 		
 		// create new PApplet
-		ConfirmWindow confirm = new ConfirmWindow((PImage)thread.receive());
+		/*ConfirmWindow confirm = new ConfirmWindow((PImage)thread.receive());
 		confirm.init();
 		confirm.start();
 		confirm.setFocusable(true);
@@ -264,7 +265,7 @@ public class MainApplet extends PApplet{
 		JFrame window = new JFrame("*~ Attack Sucessful ~*");
 		window.setContentPane(confirm);
 		window.setSize(800, 450);
-		window.setVisible(true);
+		window.setVisible(true);*/
 		
 	}
 	
@@ -272,9 +273,15 @@ public class MainApplet extends PApplet{
 	// be attacked by other players
 	public void beAttacked(int color){
 		
-		beAtk.play();
-		game.addSplash(color);
-		thread.send(game.screenshot());
+		if(player.getShield()>0){
+			player.useShield();
+			JOptionPane.showMessageDialog(null,"You have been attacked! But you used a shield!");
+		} else{
+			beAtk.play();
+			game.addSplash(color);
+		}
+		
+		//thread.send(game.screenshot());
 		
 	}
 	

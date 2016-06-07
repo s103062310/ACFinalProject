@@ -1,11 +1,8 @@
 package object.client;
 
 import processing.core.PApplet;
-<<<<<<< HEAD
 import processing.core.PImage;
-=======
 import processing.core.PFont;
->>>>>>> 34a70ceaf432feed55539aa540fe167b37c6d044
 import object.tool.Button;
 
 public class ColorButton extends Button{
@@ -22,11 +19,8 @@ public class ColorButton extends Button{
 		this.money = money;
 		this.color = color;
 		this.colorName = colorName;
-<<<<<<< HEAD
 		this.image = image;
-=======
 		this.font = parent.createFont("src/resource/fonts/HappyGiraffe.ttf", 20);
->>>>>>> 34a70ceaf432feed55539aa540fe167b37c6d044
 		
 	}
 	

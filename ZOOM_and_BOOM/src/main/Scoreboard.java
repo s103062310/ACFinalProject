@@ -42,12 +42,12 @@ public class Scoreboard {
 		parent.textSize(20);
 		vs.update();
 		scroll = vs.getspos();
-		int num = parent.getList().size();
-		int radius = Math.max(50 - 6 * num / 3, 32);
+		//int num = parent.getList().size();
+		int radius = Math.max(50 - 6 * parent.getList().size() / 3, 32);
 
 
 		// players' information
-		for (int i = 0; i < num; i++) {
+		for (int i = 0; i < parent.getList().size(); i++) {
 
 			Player pl = parent.getList().get(i);
 			parent.fill(pl.getColor());
@@ -70,12 +70,12 @@ public class Scoreboard {
 
 
 		// crown
-		if (num >= 5) {
+		if (parent.getList().size() >= 5) {
 			for (int i = 0; i < 3; i++) {
 				parent.image(crown, 840, 100 - scroll + i * (radius + 15) - 4 * radius / 5, 20, 20);
 			}
 			int thirdScore = parent.getList().get(2).getScore();
-			for(int i=3;i<num;i++){
+			for(int i=3;i<parent.getList().size();i++){
 				if(parent.getList().get(i).getScore()==thirdScore)
 					parent.image(crown, 840, 100 - scroll + i * (radius + 15) - 4 * radius / 5, 20, 20);
 				else break;

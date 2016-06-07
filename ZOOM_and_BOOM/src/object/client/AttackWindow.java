@@ -34,11 +34,7 @@ public class AttackWindow extends PApplet{
 	private Button cancelBtn;
 	
 	// Constructor: initialize
-<<<<<<< HEAD
-	public AttackWindow(MainApplet p, ArrayList<Player> list, ImageButton marketBtn, Game game){
-=======
-	public AttackWindow(MainApplet p, ArrayList<Player> list, ColorButton marketBtn){
->>>>>>> 34a70ceaf432feed55539aa540fe167b37c6d044
+	public AttackWindow(MainApplet p, ArrayList<Player> list, ImageButton marketBtn){
 		
 		parent = p;
 		this.marketBtn = marketBtn;
@@ -113,7 +109,7 @@ public class AttackWindow extends PApplet{
 				parent.calMoney(-marketBtn.getMoney());
 				
 				//TODO call method to attack in MainApplet
-				//parent.attacked(playerName[i], new Color(0, 0, 0).getRGB());
+				parent.attacked(playerName[i], marketBtn.getColor());
 				window.dispose();
 				
 			}

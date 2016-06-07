@@ -249,13 +249,13 @@ public class Server extends JFrame {
 							}
 							
 							// transmit screenshot
-							PImage img = (PImage)objIn.readObject();
+						/*	PImage img = (PImage)objIn.readObject();
 							for (ConnectionThread connection : connections){
 								if (sourceName.equals(connection.name)){
 									connection.send(img);
 									break;
 								}
-							}							
+							}	*/						
 							
 						default:
 							break;
