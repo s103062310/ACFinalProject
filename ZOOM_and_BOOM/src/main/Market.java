@@ -32,8 +32,8 @@ public class Market{
 	// Constructor
 	public Market(MainApplet p){
 		for (int i = 0; i < 9; i++)
-			if (colorArray[parent.getPlayer().getColor()]==i )price[i] = 10;
-			else price[i] = 0;
+			/*if (parent.getPlayer().getColor()==colorArray[i])price[i] = 10;
+			else*/ price[i] = 0;
 		
 		this.parent = p;
 		//this.bg = parent.loadImage("src/resource/market.PNG");
