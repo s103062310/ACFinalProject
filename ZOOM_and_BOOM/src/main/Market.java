@@ -1,10 +1,13 @@
 package main;
 
 import java.awt.Color;
+import java.util.TimerTask;
+
 import object.client.ColorButton;
 import object.client.ImageButton;
 import object.client.ShieldBtn;
 import object.tool.HScrollbar;
+import java.util.*;
 import processing.core.PImage;
 
 public class Market{
@@ -17,6 +20,9 @@ public class Market{
 	private ShieldBtn shieldbutton;
 	private ImageButton randomBtn;
 	private int[] price = {10, 15, 20, 10, 20, 15, 25, 35, 30};
+	private java.util.Timer timer = new java.util.Timer ();
+	private int delate = 100;
+	private boolean temp = true;
 	
 	private int[] colorArray = {Color.BLACK.getRGB(), new Color(0,255,127).getRGB(), new Color(238,221,130).getRGB()
 			, new Color(0,0,128).getRGB(), Color.RED.getRGB(), new Color(135,206,235).getRGB()
@@ -31,11 +37,6 @@ public class Market{
 	
 	// Constructor
 	public Market(MainApplet p){
-		//System.out.println(parent.getPlayer().getColor());
-		/*for (int i = 0; i < 9; i++){
-			if (parent.getPlayer().getColor()==i)price[i] = 10;
-			else price[i] = 30;
-		}*/
 		
 		this.parent = p;
 		//this.bg = parent.loadImage("src/resource/market.PNG");
@@ -67,6 +68,21 @@ public class Market{
 	
 	// update screen content
 	public void display(){
+		if (temp){
+			timer.scheduleAtFixedRate(new TimerTask() {
+				public void run() {
+				
+					for (int i = 0; i < 9; i++){
+						if (parent.getPlayer().getColor()==colorArray[i])price[i] = 10;
+						else price[i] = 30;
+					}
+					for (int i = 0; i < 9; i++)
+						button[i] = new ImageButton(parent,btnImages[i], 70+120*i, 515, price[i], colorNameArray[i], colorArray[i]);
+				
+				}
+			}, 0, delate);
+			temp = false;
+		}
 		
 		// background
 		this.parent.fill(50, 7, 250, 200);
