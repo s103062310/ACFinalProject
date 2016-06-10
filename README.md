@@ -9,8 +9,6 @@
 + 關於傳送被炸者截圖，因為還不知道如何傳送圖片，就先都用文字對話框代替吧
 + If you think something interesting, you can add it in the Potential region.
 + 大家想到什麼有趣的都寫在Potential裡喔XD
-+ If you have completed some functions, add an explanation under the file(will be submit as final readme) and delete old spec
-+ 如果完成某些小功能就在各檔案的小標下面新增一條說明(當最後交出去的readme用)順便把舊的Spec刪掉
 
 ## Potential
 + tutorial of first play
@@ -27,6 +25,33 @@
 + image's size must bigger than 800*450(better) or smaller(don't suggest)
 + it means width>800&&height>450 or width<800&&height<450
 
+## 6/10 REPORT!!!!
+
++ Please write down DETAILED technique of your part!
++ Also write down the problems you encountered and how to solved(if solved)
++ add the website you have visited at reference part
+
+1. 建立I/O資料庫 Establish of I/O Database by 艾怡華(Eva)
++ use SQL for account and answer database
++ implement of login
+
+2. 網路Socket連接 Connection Between Server and Client by 范祐恩
++ 傳送物件
++ protocal流程
+
+3. 主遊戲 Main Game by 賴思頻
++ 框框、倒數計時、state、判斷答案加錢機制
++ 攻擊與被攻擊
+
+4. 商店 Market by 陳映竹
++ 顏料、隨機、防護罩功能
++ 價錢訂定原則(匿名性)
++ 攻擊視窗
+
+5. 排行榜 Score Board by 張婷雲
++ 玩家資訊
++ 及時排行榜更新與顯示
+
 ## 5/27 Integrate
 
 ### Server.java:
@@ -39,12 +64,12 @@
 ### Client.java:
 1. 等有login系統後，server 創造一個player給client，每次登入都傳給client
 2. Fail to establish I/O channel with server! => exception confirm
-3. transmit screenshot after being attacked(頻)
+3. transmit screenshot after being attacked
 4. ~~try transmit list directly~~ by 頻
 
 ### Timer.java: 
 1. ~~clock image!~~ by Eva
-2. if server need => develop other type timer
+2. ~~if server need => develop other type timer~~ by Eva
 
 ### Button.java:
 1. ~~image! (( 2 type~~ by 頻
@@ -52,38 +77,38 @@
 ### Game.java:
 1. ~~answerCorrect()~~ by 頻
 2. ~~answerWrong()~~ by 頻
-3. gameEnd()
-4. start animate!
+3. ~~gameEnd()~~ by 頻
+4. ~~start animate!~~ by 竹
 
 ## 5/28 Integrate
 
 ### Market.java
 1. ~~新增scrollbar~~ by Tera
-2. 調成喜歡的美工~
+2. ~~調成喜歡的美工~
 
 ### AttackWindow.java
 1. ~~新增取消按鈕~~ by 竹
 2. ~~試做 scrollbar~~ by Tera
 3. 需要一點美工設計(?
-4. 點選之後的後續連接
+4. ~~點選之後的後續連接~~ by Tera
 
 ### MainApplet.java
-1. Attacked() (頻)
-2. beAttacked() (頻)
-3. add state
+1. ~~Attacked()~~ by 頻
+2. ~~beAttacked()~~ by 頻
+3. ~~add state~~ by 頻
 
 ### Scoreboard.java
-1. 處理同分排名(是否給黃冠)
-2. 調成喜歡的美工~
+1. ~~處理同分排名(是否給黃冠)~~ by Tera
+2. ~~調成喜歡的美工~~~ by Tera
 
 ## 6/2 Integrate
 
 1. ~~統合 score board & market 的顏色~~ by Tera
-2. 自己的所屬色價格訂低一點(匿名性)
-3. 做Random商品
-4. 做防護罩
+2. ~~自己的所屬色價格訂低一點(匿名性)~~ by 果
+3. ~~做Random商品~~ by 竹
+4. ~~做防護罩~~ by 竹
 5. ~~研究嵌入不同字體(找有明顯差異的先試試)~~ by Eva
-6. 傳送圖片
+6. ~~傳送圖片~~ by Tera
 
 ## ScreenShot
 ![alt tag](/UserInterface.png)
