@@ -31,26 +31,26 @@
 + Also write down the problems you encountered and how to solved(if solved)
 + add the website you have visited at reference part
 
-1. 建立I/O資料庫 Establish of I/O Database by 艾怡華(Eva)
-+ use SQL for account and answer database
-+ implement of login
+### 建立I/O資料庫 Establish of I/O Database by 艾怡華(Eva)
+1. use SQL for account and answer database
+2. implement of login
 
-2. 網路Socket連接 Connection Between Server and Client by 范祐恩
-+ 傳送物件
-+ protocal流程
+### 網路Socket連接 Connection Between Server and Client by 范祐恩
+1. 傳送物件
+2. protocal流程
 
-3. 主遊戲 Main Game by 賴思頻
-+ 框框、倒數計時、state、判斷答案加錢機制
-+ 攻擊與被攻擊
+### 主遊戲 Main Game by 賴思頻
+1. 框框、倒數計時、state、判斷答案加錢機制
+2. 攻擊與被攻擊
 
-4. 商店 Market by 陳映竹
-+ 顏料、隨機、防護罩功能
-+ 價錢訂定原則(匿名性)
-+ 攻擊視窗
+### 商店 Market by 陳映竹
+1. 顏料、隨機、防護罩功能
+2. 價錢訂定原則(匿名性)
+3. 攻擊視窗
 
-5. 排行榜 Score Board by 張婷雲
-+ 玩家資訊
-+ 及時排行榜更新與顯示
+### 排行榜 Score Board by 張婷雲
+1. 玩家資訊
+2. 及時排行榜更新與顯示
 
 ## 5/27 Integrate
 
