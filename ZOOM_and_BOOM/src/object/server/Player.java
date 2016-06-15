@@ -1,7 +1,6 @@
 package object.server;
 
 import java.io.Serializable;
-import java.awt.Color;
 
 public class Player implements Serializable{
 	
@@ -9,25 +8,19 @@ public class Player implements Serializable{
 	
 	// player information
 	private String name = new String();
-	private int color;		// a int of random from 0~8 will be mapped to real color in other class
+	private int color;
 	private int score=0;
 	private int completed=0;
 	private int shield=0;
-	
-	// resources	//TODO 之後可能搬到server
-	// new Color(rand.nextInt(256),rand.nextInt(256),rand.nextInt(256)).getRGB()
-	//private int [] colours = {Color.YELLOW.getRGB(),Color.GREEN.getRGB(),Color.BLUE.getRGB(),Color.RED.getRGB(),Color.PINK.getRGB()};
-	private int[] colors = { Color.BLACK.getRGB(), new Color(0, 255, 127).getRGB(), new Color(238, 221, 130).getRGB(),
-			new Color(0, 0, 128).getRGB(), Color.RED.getRGB(), new Color(135, 206, 235).getRGB(),
-			new Color(238, 180, 34).getRGB(), new Color(255, 0, 255).getRGB(), new Color(105, 139, 34).getRGB() };
-	//private Random rand = new Random();
+	private boolean online;
 	
 
 	// Constructor 1
 	public Player(int color ,String name){
 		
-		this.color = colors[color];
+		this.color = color;
 		this.name = name;
+		this.online = false;
 		
 	}
 	
@@ -42,8 +35,19 @@ public class Player implements Serializable{
 		
 	}
 	
+	
 	// Constructor 3
-	public Player(){}
+	public Player(Player p){
+		
+		this.name = p.getName();
+		this.color = p.getColor();
+		this.score = p.getScore();
+		this.completed = p.getCompleted();
+		this.shield = p.getShield();
+		this.online = true;
+		
+	}
+	
 	
 	/**-----------------------------------------------
 	 * ↓ seter and geter
@@ -83,6 +87,10 @@ public class Player implements Serializable{
 	
 	public void useShield(){
 		this.shield--;
+	}
+	
+	public boolean isOnLine(){
+		return online;
 	}
 	
 }

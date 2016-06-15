@@ -5,12 +5,9 @@ import javax.swing.JFrame;
 import object.server.Player;
 import object.tool.Button;
 import object.tool.VScrollbar;
-import main.Game;
 import main.MainApplet;
 import processing.core.PApplet;
 import processing.core.PImage;
-
-//TODO 需要一點美工設計(?
 
 public class AttackWindow extends PApplet{
 	
@@ -29,9 +26,8 @@ public class AttackWindow extends PApplet{
 	private Button[] btn;
 	private ImageButton marketBtn;
 	private String[] playerName;
-	private ArrayList<Player> otherPlayers = new ArrayList<Player>();
-	//TODO 新增取消按鈕~
 	private Button cancelBtn;
+	
 	
 	// Constructor: initialize
 	public AttackWindow(MainApplet p, ArrayList<Player> list, ImageButton marketBtn){
@@ -46,9 +42,11 @@ public class AttackWindow extends PApplet{
 		this.vs = new VScrollbar(365, 0, 17, 600, 16, this);
 		this.bg = parent.loadImage("src/resource/other_images/scoreboard.PNG");
 		
-		//construct "otherPlayers"
+		// construct "otherPlayers"
+		ArrayList<Player> otherPlayers = new ArrayList<Player>();
 		for(Player player: list){
-			if(!player.getName().equals(parent.getPlayer().getName())) otherPlayers.add(player);
+			if(!player.getName().equals(parent.getPlayer().getName())&&player.isOnLine()) 
+				otherPlayers.add(player);
 		}
 		
 		// create button through list
@@ -61,7 +59,7 @@ public class AttackWindow extends PApplet{
 			i++;
 		}
 		
-		//TODO 取消按鈕初始
+		// cancel button
 		cancelBtn = new Button(this, 270, 70, 60, 60, 1);
 		cancelBtn.addImage("src/resource/other_images/cancel-button.png");
 		cancelBtn.setImage(0);
@@ -75,9 +73,11 @@ public class AttackWindow extends PApplet{
 		background(0, 0, 0);
 		image(bg, 0, 0, 400, 600);
 		
+		// scroll bar
 		vs.update();
 		scroll = vs.getspos();
 		
+		// buttons
 		for(int i=0; i<btn.length; i++){
 			btn[i].setPosition(0,scroll);
 			btn[i].display_circle();
@@ -86,13 +86,9 @@ public class AttackWindow extends PApplet{
 			text(playerName[i], 141, 60+80*i-scroll/(float)1.5);
 		}
 		
-		//TODO 畫取消按鈕
+		// cancel button
 		cancelBtn.setPosition(0,scroll);
-		//cancelBtn.display_circle();
 		cancelBtn.display_image();
-		/*fill(255);
-		textSize(15);
-		text("Cancel", 275, 150-scroll/(float)1.5);*/
 		
 		vs.display();
 	}
@@ -105,19 +101,17 @@ public class AttackWindow extends PApplet{
 			
 			if(btn[i].inBtn()){
 				
-				//TODO call method to modify money in MainApplet
 				parent.calMoney(-marketBtn.getMoney());
-				
-				//TODO call method to attack in MainApplet
 				parent.attacked(playerName[i], marketBtn.getColor());
+				this.dispose();
 				window.dispose();
 				
 			}
 			
 		}
 		
-		//TODO 取消按鈕點選 -> 什麼都不做只關閉視窗
 		if(cancelBtn.inBtn()){
+			this.dispose();
 			window.dispose();
 		}
 	}

@@ -146,7 +146,7 @@ public class Server extends JFrame {
 				objIn = new ObjectInputStream(socket.getInputStream());
 				objOut = new ObjectOutputStream(socket.getOutputStream());
 			
-			} catch (IOException e) {
+			} catch (Exception e) {
 				
 				System.out.println("Fail to establish I/O channel between server and client!");
 				e.printStackTrace();
@@ -170,19 +170,18 @@ public class Server extends JFrame {
 					// identify which object is transmit
 					if (message instanceof Player) {
 						
-						// when a new Player adds in 
-						//TODO check! need to define player more detailed
-						//TODO 參考client => 從server傳該帳戶之Player給client
+						System.out.println("new player!");
 						
-						// set name
-						Player player =(Player)message;
+						// update players' playing state
+						Player player = (Player)message;
 						name = player.getName();
+						System.out.println(player.isOnLine());
 						
 						// update player list
 						ArrayList<Player> list = new ArrayList<Player>();
 						list.add(player);
 						for(Player p : playerlist){
-							list.add(p);
+							if(!p.getName().equals(name)) list.add(p);
 						}
 						playerlist = list;
 						

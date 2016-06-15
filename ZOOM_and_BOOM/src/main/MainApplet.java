@@ -31,7 +31,7 @@ public class MainApplet extends PApplet{
 	private static AudioPlayer beAtk;
 	
 	// player content
-	private Player player = new Player();
+	private Player player;
 	private ArrayList<Player> list = new ArrayList<Player>();
 	
 	
@@ -93,6 +93,7 @@ public class MainApplet extends PApplet{
 			
 			// game process control
 			if(game.getGameControlButton().inBtn()){
+				thread.send(new Player(player));
 				game.gameStart();
 				state = GameState.PLAY;
 			}
@@ -169,6 +170,7 @@ public class MainApplet extends PApplet{
 			// game process control
 			if(game.getGameControlButton().inBtn()){
 				state = GameState.PLAYEND;
+				thread.send(player);
 				game.checkMoney();
 			}
 			

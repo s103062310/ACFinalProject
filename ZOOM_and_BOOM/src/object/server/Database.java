@@ -64,8 +64,12 @@ public class Database extends PApplet {
 						resultCompleted = sqlResult.getInt("completed");
 						resultShield = sqlResult.getInt("shield");
 						resultColor = sqlResult.getInt("color");
+						
+						int[] colors = { Color.BLACK.getRGB(), new Color(0, 255, 127).getRGB(), new Color(238, 221, 130).getRGB(),
+								new Color(0, 0, 128).getRGB(), Color.RED.getRGB(), new Color(135, 206, 235).getRGB(),
+								new Color(238, 180, 34).getRGB(), new Color(255, 0, 255).getRGB(), new Color(105, 139, 34).getRGB() };
 					
-						client.setPlayer( new Player(resultColor, resultName, resultScore, resultCompleted, resultShield) );
+						client.setPlayer( new Player(colors[resultColor], resultName, resultScore, resultCompleted, resultShield) );
 						returnStr = resultPass;
 					
 					} else returnStr = null;

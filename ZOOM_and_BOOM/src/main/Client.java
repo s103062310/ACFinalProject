@@ -27,6 +27,7 @@ public class Client extends JFrame{
 	
 	// content
 	private MainApplet applet;
+	private ClientThread connection;
 	
 	// resources
 	private static JFrame window;
@@ -42,9 +43,6 @@ public class Client extends JFrame{
 		
 		// create PApplet
 		applet = new MainApplet();
-		applet.init();
-		applet.start();
-		applet.setFocusable(true);
 		
 		// create Login PApplet
 		Login loginApplet = new Login(this);
@@ -66,7 +64,7 @@ public class Client extends JFrame{
 			// bind I/O between server and client
 			objOut = new ObjectOutputStream(socket.getOutputStream());
 			objIn = new ObjectInputStream(socket.getInputStream());
-			ClientThread connection = new ClientThread();
+			connection = new ClientThread();
 			connection.start();
 			connection.send(applet.getPlayer());
 			applet.setClientThread(connection);
@@ -194,6 +192,7 @@ public class Client extends JFrame{
 	// close client
 	public void closeClient(){
 		
+		connection.send(applet.getPlayer());
 		applet.dispose();
 		window.dispose();
 		Database database = new Database();
@@ -213,6 +212,9 @@ public class Client extends JFrame{
 
 		// create client & Run login app
 		Client client = new Client("127.00.00.01", 8000);
+		client.applet.init();
+		client.applet.start();
+		client.applet.setFocusable(true);
 		client.connect();
 		
 		//set sound
