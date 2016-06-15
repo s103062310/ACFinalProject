@@ -38,12 +38,13 @@ public class Server extends JFrame {
 	public Server(int portNum) {
 		
 		//load database
-		Database database = new Database("LOADING");
-		database.init();
-		database.start();
-		database.runFrame();
+		Database database = new Database();
+		WaitWindow waitWindow = new WaitWindow("LOADING");
+		waitWindow.init();
+		waitWindow.start();
+		waitWindow.runFrame();
 		database.loadAnswerDatabase(this);
-		database.closeFrame();
+		waitWindow.closeFrame();
 		
 		// set up of server's frame
 		setSize(400, 200);
@@ -359,12 +360,13 @@ public class Server extends JFrame {
 		createOutputImage();
 		
 		// update answer database
-		Database database = new Database("UPDATING");
-		database.init();
-		database.start();
-		database.runFrame();
+		Database database = new Database();
+		WaitWindow waitWindow = new WaitWindow("UPDATING");
+		waitWindow.init();
+		waitWindow.start();
+		waitWindow.runFrame();
 		database.updateAnswerDatabase(answer);
-		database.closeFrame();
+		waitWindow.closeFrame();
     	
     	System.exit(0);
     	

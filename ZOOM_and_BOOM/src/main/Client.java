@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import object.server.Database;
 import object.server.Player;
+import object.server.WaitWindow;
 import object.tool.AudioPlayer;
 
 @SuppressWarnings("serial")
@@ -195,12 +196,13 @@ public class Client extends JFrame{
 		
 		applet.dispose();
 		window.dispose();
-		Database database = new Database("UPDATING");
-		database.init();
-		database.start();
-		database.runFrame();
+		Database database = new Database();
+		WaitWindow waitWindow = new WaitWindow("UPDATING");
+		waitWindow.init();
+		waitWindow.start();
+		waitWindow.runFrame();
 		database.updateUserDatabase(applet.getPlayer());
-		database.closeFrame();
+		waitWindow.closeFrame();
 		System.exit(0);
 		
 	}

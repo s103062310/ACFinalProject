@@ -6,6 +6,7 @@ import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PImage;
 import object.server.Database;
+import object.server.WaitWindow;
 import object.tool.SplashButton;
 import object.tool.Textbox;
 import object.tool.SecretTextbox;
@@ -438,10 +439,11 @@ public class Login extends PApplet{
 			else if(loginBtn.isHovered()){
 				if (!nameBox.getText().isEmpty() && !passBox.getText().isEmpty()){
 					state = loginState.WAIT;
-					Database database = new Database("LOADING");
-					database.init();
-					database.start();
-					database.runFrame();
+					Database database = new Database();
+					WaitWindow waitWindow = new WaitWindow("LOADING");
+					waitWindow.init();
+					waitWindow.start();
+					waitWindow.runFrame();
 					String pass = database.loadUserDatabase(nameBox.getText(), client);
 					// if don't have user name
 					if(pass==null){
@@ -455,7 +457,7 @@ public class Login extends PApplet{
 					else{
 						state = loginState.LOGINPASSFAIL;
 					}
-					database.closeFrame();
+					waitWindow.closeFrame();
 				}
 				else{
 					nameBox.reset();
@@ -511,14 +513,15 @@ public class Login extends PApplet{
 				if(!newNameBox.getText().isEmpty() && !newPassBox.getText().isEmpty() && !confirmPassBox.getText().isEmpty()){
 					if( newPassBox.getText().equals( confirmPassBox.getText() ) ){
 						state = loginState.WAIT;
-						Database database = new Database("CREATING");
-						database.init();
-						database.start();
-						database.runFrame();
+						Database database = new Database();
+						WaitWindow waitWindow = new WaitWindow("CREATING");
+						waitWindow.init();
+						waitWindow.start();
+						waitWindow.runFrame();
 						String str = database.newUser(newNameBox.getText(), newPassBox.getText());
 						if(str.equals("Sucess")) state = loginState.REGISTERSUCCESS;
 						else if(str.equals("Fail")) state = loginState.REGISTERWRONGPASS;
-						database.closeFrame();
+						waitWindow.closeFrame();
 					}
 					else
 						state = loginState.REGISTERWRONGPASS;
