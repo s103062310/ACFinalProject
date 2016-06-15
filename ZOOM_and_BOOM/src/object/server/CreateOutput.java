@@ -1,5 +1,6 @@
 package object.server;
 
+import java.io.File;
 import java.util.HashMap;
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -10,16 +11,29 @@ public class CreateOutput extends PApplet{
 	private String[] list;
 	private HashMap<String, Answer> answer;
 	
-	public CreateOutput(String[] list, HashMap<String, Answer> answer){
+	
+	// Constructor
+	public CreateOutput(HashMap<String, Answer> answer){
+		
 		setSize(800, 450);
-		this.list = list;
 		this.answer = answer;
+		File folder = new File("src/resource/pic_rsc");
+		this.list = folder.list();
+		
 	}
 	
+	
+	// main process
 	public void draw(){
+		
+		// for each image file
 		for(int i=0; i<list.length; i++){
+			
+			// get image answer (if none => skip)
 			Answer ans = answer.get(list[i]);
 			if(ans.getW()==0||ans.getW()==0) continue;
+			
+			// create focus image and save
 			PImage image = loadImage("src/resource/pic_rsc/"+list[i]);
 			image(image, 0, 0, 800, 450);
 			PImage img = createImage(ans.getW(), ans.getH(), ARGB);
@@ -27,7 +41,9 @@ public class CreateOutput extends PApplet{
 				img.pixels[j] = this.get(ans.getX()+j%ans.getW(), ans.getY()+j/ans.getW());
 			}
 			img.save("src/resource/pic_out/"+list[i]);
+			
 		}
+		
 	}
 	
 }

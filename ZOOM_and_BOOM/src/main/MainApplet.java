@@ -1,20 +1,17 @@
 package main;
 
 import processing.core.PApplet;
-import processing.core.PImage;
 import java.util.ArrayList;
 import java.util.Random;
 import java.awt.Color;
 import java.io.File;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import main.Client.ClientThread;
 import object.server.Player;
-import object.client.ColorButton;
 import object.client.AttackWindow;
-import object.client.ConfirmWindow;
 import object.client.ImageButton;
+import object.tool.AudioPlayer;
 
 public class MainApplet extends PApplet{
 	

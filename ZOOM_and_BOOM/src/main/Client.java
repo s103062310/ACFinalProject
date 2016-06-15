@@ -6,12 +6,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
-import object.client.UpdateDatabaseWindow;
+import object.server.Database;
 import object.server.Player;
+import object.tool.AudioPlayer;
 
 @SuppressWarnings("serial")
 public class Client extends JFrame{
@@ -27,17 +26,12 @@ public class Client extends JFrame{
 	
 	// content
 	private MainApplet applet;
-	private Login loginApplet;
-	private UpdateDatabaseWindow updateWindow;
 	
 	// resources
-	private Random rand = new Random();
 	private static JFrame window;
-	private static AudioPlayer audio;  ////***
-	
-	//Player
-	private Player player;
+	private static AudioPlayer audio;
 
+	
 	// Constructor
 	public Client(String IPAddress, int portNum) {
 		
@@ -51,17 +45,11 @@ public class Client extends JFrame{
 		applet.start();
 		applet.setFocusable(true);
 		
-		// create Login Applet
-		loginApplet = new Login(this);
+		// create Login PApplet
+		Login loginApplet = new Login(this);
 		loginApplet.init();
 		loginApplet.start();
-		
-		//create update database window
-		updateWindow = new UpdateDatabaseWindow();
-		updateWindow.init();
-		updateWindow.start();
-		
-		player = null;
+		loginApplet.runFrame();
 		
 	}
 
@@ -69,49 +57,24 @@ public class Client extends JFrame{
 	// connect to server
 	public void connect() {
 		
-		// create server's socket
 		try {
 			
+			// create server's socket
 			socket = new Socket(IPAddress, portNum);
 			
-		} catch (IOException e) {
-			
-			System.out.println("Fail to connect with server!");
-			JOptionPane.showMessageDialog(null,"Server did not exist.\nPlease try again.");
-			applet.dispose();
-			System.exit(0);
-			return;
-			
-		}
-		
-		// bind I/O between server and client
-		try {
-			
+			// bind I/O between server and client
 			objOut = new ObjectOutputStream(socket.getOutputStream());
 			objIn = new ObjectInputStream(socket.getInputStream());
 			ClientThread connection = new ClientThread();
 			connection.start();
+			connection.send(applet.getPlayer());
 			applet.setClientThread(connection);
-		
-			//TODO 等有login系統後，可能要搬到server分配給client，以下就不用傳了~
-			// server 創造一個player給client，每次登入都傳
-			int color = rand.nextInt(9);
-			// int color , int score , String name // tmppppppppppppppppppppppppppp
-			if(player==null){applet.setPlayer(new Player(color, "*"+Integer.toString(color)+"*"));
-				JOptionPane.showMessageDialog(null,"Please login to start the game.");
-				System.exit(0);
-			}
-			else applet.setPlayer(player);
-			
-			// send the new add player's information to server
-			objOut.writeObject(applet.getPlayer());
-			objOut.flush();
 			
 		} catch (IOException e) {
 			
-			//TODO showmessagedialog
-			System.out.println("Fail to establish I/O channel with server!");
+			JOptionPane.showMessageDialog(null,"Server did not exist.\nPlease try again.");
 			System.exit(0);
+			return;
 			
 		}
 		
@@ -131,9 +94,7 @@ public class Client extends JFrame{
 				
 				// identify which object is transmit
 				if (message instanceof String) {
-					
-					// when receive String flag
-					
+
 					// identify which flag is
 					switch ((String) message) {
 					
@@ -154,6 +115,13 @@ public class Client extends JFrame{
 						
 						int color = (int)receive();
 						applet.beAttacked(color);
+						break;
+						
+					// server is closing
+					case "terminate":
+						
+						JOptionPane.showMessageDialog(null,"Server did not respond.\nThe window will be closed.");
+						closeClient();
 						break;
 						
 					default:
@@ -192,7 +160,6 @@ public class Client extends JFrame{
 		
 		
 		// receive object from server
-		@SuppressWarnings("deprecation")
 		public Object receive(){
 			
 			Object message=null;
@@ -204,11 +171,9 @@ public class Client extends JFrame{
 				
 			} catch (IOException e) {
 				
-				System.out.println("Server doesn't exist any more.");
 				JOptionPane.showMessageDialog(null,"Server did not respond.\nThe window will be closed.");
-				window.dispose();
-				applet.dispose();
-				stop();				
+				closeClient();
+				
 			} catch (Exception e) {
 
 			}
@@ -217,31 +182,41 @@ public class Client extends JFrame{
 		}
 	
 	}
+
 	
 	//set player
 	public void setPlayer(Player player){
-		this.player = player;
+		this.applet.setPlayer(player);
 	}
 	
-	//getPlayer 
-	public Player getPlayer(){
-		return this.player;
+	
+	// close client
+	public void closeClient(){
+		
+		applet.dispose();
+		window.dispose();
+		Database database = new Database("UPDATING");
+		database.init();
+		database.start();
+		database.runFrame();
+		database.updateUserDatabase(applet.getPlayer());
+		database.closeFrame();
+		System.exit(0);
+		
 	}
+
 		
 	// main
 	public static void main(String[] args) {
-		
-		//set sound
-		audio = new AudioPlayer(new File("src/resource/bgm.wav"));   ///***
-		//audio.loadAudio("src/resource/bgm.wav", null);   ///***
-		audio.setPlayCount(0);   ////****/
-		
+
 		// create client & Run login app
 		Client client = new Client("127.00.00.01", 8000);
-		client.loginApplet.runFrame();
 		client.connect();
 		
-		audio.play();  ////***
+		//set sound
+		audio = new AudioPlayer(new File("src/resource/bgm.wav"));
+		audio.setPlayCount(0);
+		audio.play();
 		
 		// create frame and connect to server
 		window = new JFrame("ZOOM and BOOM");
@@ -253,9 +228,7 @@ public class Client extends JFrame{
 		            "Are you sure you want to close this game?", "Really Closing?", 
 		            JOptionPane.YES_NO_OPTION,
 		            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
-	        		window.dispose();
-		        	client.updateWindow.runFrame(client.getPlayer());
-		        	System.exit(0);
+		        	client.closeClient();
 		        }
 		    }
 		});
@@ -263,6 +236,7 @@ public class Client extends JFrame{
 		window.setSize(1117, 690);
 		window.setLocation(120, 30);
 		window.setVisible(true);
+		
 	}
 	
 }

@@ -1,4 +1,4 @@
-package main;
+package object.tool;
 
 import java.io.File;
 import java.net.URI;
@@ -382,3 +382,4 @@ public class AudioPlayer {
 	return statusListener;
     }
 }
+

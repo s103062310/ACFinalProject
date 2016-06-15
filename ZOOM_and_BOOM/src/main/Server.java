@@ -1,6 +1,5 @@
 package main;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -15,10 +14,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-
-import object.client.UpdateDatabaseWindow;
 import object.server.*;
-import processing.core.PImage;
 
 @SuppressWarnings("serial")
 public class Server extends JFrame {
@@ -36,24 +32,18 @@ public class Server extends JFrame {
 	
 	// resources
 	public HashMap<String, Answer> answer = new HashMap<String, Answer>();
-	private String path = new String("src/resource/pic_rsc");
-	private String[] list;
-	
-	//Update/Load database
-	private ServerUpdateDatabaseWindow updateWindow;
-	private LoadFromDatabaseWindow loadWindow;
 
 	
 	// Constructor
 	public Server(int portNum) {
 		
-		//create update database load/update windows
-		updateWindow = new ServerUpdateDatabaseWindow(this);
-		updateWindow.init();
-		updateWindow.start();
-		loadWindow = new LoadFromDatabaseWindow(this);
-		loadWindow.init();
-		loadWindow.start();
+		//load database
+		Database database = new Database("LOADING");
+		database.init();
+		database.start();
+		database.runFrame();
+		database.loadAnswerDatabase(this);
+		database.closeFrame();
 		
 		// set up of server's frame
 		setSize(400, 200);
@@ -68,9 +58,7 @@ public class Server extends JFrame {
 		            JOptionPane.YES_NO_OPTION,
 		            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
 	        		frame.dispose();
-	        		createOutputImage();
-		        	updateWindow.runFrame();
-		        	System.exit(0);
+		        	closeServer();
 		        }
 		    }
 		});
@@ -98,18 +86,10 @@ public class Server extends JFrame {
 		this.add(scrollPane);
 		this.setVisible(true);
 		
-		// open file and load all file name to prepare answer sheet
-		File folder = new File(path);
-		list = folder.list();
-		for(String file : list){
-			answer.put(file, new Answer());
-		}
-		
 	}
 
 	
 	// the program process of server
-	// TODO 設倒數計時器，定時更新排行榜 => 新加入client即時更新、計時器reset
 	public void runForever() {
 		
 		this.textArea.append("Server starts waiting for client.\n");
@@ -359,11 +339,35 @@ public class Server extends JFrame {
 	private void createOutputImage(){
 		
 		// create PApplet
-		CreateOutput applet = new CreateOutput(list, answer);
+		CreateOutput applet = new CreateOutput(answer);
 		applet.init();
 		applet.start();
 		applet.setFocusable(true);
 		
+	}
+	
+	
+	// close Server
+	private void closeServer(){
+		
+		// interrupt all connections
+		for(ConnectionThread client : connections){
+			client.send("terminate");
+		}
+		
+		// create output image
+		createOutputImage();
+		
+		// update answer database
+		Database database = new Database("UPDATING");
+		database.init();
+		database.start();
+		database.runFrame();
+		database.updateAnswerDatabase(answer);
+		database.closeFrame();
+    	
+    	System.exit(0);
+    	
 	}
 	
 	
@@ -372,7 +376,6 @@ public class Server extends JFrame {
 		
 		// create server
 		Server server = new Server(8000);
-		server.loadWindow.runFrame();
 		server.runForever();
 		
 	}

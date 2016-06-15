@@ -57,9 +57,7 @@
 ### Server.java:
 1. ~~結合帳戶系統~~ by Eva
 2. 設倒數計時器，定時更新排行榜
-3. 從server傳該帳戶之Player給client (有1之後，現在的模式只是暫時)
-4. 待Player定義完畢要檢查field是否都有set到
-5. 攻擊完transmit screenshot(頻)
+3. 攻擊完transmit screenshot(頻)
 
 ### Client.java:
 1. 等有login系統後，server 創造一個player給client，每次登入都傳給client

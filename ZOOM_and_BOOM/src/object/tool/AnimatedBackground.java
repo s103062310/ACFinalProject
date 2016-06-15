@@ -1,9 +1,7 @@
-package main;
+package object.tool;
 
 import java.awt.Color;
-
 import processing.core.PApplet;
-import processing.core.PGraphics;
 import processing.core.PImage;
 
 public class AnimatedBackground extends PApplet{
@@ -18,7 +16,8 @@ public class AnimatedBackground extends PApplet{
 	private PImage backgroundImg;
 	
 	public void setup(){
-		size(width,height);
+		
+		size(width, height);
 		background(255);
 		try { 
 			backgroundImg = loadImage("resource/pic_rsc/M" + (int) random (15)+ ".png");
@@ -62,6 +61,7 @@ public class AnimatedBackground extends PApplet{
 	
 	}
 		
+	
 	//set Color array
 	private void setColors(){
 		splashColors = new Color[12];
