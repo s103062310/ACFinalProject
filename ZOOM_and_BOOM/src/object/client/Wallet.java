@@ -26,8 +26,8 @@ public class Wallet {
 		this.ny = y;
 		this.nw = w;
 		this.nh = h;
-		this.image = parent.loadImage("src/resource/other_images/money.png");
-		this.font = parent.createFont("src/resource/fonts/COOPBL.ttf", f);
+		this.image = parent.loadImage("resource/other_images/money.png");
+		this.font = parent.createFont("resource/fonts/COOPBL.ttf", f);
 		
 	}
 	
@@ -47,7 +47,7 @@ public class Wallet {
 		// move
 		if(move){
 			f+=25;
-			font = parent.createFont("src/resource/fonts/COOPBL.ttf", f);
+			font = parent.createFont("resource/fonts/COOPBL.ttf", f);
 			if(nx>=220) nx -= 120;
 			if(ny>=105) ny -= 68.75;
 			if(nw<=360) nw += 90;
@@ -81,7 +81,7 @@ public class Wallet {
 		this.nw = w;
 		this.nh = h;
 		this.f = 24;
-		this.font = parent.createFont("src/resource/fonts/COOPBL.ttf", f);
+		this.font = parent.createFont("resource/fonts/COOPBL.ttf", f);
 	
 	}
 	

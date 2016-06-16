@@ -22,14 +22,12 @@ public class SplashButton {
 	private String text;
 	private int textSize;
 	private int x, y;
-	private Color color;
 	
 	// Constructor with default width and height
 	public SplashButton(PApplet p, int x, int y, Color color, String text){
 		this.parent = p;
 		this.x = x;
 		this.y = y;
-		this.color = color;
 		this.text = text;
 		//adjust textsize
 		this.textSize = 34;

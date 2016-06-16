@@ -41,7 +41,7 @@ public class AttackWindow extends PApplet{
 		
 		// set scroll & background img
 		this.vs = new VScrollbar(365, 0, 17, 600, 16, this);
-		this.bg = parent.loadImage("src/resource/other_images/scoreboard.PNG");
+		this.bg = parent.loadImage("resource/other_images/scoreboard.PNG");
 		
 		// construct "otherPlayers"
 		ArrayList<Player> otherPlayers = new ArrayList<Player>();
@@ -62,7 +62,7 @@ public class AttackWindow extends PApplet{
 		
 		// cancel button
 		cancelBtn = new Button(this, 270, 70, 60, 60, 1);
-		cancelBtn.addImage("src/resource/other_images/cancel-button.png");
+		cancelBtn.addImage("resource/other_images/cancel-button.png");
 		cancelBtn.setImage(0);
 	}
 	

@@ -42,20 +42,20 @@ public class Game {
 		parent = p;
 		
 		// open file and load all file name
-		File folder = new File("src/resource/pic_rsc");
+		File folder = new File("resource/pic_rsc");
 		list = folder.list();
 		
 		// load image
 		rest = new PImage[4];
-		rest[0] = parent.loadImage("src/resource/other_images/coffee4.png");
-		rest[1] = parent.loadImage("src/resource/other_images/coffee3.png");
-		rest[2] = parent.loadImage("src/resource/other_images/coffee2.png");
-		rest[3] = parent.loadImage("src/resource/other_images/coffee1.png");
+		rest[0] = parent.loadImage("resource/other_images/coffee4.png");
+		rest[1] = parent.loadImage("resource/other_images/coffee3.png");
+		rest[2] = parent.loadImage("resource/other_images/coffee2.png");
+		rest[3] = parent.loadImage("resource/other_images/coffee1.png");
 		
 		// set control button
 		ctrlBtn = new Button(parent, 735, 15, 50, 50, 0);
-		ctrlBtn.addImage("src/resource/other_images/pause.png");
-		ctrlBtn.addImage("src/resource/other_images/play.png");
+		ctrlBtn.addImage("resource/other_images/pause.png");
+		ctrlBtn.addImage("resource/other_images/play.png");
 		ctrlBtn.setImage(1);
 		
 		// tools
@@ -67,8 +67,8 @@ public class Game {
 		message = new ArrayList<ImageMessage>();
 		
 		// font and audio
-		font = parent.createFont("src/resource/fonts/JOKERMAN.ttf", 70);
-		audio = new AudioPlayer(new File("src/resource/crrect_answer2.wav"));
+		font = parent.createFont("resource/fonts/JOKERMAN.ttf", 70);
+		audio = new AudioPlayer(new File("resource/crrect_answer2.wav"));
 		audio.setPlayCount(1);
 		
 	}
@@ -182,10 +182,10 @@ public class Game {
 		// change image
 		int temp = imageNumber;
 		while (imageNumber==temp) imageNumber = r.nextInt(list.length);
-		img = parent.loadImage("src/resource/pic_rsc/" + list[imageNumber]);
+		img = parent.loadImage("resource/pic_rsc/" + list[imageNumber]);
 		imageTimer.reset();
 		
-		//audio.loadAudio("src/resource/crrect_answer2.wav", null); 
+		//audio.loadAudio("resource/crrect_answer2.wav", null); 
 		audio.stop();
 		audio.play();
 		
@@ -235,7 +235,7 @@ public class Game {
 		imageTimer.resume();
 		ctrlBtn.setImage(0);
 		imageNumber = r.nextInt(list.length);
-		img = parent.loadImage("src/resource/pic_rsc/" + list[imageNumber]);
+		img = parent.loadImage("resource/pic_rsc/" + list[imageNumber]);
 		
 	}
 

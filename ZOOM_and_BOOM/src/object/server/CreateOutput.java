@@ -17,7 +17,7 @@ public class CreateOutput extends PApplet{
 		
 		setSize(800, 450);
 		this.answer = answer;
-		File folder = new File("src/resource/pic_rsc");
+		File folder = new File("resource/pic_rsc");
 		this.list = folder.list();
 		
 	}
@@ -34,7 +34,7 @@ public class CreateOutput extends PApplet{
 			if(ans.getW()==0||ans.getW()==0) continue;
 			
 			// create focus image and save
-			PImage image = loadImage("src/resource/pic_rsc/"+list[i]);
+			PImage image = loadImage("resource/pic_rsc/"+list[i]);
 			image(image, 0, 0, 800, 450);
 			PImage img = createImage(ans.getW(), ans.getH(), ARGB);
 			int x = ans.getX()-ans.getW()/2;
@@ -42,7 +42,7 @@ public class CreateOutput extends PApplet{
 			for(int j=0; j<img.pixels.length; j++){
 				img.pixels[j] = this.get(x+j%ans.getW(), y+j/ans.getW());
 			}
-			img.save("src/resource/pic_out/"+list[i]);
+			img.save("resource/pic_out/"+list[i]);
 			
 		}
 		

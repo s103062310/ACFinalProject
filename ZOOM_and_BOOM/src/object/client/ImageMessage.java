@@ -19,7 +19,7 @@ public class ImageMessage {
 		this.x = x;
 		this.y = y;
 		this.d = d;
-		this.image = parent.loadImage("src/resource/other_images/"+filename);
+		this.image = parent.loadImage("resource/other_images/"+filename);
 		if(filename.equals("correct.png")) correct = true;
 		else correct = false;
 		

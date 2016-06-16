@@ -230,14 +230,14 @@ public class Client extends JFrame{
 	public static void main(String[] args) {
 
 		// create client & Run login app
-		Client client = new Client("140.114.192.122", 8000);
+		Client client = new Client("127.0.0.1", 8000);
 		client.applet.init();
 		client.applet.start();
 		client.applet.setFocusable(true);
 		client.connect();
 		
 		//set sound
-		audio = new AudioPlayer(new File("src/resource/bgm.wav"));
+		audio = new AudioPlayer(new File("resource/bgm.wav"));
 		audio.setPlayCount(0);
 		audio.play();
 		

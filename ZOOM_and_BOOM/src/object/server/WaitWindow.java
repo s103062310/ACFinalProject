@@ -35,7 +35,7 @@ public class WaitWindow extends PApplet{
 		size(width, height);
 		smooth();
 		noStroke();
-		font = createFont("../resource/fonts/HappyGiraffe.ttf",32);
+		font = createFont("resource/fonts/HappyGiraffe.ttf",32);
 		textFont(font);
 		
 		//Wait animation

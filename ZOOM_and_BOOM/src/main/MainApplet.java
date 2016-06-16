@@ -52,9 +52,9 @@ public class MainApplet extends PApplet{
 		state = GameState.MAIN;
 		
 		// set music
-		click = new AudioPlayer(new File("src/resource/refrigerater2_O.wav"));
+		click = new AudioPlayer(new File("resource/refrigerater2_O.wav"));
 		click.setPlayCount(1);
-		beAtk = new AudioPlayer(new File("src/resource/bomb.wav"));
+		beAtk = new AudioPlayer(new File("resource/bomb.wav"));
 		beAtk.setPlayCount(1);
 		
 	}
@@ -287,7 +287,7 @@ public class MainApplet extends PApplet{
 	public void showPic(String picName, ArrayList<Splash> spl) {
 		
 		// create new PApplet
-		PImage snapshot = loadImage("src/resource/pic_rsc/" + picName);
+		PImage snapshot = loadImage("resource/pic_rsc/" + picName);
 		ConfirmWindow confirm = new ConfirmWindow(snapshot, spl);
 		confirm.init();
 		confirm.start();

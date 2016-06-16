@@ -1,6 +1,5 @@
 package object.tool;
 
-import main.MainApplet;
 import processing.core.PApplet;
 
 public class VScrollbar {

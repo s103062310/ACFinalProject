@@ -21,7 +21,7 @@ public class ImageButton extends Button{
 		this.color = color;
 		this.colorName = colorName;
 		this.image = image;
-		this.font = parent.createFont("src/resource/fonts/HappyGiraffe.ttf", 20);
+		this.font = parent.createFont("resource/fonts/HappyGiraffe.ttf", 20);
 		
 	}
 	

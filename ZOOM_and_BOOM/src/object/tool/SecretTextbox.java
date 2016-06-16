@@ -26,9 +26,6 @@ public class SecretTextbox extends Textbox{
 			String asteriskString = "";
 			for ( int i=0; i<text.length() &&  parent.textWidth(asteriskString) < defaultWidth ; i++)
 				asteriskString += "*";
-			float width = this.defaultWidth;
-			if ( parent.textWidth(text) > this.defaultWidth )
-				width = super.parent.textWidth(text);
 		    parent.fill(color.getRed(),color.getGreen(),color.getBlue());
 		    parent.textSize(textSize);
 		    parent.text(asteriskString, x, y);

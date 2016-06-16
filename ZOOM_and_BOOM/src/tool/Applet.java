@@ -8,7 +8,7 @@ public class Applet extends PApplet {
 	
 	private static final long serialVersionUID = 1L;
 	private PImage image;
-	private String path = new String("src/resource/");
+	private String path = new String("resource/");
 	private String[] list;
 	private int num = 0;
 	

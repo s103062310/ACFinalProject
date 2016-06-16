@@ -1,7 +1,6 @@
 package object.client;
 
 import processing.core.PApplet;
-import processing.core.PImage;
 import processing.core.PFont;
 import object.tool.Button;
 
@@ -19,8 +18,7 @@ public class ColorButton extends Button{
 		this.money = money;
 		this.color = color;
 		this.colorName = colorName;
-		this.image = image;
-		this.font = parent.createFont("src/resource/fonts/HappyGiraffe.ttf", 20);
+		this.font = parent.createFont("resource/fonts/HappyGiraffe.ttf", 20);
 		
 	}
 	

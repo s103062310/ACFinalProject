@@ -18,7 +18,7 @@ public class Splash implements Serializable {
 	public Splash(PApplet p, int x, int y, int t, int c){
 		
 		parent = p;
-		img = parent.loadImage("src/resource/other_images/splash.png");
+		img = parent.loadImage("resource/other_images/splash.png");
 		color = c;
 		setSplash();
 		this.x = x;
