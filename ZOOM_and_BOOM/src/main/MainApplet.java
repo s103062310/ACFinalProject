@@ -1,6 +1,8 @@
 package main;
 
 import processing.core.PApplet;
+import processing.core.PImage;
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.awt.Color;
@@ -10,7 +12,9 @@ import javax.swing.JOptionPane;
 import main.Client.ClientThread;
 import object.server.Player;
 import object.client.AttackWindow;
+import object.client.ConfirmWindow;
 import object.client.ImageButton;
+import object.client.Splash;
 import object.tool.AudioPlayer;
 
 public class MainApplet extends PApplet{
@@ -21,8 +25,8 @@ public class MainApplet extends PApplet{
 	private Game game;
 	private Market market;
 	private Scoreboard scoreboard;
-	private enum GameState {MAIN, PLAY, PLAYEND, ATTACK};
-	private GameState state;
+	public enum GameState {MAIN, PLAY, PLAYEND, ATTACK};
+	public GameState state;
 	
 	// resources
 	private ClientThread thread;
@@ -63,6 +67,10 @@ public class MainApplet extends PApplet{
 		market.display();
 		scoreboard.display();
 		
+		fill(0, 0, 0, 150);
+		if(state==GameState.ATTACK) rect(0, 0, 1100, 650);
+		else if(state!=GameState.MAIN) rect(0, 450, 800, 200);
+		
 	}
 	
 	
@@ -93,7 +101,9 @@ public class MainApplet extends PApplet{
 			
 			// game process control
 			if(game.getGameControlButton().inBtn()){
-				thread.send(new Player(player));
+				player.setOnLine(true);
+				player = new Player(player);
+				thread.send(player);
 				game.gameStart();
 				state = GameState.PLAY;
 			}
@@ -117,19 +127,25 @@ public class MainApplet extends PApplet{
 						
 						// create new frame
 						JFrame window = new JFrame("Attack!!!");
+						app.setWindow(window);
 						window.setContentPane(app);
 						window.setSize(400, 600);
 						window.setLocation(450, 40);
 						window.setVisible(true);
-						app.setWindow(window);
+						window.addWindowListener(new java.awt.event.WindowAdapter() {
+						    @Override
+						    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+						    	state = GameState.MAIN;
+						    }
+						});
 							
 					} else {
 						
 						// remind that player doesn't have enough money
 						JOptionPane.showMessageDialog(null,"Sorry, your money is not enough!");
-					
+						state = GameState.MAIN;
+						
 					}
-					state = GameState.MAIN;
 					
 				}
 				
@@ -145,8 +161,8 @@ public class MainApplet extends PApplet{
 				} else {
 					// remind that player doesn't have enough money
 					JOptionPane.showMessageDialog(null,"Sorry, your money is not enough!");
+					state = GameState.MAIN;
 				}
-				state = GameState.MAIN;
 				
 			}
 			
@@ -170,6 +186,8 @@ public class MainApplet extends PApplet{
 			// game process control
 			if(game.getGameControlButton().inBtn()){
 				state = GameState.PLAYEND;
+				player.setOnLine(false);
+				player = new Player(player);
 				thread.send(player);
 				game.checkMoney();
 			}
@@ -236,35 +254,13 @@ public class MainApplet extends PApplet{
 	}
 	
 	
-	// control key pressed
-	/*public void keyPressed(){
-		if(keyCode==32){
-			attacked(list.get(r.nextInt(list.size())).getName(), new Color(0, 0, 0).getRGB());
-		}
-	}*/
-	
-	
 	// attack other players
 	public void attacked(String name, int color){
 		
-		//TODO
 		// transmit data to server
 		thread.send("attack");
-		thread.send(player.getName());
 		thread.send(name);
 		thread.send(color);
-		
-		// create new PApplet
-		/*ConfirmWindow confirm = new ConfirmWindow((PImage)thread.receive());
-		confirm.init();
-		confirm.start();
-		confirm.setFocusable(true);
-		
-		// create new frame
-		JFrame window = new JFrame("*~ Attack Sucessful ~*");
-		window.setContentPane(confirm);
-		window.setSize(800, 450);
-		window.setVisible(true);*/
 		
 	}
 	
@@ -273,21 +269,50 @@ public class MainApplet extends PApplet{
 	public void beAttacked(int color){
 		
 		if(player.getShield()>0){
+			thread.send("protected");
 			player.useShield();
 			JOptionPane.showMessageDialog(null,"You have been attacked! But you used a shield!");
 		} else{
 			beAtk.play();
 			game.addSplash(color);
+			thread.send("picName");
+			thread.send(game.getPicName());
+			thread.send(game.getSplashList());
 		}
-		
-		//thread.send(game.screenshot());
 		
 	}
 	
 	
-	// use shield
-	public void beProtected(){
-		// TODO
+	// show screenshot of attack
+	public void showPic(String picName, ArrayList<Splash> spl) {
+		
+		// create new PApplet
+		PImage snapshot = loadImage("src/resource/pic_rsc/" + picName);
+		ConfirmWindow confirm = new ConfirmWindow(snapshot, spl);
+		confirm.init();
+		confirm.start();
+		confirm.setFocusable(true);
+
+		// create new frame
+		JFrame window = new JFrame("*~ Attack Sucessful ~*");
+		window.setContentPane(confirm);
+		window.setSize(800, 450);
+		window.setLocation(270, 130);
+		window.setVisible(true);
+		window.addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		    	state = GameState.MAIN;
+		    }
+		});
+		
+	}
+	
+	
+	// attack fail
+	public void attackNoEffect(){
+		JOptionPane.showMessageDialog(null,"The victim used a shiled to defense your attack!\n Attack NO EFFECT!");
+		state = GameState.MAIN;
 	}
 	
 	
@@ -300,6 +325,8 @@ public class MainApplet extends PApplet{
 	// modify money by amount
 	public void calMoney(int amount){
 		player.setScore(player.getScore()+amount);
+		player = new Player(player);
+		thread.send(player);
 	}
 	
 	

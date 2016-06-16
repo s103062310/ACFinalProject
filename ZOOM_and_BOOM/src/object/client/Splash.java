@@ -2,16 +2,19 @@ package object.client;
 
 import processing.core.PApplet;
 import processing.core.PImage;
+import java.io.Serializable;
 
-public class Splash {
+public class Splash implements Serializable {
 	
-	private PApplet parent;
-	private PImage img;
-	private int x, y, d, color;
-	private int lastTime=0, trans=255;
+	private static final long serialVersionUID = 1L;
+	
+	private transient PApplet parent;
+	private transient PImage img;
+	private int x, y, d, color, trans;
+	private int lastTime=0;
 	
 	
-	// Constructor
+	// Constructor 1
 	public Splash(PApplet p, int x, int y, int t, int c){
 		
 		parent = p;
@@ -20,7 +23,17 @@ public class Splash {
 		setSplash();
 		this.x = x;
 		this.y = y;
-		this.d = t*2000/255;
+		this.d = t*1000/255;
+		this.trans = 255;
+		
+	}
+	
+	
+	// Constructor 2
+	public Splash(PApplet p, Splash spl){
+		
+		this(p, spl.x, spl.y, 10, spl.color);
+		this.trans = spl.trans;
 		
 	}
 	
@@ -31,6 +44,7 @@ public class Splash {
 		// change transparent
 		if(parent.millis()-lastTime>=d){
 			trans--;
+			lastTime = parent.millis();
 		}
 		
 		// draw

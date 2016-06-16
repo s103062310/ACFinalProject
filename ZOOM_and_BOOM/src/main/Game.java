@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.Random;
 import java.util.ArrayList;
 import processing.core.PImage;
-import processing.core.PApplet;
 import processing.core.PFont;
 import object.client.Splash;
 import object.client.Wallet;
@@ -21,6 +20,7 @@ public class Game {
 	private PFont font;
 	private Wallet wallet;
 	private Button ctrlBtn;
+	private DigitalTimer imageTimer;
 	private ArrayList<Splash> splash;
 	private ArrayList<ImageMessage> message;
 	
@@ -34,9 +34,6 @@ public class Game {
 	private String[] list;
 	private Random r = new Random();
 	private static AudioPlayer audio;
-	
-	// timer related resources
-	private DigitalTimer imageTimer;
 	
 	
 	// Constructor
@@ -288,25 +285,6 @@ public class Game {
 		splash.add(new Splash(parent, r.nextInt(800)-210, r.nextInt(450)-170, 10, color));
 	
 	}
-	
-	
-	// take screenshot of main game
-	public PImage screenshot(){
-		
-		// create image
-		PImage screenshot  = parent.createImage(800, 450, PApplet.ARGB);
-		
-		// map pixel of sub window to image
-		for(int i = 0; i<screenshot.pixels.length; i++) {
-			int c = parent.get(i%800, i/800);
-			screenshot.pixels[i] = c;
-		}
-		
-		//Image img = new Image(screenshot);
-		
-		return screenshot;
-	
-	}
 
 	
 	/**-----------------------------------------------
@@ -327,6 +305,13 @@ public class Game {
 	
 	public Button getGameControlButton(){
 		return this.ctrlBtn;
+	}
+	
+	public String getPicName(){
+		return this.list[imageNumber];
+	}
+	public ArrayList<Splash> getSplashList(){
+		return this.splash;
 	}
 
 	

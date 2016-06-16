@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import object.client.Splash;
 import object.server.Database;
 import object.server.Player;
 import object.server.WaitWindow;
@@ -116,6 +117,20 @@ public class Client extends JFrame{
 						applet.beAttacked(color);
 						break;
 						
+					// receive screenshot
+					case "showPic":
+
+						String picName = (String) receive();
+						ArrayList<Splash> splash = (ArrayList<Splash>) receive();
+						applet.showPic(picName, splash);
+						break;
+						
+					// other user be protected
+					case "protected":
+						
+						applet.attackNoEffect();
+						break;
+						
 					// server is closing
 					case "terminate":
 						
@@ -145,6 +160,7 @@ public class Client extends JFrame{
 			
 			try {
 				
+				objOut.reset();
 				objOut.writeObject(o);
 				objOut.flush();
 				
@@ -192,7 +208,8 @@ public class Client extends JFrame{
 	// close client
 	public void closeClient(){
 		
-		connection.send(applet.getPlayer());
+		applet.getPlayer().setOnLine(false);
+		connection.send(new Player(applet.getPlayer()));
 		applet.dispose();
 		window.dispose();
 		Database database = new Database();

@@ -44,7 +44,7 @@ public class Player implements Serializable{
 		this.score = p.getScore();
 		this.completed = p.getCompleted();
 		this.shield = p.getShield();
-		this.online = true;
+		this.online = p.online;
 		
 	}
 	
@@ -91,6 +91,10 @@ public class Player implements Serializable{
 	
 	public boolean isOnLine(){
 		return online;
+	}
+	
+	public void setOnLine(boolean b){
+		this.online = b;
 	}
 	
 }

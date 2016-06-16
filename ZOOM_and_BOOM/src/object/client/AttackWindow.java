@@ -6,6 +6,7 @@ import object.server.Player;
 import object.tool.Button;
 import object.tool.VScrollbar;
 import main.MainApplet;
+import main.MainApplet.GameState;
 import processing.core.PApplet;
 import processing.core.PImage;
 
@@ -103,6 +104,7 @@ public class AttackWindow extends PApplet{
 				
 				parent.calMoney(-marketBtn.getMoney());
 				parent.attacked(playerName[i], marketBtn.getColor());
+				parent.state = GameState.MAIN;
 				this.dispose();
 				window.dispose();
 				
@@ -111,6 +113,7 @@ public class AttackWindow extends PApplet{
 		}
 		
 		if(cancelBtn.inBtn()){
+			parent.state = GameState.MAIN;
 			this.dispose();
 			window.dispose();
 		}

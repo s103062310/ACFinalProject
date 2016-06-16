@@ -1,9 +1,9 @@
 package object.client;
 
-import java.awt.Color;
+import java.util.ArrayList;
 import processing.core.PApplet;
 import processing.core.PImage;
-import object.tool.Button;
+import object.client.Splash;
 
 public class ConfirmWindow extends PApplet {
 	
@@ -11,14 +11,17 @@ public class ConfirmWindow extends PApplet {
 	
 	// content
 	private PImage img;
-	private Button btn;
+	private ArrayList<Splash> splash = new ArrayList<Splash>();
 	
 	
 	// Constructor
-	public ConfirmWindow(PImage img){
+	public ConfirmWindow(PImage img, ArrayList<Splash> list){
 		
 		this.img = img;
-		this.btn = new Button(this, 200, 200, 50, new Color(0, 0, 0).getRGB());
+		for(Splash spl : list){
+			this.splash.add(new Splash(this, spl));
+			System.out.println("trans= "+spl.getTrans());
+		}
 		
 	}
 	
@@ -27,7 +30,7 @@ public class ConfirmWindow extends PApplet {
 	public void draw(){
 		
 		image(img, 0, 0, 800, 450);
-		btn.display_circle();
+		for(Splash s:splash) s.display();
 		
 	}
 

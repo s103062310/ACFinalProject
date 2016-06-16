@@ -7,11 +7,9 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.swing.JFrame;
 import main.Client;
 import main.Server;
 import processing.core.PApplet;
-import processing.core.PFont;
 
 public class Database extends PApplet {
 	
@@ -407,5 +405,60 @@ public class Database extends PApplet {
 		
 	}
 	
+	
+	// reset answer database to 0
+	public void resetAnswerDatabase(){
+		
+		Thread databaseThread = new Thread(new Runnable() {
+			
+			public void run(){
+		
+				Connection sqlConn = null;
+				Statement sqlState = null;
+				String newEntry = null;
+				
+				try{
+					
+					Class.forName(jdbcDriver);
+					
+					sqlConn = DriverManager.getConnection(sqlDriver,sqlUser,sqlPass);
+					sqlState = sqlConn.createStatement();
+					
+					newEntry = "UPDATE answer_table SET width=0, height=0, x=0, y=0, datanum=0";
+					sqlState.executeUpdate(newEntry);
+
+					canReturn = true;
+					
+				}
+				
+				catch (SQLException ex){
+					System.err.println("SQLException: " + ex.getMessage());
+					System.err.println("VendorError: " + ex.getErrorCode());
+					ex.printStackTrace();
+				}
+				
+				catch (ClassNotFoundException ex){
+					System.err.println("Unable to locate Driver");
+					ex.printStackTrace();
+				}
+				//close connection
+				finally{
+					try{
+						if(sqlState!=null && sqlConn!=null)
+							sqlConn.close();
+					}
+					catch(SQLException ex){
+						System.err.println("Unable to close SSL connection to database");
+						ex.printStackTrace();
+					}
+				}
+			}
+		});
+		databaseThread.start();
+		
+		while(!canReturn){
+			System.out.print("");
+		}
+	}
 	
 }

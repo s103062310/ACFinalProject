@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import object.client.Splash;
 import object.server.*;
 
 @SuppressWarnings("serial")
@@ -32,7 +33,8 @@ public class Server extends JFrame {
 	
 	// resources
 	public HashMap<String, Answer> answer = new HashMap<String, Answer>();
-
+	private HashMap<String, String> attackPair = new HashMap<String, String>();
+	
 	
 	// Constructor
 	public Server(int portNum) {
@@ -215,11 +217,11 @@ public class Server extends JFrame {
 						case "attack":
 							
 							// receive attack information
-							String sourceName = (String)objIn.readObject();
 							String targetName = (String)objIn.readObject();
 							int color = (int)objIn.readObject();
 							
 							// attack
+							attackPair.put(targetName, name);
 							for (ConnectionThread connection : connections){
 								if (targetName.equals(connection.name)){
 									connection.send("be attacked");
@@ -228,14 +230,37 @@ public class Server extends JFrame {
 								}
 							}
 							
-							// transmit screenshot
-						/*	PImage img = (PImage)objIn.readObject();
-							for (ConnectionThread connection : connections){
-								if (sourceName.equals(connection.name)){
-									connection.send(img);
+							break;
+						
+						// receive screenshot
+						case "picName":
+							
+							String picName = (String) objIn.readObject();
+							ArrayList<Splash> splash= (ArrayList<Splash>)objIn.readObject();
+							String sourceName1 = attackPair.get(name);
+							attackPair.remove(name);
+							for (ConnectionThread connection : connections) {
+								if (sourceName1.equals(connection.name)) {
+									connection.send("showPic");
+									connection.send(picName);
+									connection.send(splash);
 									break;
 								}
-							}	*/						
+							}
+							break;
+						
+						// victim is protected
+						case "protected":
+							
+							String sourceName2 = attackPair.get(name);
+							attackPair.remove(name);
+							for (ConnectionThread connection : connections) {
+								if (sourceName2.equals(connection.name)) {
+									connection.send("protected");
+									break;
+								}
+							}
+							break;						
 							
 						default:
 							break;
@@ -251,6 +276,11 @@ public class Server extends JFrame {
 					textArea.append("Player ["+name+"] disconnect.\n");
 					
 					// update player list
+					/*bugggggggggggggggggggggggggggggggggggggggggggggggggggggggggg
+					for (Player p : playerlist) {
+						if (p.getName().equals(name))
+							playerlist.remove(p);
+					}*/
 					ArrayList<Player> list = new ArrayList<Player>();
 					for(Player p : playerlist){
 						if(!p.getName().equals(name)) list.add(p);
@@ -274,6 +304,7 @@ public class Server extends JFrame {
 			
 			try {
 				
+				objOut.reset();
 				objOut.writeObject(o);
 				objOut.flush();
 				
@@ -364,6 +395,7 @@ public class Server extends JFrame {
 		waitWindow.init();
 		waitWindow.start();
 		waitWindow.runFrame();
+		//database.resetAnswerDatabase();
 		database.updateAnswerDatabase(answer);
 		waitWindow.closeFrame();
     	
