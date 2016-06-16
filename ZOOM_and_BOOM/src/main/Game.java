@@ -184,6 +184,7 @@ public class Game {
 		while (imageNumber==temp) imageNumber = r.nextInt(list.length);
 		img = parent.loadImage("src/resource/pic_rsc/" + list[imageNumber]);
 		imageTimer.reset();
+		
 		//audio.loadAudio("src/resource/crrect_answer2.wav", null); 
 		audio.stop();
 		audio.play();

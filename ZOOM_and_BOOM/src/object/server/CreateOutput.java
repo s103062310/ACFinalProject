@@ -37,8 +37,10 @@ public class CreateOutput extends PApplet{
 			PImage image = loadImage("src/resource/pic_rsc/"+list[i]);
 			image(image, 0, 0, 800, 450);
 			PImage img = createImage(ans.getW(), ans.getH(), ARGB);
+			int x = ans.getX()-ans.getW()/2;
+			int y = ans.getY()-ans.getH()/2;
 			for(int j=0; j<img.pixels.length; j++){
-				img.pixels[j] = this.get(ans.getX()+j%ans.getW(), ans.getY()+j/ans.getW());
+				img.pixels[j] = this.get(x+j%ans.getW(), y+j/ans.getW());
 			}
 			img.save("src/resource/pic_out/"+list[i]);
 			

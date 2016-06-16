@@ -228,7 +228,7 @@ public class Client extends JFrame{
 	public static void main(String[] args) {
 
 		// create client & Run login app
-		Client client = new Client("127.00.00.01", 8000);
+		Client client = new Client("140.114.192.122", 8000);
 		client.applet.init();
 		client.applet.start();
 		client.applet.setFocusable(true);
