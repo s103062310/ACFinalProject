@@ -135,7 +135,7 @@ public class Client extends JFrame{
 					case "terminate":
 						
 						JOptionPane.showMessageDialog(null,"Server did not respond.\nThe window will be closed.");
-						closeClient();
+						closeClient(false);
 						break;
 						
 					default:
@@ -187,7 +187,7 @@ public class Client extends JFrame{
 			} catch (IOException e) {
 				
 				JOptionPane.showMessageDialog(null,"Server did not respond.\nThe window will be closed.");
-				closeClient();
+				closeClient(false);
 				
 			} catch (Exception e) {
 
@@ -206,19 +206,21 @@ public class Client extends JFrame{
 	
 	
 	// close client
-	public void closeClient(){
+	public void closeClient(boolean update){
 		
 		applet.getPlayer().setOnLine(false);
 		connection.send(new Player(applet.getPlayer()));
 		applet.dispose();
 		window.dispose();
-		Database database = new Database();
-		WaitWindow waitWindow = new WaitWindow("UPDATING");
-		waitWindow.init();
-		waitWindow.start();
-		waitWindow.runFrame();
-		database.updateUserDatabase(applet.getPlayer());
-		waitWindow.closeFrame();
+		if(update){
+			Database database = new Database();
+			WaitWindow waitWindow = new WaitWindow("UPDATING");
+			waitWindow.init();
+			waitWindow.start();
+			waitWindow.runFrame();
+			database.updateUserDatabase(applet.getPlayer());
+			waitWindow.closeFrame();
+		}
 		System.exit(0);
 		
 	}
@@ -228,7 +230,7 @@ public class Client extends JFrame{
 	public static void main(String[] args) {
 
 		// create client & Run login app
-		Client client = new Client("140.114.192.122", 8000);
+		Client client = new Client("127.0.0.1", 8000);
 		client.applet.init();
 		client.applet.start();
 		client.applet.setFocusable(true);
@@ -249,7 +251,7 @@ public class Client extends JFrame{
 		            "Are you sure you want to close this game?", "Really Closing?", 
 		            JOptionPane.YES_NO_OPTION,
 		            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
-		        	client.closeClient();
+		        	client.closeClient(true);
 		        }
 		    }
 		});
